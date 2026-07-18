@@ -1,0 +1,115 @@
+﻿.app-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 76px 1fr;
+    grid-template-areas:
+        "sidebar navbar"
+        "sidebar main";
+    height: 100vh;
+    overflow: hidden; 
+}
+.sidebar {
+    grid-area: sidebar;
+    background-color: var(--color-neutral-surface);
+    border-right: 1px solid rgba(0, 0, 0, 0.05); 
+    padding: var(--space-24);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+.navbar {
+    grid-area: navbar;
+    background-color: var(--color-neutral-bg);
+    padding: 0 var(--space-32);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.main-content {
+    grid-area: main;
+    padding: var(--space-32);
+    overflow-y: auto; 
+    background-color: var(--color-neutral-bg);
+}
+/* --- NAVBAR (ÜST PANEL)--- */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-neutral-surface);
+    padding: var(--space-8) var(--space-16);
+    border-radius: 24px;
+    width: 300px;
+    gap: var(--space-8);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: var(--transition-hover);
+}
+    .search-bar:focus-within {
+        border-color: var(--color-main);
+        box-shadow: 0 0 0 3px rgba(11, 70, 53, 0.1);
+    }
+    .search-bar i {
+        color: var(--color-neutral-text);
+        opacity: 0.5;
+    }
+    .search-bar input {
+        border: none;
+        background: transparent;
+        outline: none;
+        color: var(--color-neutral-text);
+        width: 100%;
+        font-family: var(--font-body);
+    }
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-24);
+}
+.icon-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--color-neutral-text);
+    cursor: pointer;
+    transition: var(--transition-hover);
+    position: relative;
+}
+    .icon-btn:hover {
+        color: var(--color-main);
+    }
+.badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background-color: var(--color-accent);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-16);
+    cursor: pointer;
+    padding-left: var(--space-24);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.user-role {
+    font-size: 0.8rem;
+    color: var(--color-neutral-text);
+    opacity: 0.6;
+}

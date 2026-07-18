@@ -1,0 +1,67 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* =========================================================
+   Light MODE (Gündüz Rejimi)
+   ========================================================= */
+:root {
+    --font-heading: 'Merriweather', serif; 
+    --font-body: 'Inter', sans-serif; 
+    --space-8: 8px;
+    --space-16: 16px;
+    --space-24: 24px;
+    --space-32: 32px;
+    --space-48: 48px;
+    --space-64: 64px;
+    --space-96: 96px;
+    --color-main: #0B4635; 
+    --color-accent: #E67E22; 
+    --color-neutral-bg: #F4F6F8;
+    --color-neutral-surface: #FFFFFF; 
+    --color-neutral-text: #2C3E50;
+    --shadow-card: 0 4px 24px rgba(11, 70, 53, 0.08);
+    --radius-card: 12px;
+    --transition-hover: 0.3s ease-in-out;
+}
+/* =========================================================
+   DARK MODE (Qaranlıq Rejimi)
+   ========================================================= */
+[data-theme="dark"] {
+    --color-neutral-bg: #121619; 
+    --color-neutral-surface: #1E2529;
+    --color-neutral-text: #E0E6ED; 
+    --color-main: #147A5D; 
+    --color-accent: #F39C12; 
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4); 
+}
+/* =========================================================
+   QLOBAL RESET VƏ TƏMƏL STİLLƏR
+   ========================================================= */
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-neutral-bg);
+    color: var(--color-neutral-text);
+    line-height: 1.6;
+    transition: background-color var(--transition-hover), color var(--transition-hover);
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-main);
+    font-weight: 700;
+    margin-bottom: var(--space-16);
+}
+h1 {
+    font-size: 2.5rem;
+}
+h2 {
+    font-size: 2rem;
+}
+h3 {
+    font-size: 1.5rem;
+}
+a {
+    text-decoration: none;
+    color: var(--color-main);
+}

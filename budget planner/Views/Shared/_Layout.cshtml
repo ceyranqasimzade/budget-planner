@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Budget Planner</title>
+    <link rel="stylesheet" href="~/assets/css/base.css" />
+    <link rel="stylesheet" href="~/assets/css/layout.css" />
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <h2>Büdcəm</h2>
+        </aside>
+        <header class="navbar">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Əməliyyat axtar..." />
+            </div>
+            <div class="navbar-actions">
+                <button class="icon-btn" title="Gecə/Gündüz Rejimi">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="icon-btn" title="Bildirişlər">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Ceyran+Qasimzade&background=0B4635&color=fff" alt="Profil" class="avatar" />
+                    <div class="user-info">
+                        <span class="user-name">Ceyran Qasimzade</span>
+                        <span class="user-role">Premium plan</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="main-content">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/assets/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
