@@ -1,1 +1,82 @@
-﻿
+﻿<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Büdcə Planlayıcısı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+    <main class="main-content">
+        <section class="dashboard-cards">
+            <div class="card balance-card">
+                <div class="card-header">
+                    <h3>Ümumi Balans</h3>
+                    <i class="fas fa-wallet" style="color: #3498db; font-size: 20px;"></i>
+                </div>
+                <p class="amount">$2,450.00</p>
+            </div>
+            <div class="card income-card">
+                <div class="card-header">
+                    <h3>Gəlir</h3>
+                    <i class="fas fa-arrow-up" style="color: #2ecc71; font-size: 20px;"></i>
+                </div>
+                <p class="amount positive">+$3,200.00</p>
+            </div>
+            <div class="card expense-card">
+                <div class="card-header">
+                    <h3>Xərc</h3>
+                    <i class="fas fa-arrow-down" style="color: #e74c3c; font-size: 20px;"></i>
+                </div>
+                <p class="amount negative">-$750.00</p>
+            </div>
+        </section>
+        <!-- Son Əməliyyatlar Cədvəli -->
+        <section class="recent-transactions">
+            <div class="section-header">
+                <h3>Son Əməliyyatlar</h3>
+                <a href="#" class="view-all">Hamısına bax</a>
+            </div>
+            <div class="table-responsive">
+                <table class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Tarix</th>
+                            <th>Təsvir</th>
+                            <th>Kateqoriya</th>
+                            <th>Məbləğ</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>18 İyul 2026</td>
+                            <td>Maaş</td>
+                            <td><span class="category-badge income-cat">Gəlir</span></td>
+                            <td class="positive">+$3,200.00</td>
+                            <td><span class="status-badge success">Tamamlandı</span></td>
+                        </tr>
+                        <tr>
+                            <td>17 İyul 2026</td>
+                            <td>Market alış-verişi</td>
+                            <td><span class="category-badge expense-cat">Qida</span></td>
+                            <td class="negative">-$120.50</td>
+                            <td><span class="status-badge success">Tamamlandı</span></td>
+                        </tr>
+                        <tr>
+                            <td>15 İyul 2026</td>
+                            <td>Elektrik enerjisi</td>
+                            <td><span class="category-badge expense-cat">Kommunal</span></td>
+                            <td class="negative">-$45.00</td>
+                            <td><span class="status-badge pending">Gözləyir</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
