@@ -1,0 +1,40 @@
+﻿.page-title {
+    color: #2c3e50;
+    font-weight: bold;
+}
+.section-title {
+    color: #7f8c8d;
+    font-weight: 600;
+}
+.custom-card {
+    border-radius: 15px;
+    border: none;
+}
+.desc-text {
+    font-weight: 500;
+}
+.text-income {
+    color: #27ae60;
+    font-weight: bold;
+}
+.text-expense {
+    color: #c0392b;
+    font-weight: bold;
+}
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+.custom-card .table tbody tr td .budget-badge {
+    display: inline-block;
+    position: static;
+    float: none;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #ff8c00;
+    border-radius: 8px;
+    text-align: center;
+}

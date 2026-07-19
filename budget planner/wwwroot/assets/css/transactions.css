@@ -1,2 +1,76 @@
-﻿body {
+﻿/* wwwroot/assets/css/transaction.css */
+
+body {
+    background-color: #f8f9fa;
 }
+
+.page-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    margin-bottom: 24px;
+}
+
+.filter-section {
+    background-color: #f1f3f5;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.sortable-header {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+    .sortable-header:hover {
+        background-color: #343a40 !important;
+    }
+
+.text-income {
+    color: #2ec4b6;
+}
+
+.text-expense {
+    color: #e71d36;
+}
+
+.budget-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.btn-action {
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: all 0.2s;
+}
+
+/* Cədvəlin scroll problemini həll edən hissə */
+.table-responsive {
+    overflow-x: auto;
+    overflow-y: visible;
+}
+/* Cədvəlin Premium Başlığı - Bootstrap-ı əzən versiya */
+table.table thead.premium-thead > tr > th {
+    background-color: #0B4635;
+    color: #FFFFFF;
+    border-bottom: 3px solid #D4AF37;
+    font-weight: 600;
+}
+    /* Sıralama ikonlarını qızılı edirik */
+    table.table thead.premium-thead > tr > th i {
+        color: #D4AF37;
+        opacity: 0.8;
+    }
+    /* Üzərinə gələndə ikonun parlaması */
+    table.table thead.premium-thead > tr > th:hover i {
+        opacity: 1;
+        transform: scale(1.1);
+        transition: 0.2s ease-in-out;
+    }

@@ -4,8 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Budget Planner</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/assets/css/base.css" />
     <link rel="stylesheet" href="~/assets/css/layout.css" />
+    <link rel="stylesheet" href="~/assets/css/components.css" />
+    <link rel="stylesheet" href="~/assets/css/charts.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <div class="app-container">
@@ -37,7 +43,7 @@
                 <div class="user-profile">
                     <img src="https://ui-avatars.com/api/?name=Ceyran+Qasimzade&background=0B4635&color=fff" alt="Profil" class="avatar" />
                     <div class="user-info">
-                        <span class="user-name">Ceyran Qasimzade</span>
+                        <span class="user-name profile-name-text">Ceyran Qasimzade</span>
                         <span class="user-role">Premium plan</span>
                     </div>
                 </div>
@@ -47,7 +53,7 @@
             @RenderBody()
         </main>
     </div>
-    <script src="~/assets/js/site.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

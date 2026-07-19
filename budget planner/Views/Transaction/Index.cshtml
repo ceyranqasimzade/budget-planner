@@ -1,0 +1,151 @@
+﻿@model IEnumerable<budget_planner.Models.Transaction>
+@{
+    var totalIncome = Model.Where(t => t.IsIncome).Sum(t => t.Amount);
+    var totalExpense = Model.Where(t => !t.IsIncome).Sum(t => t.Amount);
+}
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="~/assets/css/transactions.css" asp-append-version="true" />
+}
+<div class="container-fluid py-4">
+    <!-- Üst Başlıq -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h3 class="fw-bold text-dark m-0">
+                <i class="fa-solid fa-wallet text-primary me-2"></i> Əməliyyatlar Paneli
+            </h3>
+            <p class="text-muted m-0 small">Maliyyə hərəkətlərinizi süzgəcdən keçirin, sıralayın və hesabat alın.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button onclick="exportTableToCSV('əməliyyatlar.csv')" class="btn btn-outline-success btn-action shadow-sm">
+                <i class="fa-solid fa-file-excel me-1"></i> Excel
+            </button>
+            <button onclick="exportTableToPDF()" class="btn btn-outline-danger btn-action shadow-sm">
+                <i class="fa-solid fa-file-pdf me-1"></i> PDF Yüklə
+            </button>
+            <button id="btnBulkDelete" onclick="bulkDeleteTransactions()" class="btn btn-danger btn-action shadow-sm d-none">
+                <i class="fa-solid fa-trash-can me-1"></i> Seçilənləri Sil (<span id="selectedCount">0</span>)
+            </button>
+            <a asp-action="Create" class="btn btn-primary btn-action shadow-sm">
+                <i class="fa-solid fa-circle-plus me-1"></i> Yeni Əməliyyat
+            </a>
+        </div>
+    </div>
+    <!-- MÜASİR FİLTR PANELİ -->
+    <div class="page-card filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-xl-3 col-md-6">
+                <label class="form-label small fw-bold text-secondary"><i class="fa-solid fa-magnifying-glass me-1"></i> Canlı Axtarış</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white text-muted"><i class="fa-solid fa-search"></i></span>
+                    <input type="text" id="searchInp" onkeyup="filterTable()" class="form-control" placeholder="Təsvir və ya kateqoriya yazın...">
+                </div>
+            </div>
+            <div class="col-xl-2 col-md-6">
+                <label class="form-label small fw-bold text-secondary"><i class="fa-solid fa-filter me-1"></i> Əməliyyat Növü</label>
+                <select id="typeFilter" onchange="filterTable()" class="form-select">
+                    <option value="all">Hamısı (Gəlir & Xərc)</option>
+                    <option value="income">Yalnız Gəlirlər</option>
+                    <option value="expense">Yalnız Xərclər</option>
+                </select>
+            </div>
+            <!-- Kalendarların yenilənmiş versiyası -->
+            <div class="col-xl-3 col-md-5">
+                <label class="form-label small fw-bold text-secondary"><i class="fa-solid fa-calendar-day me-1"></i> Başlanğıc Tarixi</label>
+                <input type="text" id="startDate" class="form-control date-picker bg-white" placeholder="GG.AA.İİİİ">
+            </div>
+            <div class="col-xl-3 col-md-5">
+                <label class="form-label small fw-bold text-secondary"><i class="fa-solid fa-calendar-check me-1"></i> Bitmə Tarixi</label>
+                <input type="text" id="endDate" class="form-control date-picker bg-white" placeholder="GG.AA.İİİİ">
+            </div>
+            <div class="col-xl-1 col-md-2 d-flex align-items-end">
+                <button onclick="resetFilters()" class="btn btn-secondary w-100 py-2" title="Filtrləri Sıfırla">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- QRAFİK VƏ CƏDVƏL -->
+    <div class="row align-items-stretch">
+        <!-- Sol tərəf: Nisbət Analizi -->
+        <div class="col-lg-4 mb-4 d-flex">
+            <div class="card page-card p-4 w-100 d-flex flex-column justify-content-center align-items-center">
+                <h5 class="fw-bold text-dark mb-4 w-100 text-center"><i class="fa-solid fa-chart-pie me-2 text-warning"></i> Nisbət Analizi</h5>
+                <div style="width: 100%; max-width: 300px; position: relative;">
+                    <canvas id="myBudgetChart"
+                            data-income="@totalIncome.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                            data-expense="@totalExpense.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Sağ tərəf: Cədvəl -->
+        <div class="col-lg-8 mb-4 d-flex">
+            <div class="card page-card p-3 w-100">
+                <div class="table-responsive">
+                    <table id="transactionTable" class="table table-hover align-middle m-0">
+                        <thead class="premium-thead">
+                            <tr>
+                                <th class="text-center" style="width: 5%">
+                                    <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" class="form-check-input">
+                                </th>
+                                <th onclick="sortTable(1, 'date')" class="py-3 text-center sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
+                                    Tarix <i class="fa-solid fa-sort ms-1"></i>
+                                </th>
+                                <th onclick="sortTable(2, 'text')" class="py-3 sortable-header text-nowrap" style="width: 30%; cursor: pointer;">
+                                    Təsvir <i class="fa-solid fa-sort ms-1"></i>
+                                </th>
+                                <th onclick="sortTable(3, 'text')" class="py-3 text-center sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
+                                    Kateqoriya <i class="fa-solid fa-sort ms-1"></i>
+                                </th>
+                                <th onclick="sortTable(4, 'number')" class="py-3 text-end sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
+                                    Məbləğ <i class="fa-solid fa-sort ms-1"></i>
+                                </th>
+                                <th class="py-3 text-center text-nowrap" style="width: 20%">İdarəetmə</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            @foreach (var item in Model)
+                            {
+                                <tr data-type="@(item.IsIncome ? "income" : "expense")" data-timestamp="@item.Date.ToString("yyyy-MM-dd")">
+                                    <td class="text-center">
+                                        <input type="checkbox" name="rowSelect" value="@item.Id" onclick="updateBulkDeleteButton()" class="form-check-input row-checkbox">
+                                    </td>
+                                    <td class="text-secondary text-center small fw-bold">@item.Date.ToString("dd MMM yyyy")</td>
+                                    <td class="fw-semibold text-dark">@item.Description</td>
+                                    <td class="text-center">
+                                        <span class="budget-badge">@item.Category</span>
+                                    </td>
+                                    <td class="text-end fw-bold @(item.IsIncome ? "text-income" : "text-expense")" data-amount="@item.Amount">
+                                        @(item.IsIncome ? "+" : "-") @item.Amount.ToString("N2") ₼
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Redaktə et">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger"
+                                               onclick="return confirm('Silmək istədiyinizdən əminsiniz?');" title="Sil">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/az.js"></script>
+    <script src="~/assets/js/budgetChart.js"></script>
+    <script src="~/assets/js/transactionManagement.js"></script>
+}

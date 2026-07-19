@@ -1,82 +1,79 @@
-﻿<!DOCTYPE html>
-<html lang="az">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Büdcə Planlayıcısı</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/base.css">
-    <link rel="stylesheet" href="assets/css/layout.css">
-    <link rel="stylesheet" href="assets/css/components.css">
-</head>
-<body>
-    <main class="main-content">
-        <section class="dashboard-cards">
-            <div class="card balance-card">
-                <div class="card-header">
-                    <h3>Ümumi Balans</h3>
-                    <i class="fas fa-wallet" style="color: #3498db; font-size: 20px;"></i>
-                </div>
-                <p class="amount">$2,450.00</p>
-            </div>
-            <div class="card income-card">
-                <div class="card-header">
-                    <h3>Gəlir</h3>
-                    <i class="fas fa-arrow-up" style="color: #2ecc71; font-size: 20px;"></i>
-                </div>
-                <p class="amount positive">+$3,200.00</p>
-            </div>
-            <div class="card expense-card">
-                <div class="card-header">
-                    <h3>Xərc</h3>
-                    <i class="fas fa-arrow-down" style="color: #e74c3c; font-size: 20px;"></i>
-                </div>
-                <p class="amount negative">-$750.00</p>
-            </div>
-        </section>
-        <!-- Son Əməliyyatlar Cədvəli -->
-        <section class="recent-transactions">
-            <div class="section-header">
-                <h3>Son Əməliyyatlar</h3>
-                <a href="#" class="view-all">Hamısına bax</a>
-            </div>
-            <div class="table-responsive">
-                <table class="transactions-table">
-                    <thead>
-                        <tr>
-                            <th>Tarix</th>
-                            <th>Təsvir</th>
-                            <th>Kateqoriya</th>
-                            <th>Məbləğ</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>18 İyul 2026</td>
-                            <td>Maaş</td>
-                            <td><span class="category-badge income-cat">Gəlir</span></td>
-                            <td class="positive">+$3,200.00</td>
-                            <td><span class="status-badge success">Tamamlandı</span></td>
-                        </tr>
-                        <tr>
-                            <td>17 İyul 2026</td>
-                            <td>Market alış-verişi</td>
-                            <td><span class="category-badge expense-cat">Qida</span></td>
-                            <td class="negative">-$120.50</td>
-                            <td><span class="status-badge success">Tamamlandı</span></td>
-                        </tr>
-                        <tr>
-                            <td>15 İyul 2026</td>
-                            <td>Elektrik enerjisi</td>
-                            <td><span class="category-badge expense-cat">Kommunal</span></td>
-                            <td class="negative">-$45.00</td>
-                            <td><span class="status-badge pending">Gözləyir</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
-</body>
-</html>
+﻿@{
+    ViewData["Title"] = "İcmal";
+}
+<!-- Üst hissə: İcmal Kartları -->
+<div class="dashboard-cards">
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Ümumi Balans</span>
+            <i class="bi bi-wallet2 text-blue icon-lg"></i>
+        </div>
+        <h3 class="stat-val">$2,450.00</h3>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Gəlir</span>
+            <i class="bi bi-arrow-up-right-circle-fill text-green icon-lg"></i>
+        </div>
+        <h3 class="stat-val text-green">+$3,200.00</h3>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-title">Xərc</span>
+            <i class="bi bi-arrow-down-left-circle-fill text-red icon-lg"></i>
+        </div>
+        <h3 class="stat-val text-red">-$750.00</h3>
+    </div>
+</div>
+<!-- Alt hissə: Cədvəl və Qrafik -->
+<div class="dashboard-content">
+    <!-- Sol tərəf: Cədvəl -->
+    <div class="transactions-section">
+        <div class="stat-header" style="margin-bottom: 25px;">
+            <h5 class="section-title">Son Əməliyyatlar</h5>
+            <a href="#" class="text-blue" style="text-decoration: none; font-size: 14px;">Hamısına bax</a>
+        </div>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Tarix</th>
+                    <th>Təsvir</th>
+                    <th>Kateqoriya</th>
+                    <th>Məbləğ</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>18 İyul 2026</td>
+                    <td>Maaş</td>
+                    <td><span class="status-badge bg-income">Gəlir</span></td>
+                    <td class="text-green fw-bold">+$3,200.00</td>
+                    <td><span class="status-badge bg-income">Tamamlandı</span></td>
+                </tr>
+                <tr>
+                    <td>17 İyul 2026</td>
+                    <td>Market alış-verişi</td>
+                    <td><span class="status-badge bg-expense-food">Qida</span></td>
+                    <td class="text-red fw-bold">-$120.50</td>
+                    <td><span class="status-badge bg-income">Tamamlandı</span></td>
+                </tr>
+                <tr>
+                    <td>15 İyul 2026</td>
+                    <td>Elektrik enerjisi</td>
+                    <td><span class="status-badge bg-expense-utility">Kommunal</span></td>
+                    <td class="text-red fw-bold">-$45.00</td>
+                    <td><span class="status-badge bg-expense-utility">Gözləyir</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Sağ tərəf: Qrafik -->
+    <div class="chart-section">
+        <h5 class="section-title" style="margin-bottom: 25px;">Xərclərin bölgüsü</h5>
+        <canvas id="expenseChart" style="max-height: 250px;"></canvas>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/assets/js/dashboard.js"></script>
