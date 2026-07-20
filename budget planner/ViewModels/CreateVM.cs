@@ -1,9 +1,7 @@
-﻿using budget_planner.Models;
-using System;
-using System.ComponentModel.DataAnnotations;
-namespace budget_planner.Models
+﻿using System.ComponentModel.DataAnnotations;
+namespace budget_planner.ViewModels
 {
-    public class Transaction : BaseModel
+    public class CreateVM
     {
         [Required]
         public DateTime Date { get; set; }
@@ -20,9 +18,9 @@ namespace budget_planner.Models
         [StringLength(30, ErrorMessage = "Status maksimum 30 hərf ola bilər.")]
         public string Status { get; set; }
         [Required]
-        public bool IsIncome { get; set; }
+        public bool IsIncome { get; set; } = true;
         [Required]
-        [StringLength(10, ErrorMessage = "Valyuta maksimum 10 hərf ola bilər.")]
+        [StringLength(10, ErrorMessage = "Valyuta maksimum 50 hərf ola bilər.")]
         public string Currency { get; set; } = "AZN";
     }
 }
