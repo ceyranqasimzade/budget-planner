@@ -3,6 +3,8 @@ using budget_planner.Models;
 using budget_planner.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 namespace budget_planner.Controllers
 {
     public class TransactionController : Controller
@@ -16,6 +18,10 @@ namespace budget_planner.Controllers
         public async Task<IActionResult> Index()
         {
             var transactions = await _context.Transactions.Where(t => !t.IsDeleted).OrderByDescending(t => t.Date).ToListAsync();
+            decimal totalIncome = transactions.Where(t => t.IsIncome).Sum(t => t.Amount);
+            decimal totalExpense = transactions.Where(t => !t.IsIncome).Sum(t => t.Amount);
+            ViewBag.TotalIncome = totalIncome;
+            ViewBag.TotalExpense = totalExpense;
             return View(transactions);
         }
         public ActionResult Create()
@@ -30,6 +36,7 @@ namespace budget_planner.Controllers
             {
                 return View(createVM);
             }
+
             Transaction newTransaction = new Transaction
             {
                 Description = createVM.Description,
@@ -38,7 +45,7 @@ namespace budget_planner.Controllers
                 Date = createVM.Date,
                 Status = createVM.Status,
                 IsIncome = createVM.IsIncome,
-                Currency = createVM.Currency,
+                Currency = createVM.Currency, 
                 IsDeleted = false
             };
             await _context.AddAsync(newTransaction);
@@ -51,6 +58,7 @@ namespace budget_planner.Controllers
             {
                 return BadRequest();
             }
+
             Transaction existTransaction = await _context.Transactions.Where(t => !t.IsDeleted).FirstOrDefaultAsync(t => t.Id == Id);
             if (existTransaction == null)
             {
@@ -96,7 +104,7 @@ namespace budget_planner.Controllers
             {
                 return NotFound();
             }
-            existTransaction.IsDeleted = true;
+            existTransaction.IsDeleted = true; 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

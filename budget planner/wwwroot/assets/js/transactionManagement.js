@@ -43,7 +43,6 @@ function updateBulkDeleteButton() {
         }
     }
 }
-// Fiskal ID-ni emal edən funksiya
 function processFiskalId() {
     const fiskalInp = document.getElementById("fiskalIdInp");
     const idValue = fiskalInp.value.trim();

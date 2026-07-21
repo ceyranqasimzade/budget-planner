@@ -1,13 +1,16 @@
-﻿@model IEnumerable<budget_planner.Models.Transaction>
+﻿@using System.Text.Json
+@model IEnumerable<budget_planner.Models.Transaction>
 @{
     ViewData["Title"] = "Tranzaksiyalar Paneli";
-    decimal totalIncome = 0;
-    decimal totalExpense = 0;
-    if (Model != null && Model.Any())
+
+    var totalsByCurrency = Model.GroupBy(t => t.Currency ?? "AZN").Select(g => new
     {
-        totalIncome = Model.Where(t => t.IsIncome).Sum(t => t.Amount);
-        totalExpense = Model.Where(t => !t.IsIncome).Sum(t => t.Amount);
-    }
+        currency = g.Key,
+        income = g.Where(t => t.IsIncome).Sum(t => t.Amount),
+        expense = g.Where(t => !t.IsIncome).Sum(t => t.Amount)
+    }).ToList();
+
+    string totalsJson = JsonSerializer.Serialize(totalsByCurrency);
 }
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -72,11 +75,21 @@
     <div class="row align-items-stretch mb-4">
         <div class="col-lg-4 d-flex">
             <div class="card page-card p-4 w-100 shadow-sm border-0 bg-white">
-                <h5 class="fw-bold text-dark mb-3">
-                    <i class="fa-solid fa-chart-pie text-warning me-2"></i> Nisbət Analizi
-                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark m-0 fs-6">
+                        <i class="fa-solid fa-chart-pie text-warning me-2"></i> Nisbət Analizi
+                    </h5>
+                    <select id="chartCurrencySelector" class="form-select form-select-sm w-auto fw-bold text-primary border-primary" onchange="renderChart()">
+                        <option value="AZN">AZN</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="TRY">TRY</option>
+                        <option value="RUB">RUB</option>
+                        <option value="GBP">GBP</option>
+                    </select>
+                </div>
                 <div class="d-flex justify-content-center align-items-center" style="min-height: 220px;">
-                    <canvas id="myBudgetChart"></canvas>
+                    <canvas id="myBudgetChart" data-totals='@totalsJson'></canvas>
                 </div>
             </div>
         </div>
@@ -136,124 +149,123 @@
             </div>
         </div>
     </div>
-        <table id="transactionTable" class="table table-hover align-middle m-0 border overflow-hidden" style="border-radius: 8px;">
-            <thead class="premium-thead">
-                <tr>
-                    <th class="text-center" style="width: 5%">
-                        <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" class="form-check-input">
-                    </th>
-                    <th onclick="sortTable(1, 'date')" class="text-center sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
-                        Tarix <i class="fa-solid fa-sort ms-1"></i>
-                    </th>
-                    <th onclick="sortTable(2, 'text')" class="sortable-header text-nowrap" style="width: 25%; cursor: pointer;">
-                        Təsvir <i class="fa-solid fa-sort ms-1"></i>
-                    </th>
-                    <th onclick="sortTable(3, 'text')" class="text-center sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
-                        Kateqoriya <i class="fa-solid fa-sort ms-1"></i>
-                    </th>
-                    <th onclick="sortTable(4, 'number')" class="text-end sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
-                        Məbləğ <i class="fa-solid fa-sort ms-1"></i>
-                    </th>
-                    <th onclick="sortTable(5, 'text')" class="text-center sortable-header text-nowrap" style="width: 10%; cursor: pointer;">
-                        Status <i class="fa-solid fa-sort ms-1"></i>
-                    </th>
-                    <th class="text-center text-nowrap" style="width: 15%">İdarəetmə</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                @if (Model != null && Model.Any())
+    <table id="transactionTable" class="table table-hover align-middle m-0 border overflow-hidden" style="border-radius: 8px;">
+        <thead class="premium-thead">
+            <tr>
+                <th class="text-center" style="width: 5%">
+                    <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" class="form-check-input">
+                </th>
+                <th onclick="sortTable(1, 'date')" class="text-center sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
+                    Tarix <i class="fa-solid fa-sort ms-1"></i>
+                </th>
+                <th onclick="sortTable(2, 'text')" class="sortable-header text-nowrap" style="width: 25%; cursor: pointer;">
+                    Təsvir <i class="fa-solid fa-sort ms-1"></i>
+                </th>
+                <th onclick="sortTable(3, 'text')" class="text-center sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
+                    Kateqoriya <i class="fa-solid fa-sort ms-1"></i>
+                </th>
+                <th onclick="sortTable(4, 'number')" class="text-end sortable-header text-nowrap" style="width: 15%; cursor: pointer;">
+                    Məbləğ <i class="fa-solid fa-sort ms-1"></i>
+                </th>
+                <th onclick="sortTable(5, 'text')" class="text-center sortable-header text-nowrap" style="width: 10%; cursor: pointer;">
+                    Status <i class="fa-solid fa-sort ms-1"></i>
+                </th>
+                <th class="text-center text-nowrap" style="width: 15%">İdarəetmə</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
                 {
-                    foreach (var item in Model)
-                    {
-                        <tr data-type="@(item.IsIncome ? "income" : "expense")" data-timestamp="@item.Date.ToString("yyyy-MM-dd")">
-                            <td class="text-center">
-                                <input type="checkbox" name="rowSelect" value="@item.Id" onclick="updateBulkDeleteButton()" class="form-check-input row-checkbox">
-                            </td>
-                            <td class="text-secondary text-center small fw-bold">@item.Date.ToString("dd MMM yyyy")</td>
-                            <td class="fw-semibold text-dark text-wrap">@item.Description</td>
-                            <td class="text-center align-middle">
-                                @item.Category
-                            </td>
-                            <td class="text-end fw-bold @(item.IsIncome ? "text-success" : "text-danger")" data-amount="@item.Amount" data-currency="@item.Currency">
-                                @(item.IsIncome ? "+" : "-") @item.Amount.ToString("N2")
-                                <span class="currency-symbol ms-1">
-                                    @switch (item.Currency)
-                                    {
-                                        case "USD":
-                                            <text>$</text>
-                                            break;
-                                        case "EUR":
-                                            <text>€</text>
-                                            break;
-                                        case "TRY":
+                    <tr data-type="@(item.IsIncome ? "income" : "expense")" data-timestamp="@item.Date.ToString("yyyy-MM-dd")">
+                        <td class="text-center">
+                            <input type="checkbox" name="rowSelect" value="@item.Id" onclick="updateBulkDeleteButton()" class="form-check-input row-checkbox">
+                        </td>
+                        <td class="text-secondary text-center small fw-bold">@item.Date.ToString("dd MMM yyyy")</td>
+                        <td class="fw-semibold text-dark text-wrap">@item.Description</td>
+                        <td class="text-center align-middle">
+                            @item.Category
+                        </td>
+                        <td class="text-end fw-bold @(item.IsIncome ? "text-success" : "text-danger")" data-amount="@item.Amount" data-currency="@item.Currency">
+                            @(item.IsIncome ? "+" : "-") @item.Amount.ToString("N2")
+                            <span class="currency-symbol ms-1">
+                                @switch (item.Currency)
+                                {
+                                    case "USD":
+                                        <text>$</text>
+                                        break;
+                                    case "EUR":
+                                        <text>€</text>
+                                        break;
+                                    case "TRY":
 
-                                            <text>₺</text>
-                                            break;
-                                        case "RUB":
-                                            <text>₽</text>
-                                            break;
-                                        case "GBP":
-                                            <text>£</text>
-                                            break;
-                                        default:
-                                            <text>₼</text>
-                                            break;
-                                    }
-                                </span>
-                            </td>
-                            <td class="text-center align-middle">
-                                <span style="display: inline-block; padding: 4px 8px; background-color: #f1f3f5; border-radius: 6px; color: #495057; font-size: 0.85em;">
-                                    @item.Status
-                                </span>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group btn-group-sm">
-                                    <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Redaktə et">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger"
-                                       onclick="return confirm('Silmək istədiyinizdən əminsiniz?');" title="Sil">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-5">
-                            <i class="fa-solid fa-folder-open fs-1 mb-3 text-secondary"></i>
-                            <h5 class="fw-normal">Hələ heç bir əməliyyat yoxdur.</h5>
-                            <p class="small">Yuxarıdakı "Yeni Əməliyyat" düyməsinə klikləyərək ilk qeydinizi yaradın.</p>
+                                        <text>₺</text>
+                                        break;
+                                    case "RUB":
+                                        <text>₽</text>
+                                        break;
+                                    case "GBP":
+                                        <text>£</text>
+                                        break;
+                                    default:
+                                        <text>₼</text>
+                                        break;
+                                }
+                            </span>
+                        </td>
+                        <td class="text-center align-middle">
+                            <span style="display: inline-block; padding: 4px 8px; background-color: #f1f3f5; border-radius: 6px; color: #495057; font-size: 0.85em;">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Redaktə et">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger"
+                                   onclick="return confirm('Silmək istədiyinizdən əminsiniz?');" title="Sil">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }
-            </tbody>
-        </table>
-        <div class="pagination-container mt-3 d-flex justify-content-between align-items-center">
-            <div class="rows-per-page">
-                <select id="rowsPerPage" class="form-select form-select-sm text-secondary" style="border-radius: 6px; cursor: pointer; width: auto; display: inline-block;">
-                    <option value="10">10 sətir</option>
-                    <option value="25">25 sətir</option>
-                    <option value="50">50 sətir</option>
-                    <option value="100">100 sətir</option>
-                </select>
-            </div>
-            <div class="pagination-controls d-flex gap-1 align-items-center">
-                <button class="btn btn-sm btn-outline-secondary disabled" title="Əvvəlki">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="btn btn-sm btn-primary">1</button>
-                <button class="btn btn-sm btn-outline-secondary">2</button>
-                <button class="btn btn-sm btn-outline-secondary">3</button>
-                <span class="text-secondary mx-1">...</span>
-                <button class="btn btn-sm btn-outline-secondary">5</button>
-                <button class="btn btn-sm btn-outline-secondary" title="Növbəti">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-5">
+                        <i class="fa-solid fa-folder-open fs-1 mb-3 text-secondary"></i>
+                        <h5 class="fw-normal">Hələ heç bir əməliyyat yoxdur.</h5>
+                        <p class="small">Yuxarıdakı "Yeni Əməliyyat" düyməsinə klikləyərək ilk qeydinizi yaradın.</p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="pagination-container mt-3 d-flex justify-content-between align-items-center">
+        <div class="rows-per-page">
+            <select id="rowsPerPage" class="form-select form-select-sm text-secondary" style="border-radius: 6px; cursor: pointer; width: auto; display: inline-block;">
+                <option value="10">10 sətir</option>
+                <option value="25">25 sətir</option>
+                <option value="50">50 sətir</option>
+                <option value="100">100 sətir</option>
+            </select>
+        </div>
+        <div class="pagination-controls d-flex gap-1 align-items-center">
+            <button class="btn btn-sm btn-outline-secondary disabled" title="Əvvəlki">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="btn btn-sm btn-primary">1</button>
+            <button class="btn btn-sm btn-outline-secondary">2</button>
+            <button class="btn btn-sm btn-outline-secondary">3</button>
+            <span class="text-secondary mx-1">...</span>
+            <button class="btn btn-sm btn-outline-secondary">5</button>
+            <button class="btn btn-sm btn-outline-secondary" title="Növbəti">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 </div>
@@ -263,6 +275,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/az.js"></script>
-    <script src="~/assets/js/budgetChart.js"></script>
-    <script src="~/assets/js/transactionManagement.js"></script>
+    <script src="~/assets/js/budgetChart.js" asp-append-version="true"></script>
+    <script src="~/assets/js/transactionManagement.js" asp-append-version="true"></script>
 }
