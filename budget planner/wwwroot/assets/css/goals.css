@@ -1,2 +1,73 @@
-﻿body {
+﻿/* ==========================================
+   HƏDƏFLƏR SƏHİFƏSİ (GOALS PAGE) STİLLƏRİ
+========================================== */
+
+/* Yuxarı Statistika Kartları */
+.goal-stat-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #eef2f5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+/* Hədəf Kartı */
+.goal-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #eef2f5;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: all 0.25s ease;
+}
+
+    .goal-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+.goal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.goal-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+/* Progress Bar Stilize */
+.custom-goal-progress {
+    height: 10px !important;
+    border-radius: 20px;
+    background-color: #f1f3f5;
+    overflow: hidden;
+}
+
+    .custom-goal-progress .progress-bar {
+        border-radius: 20px;
+    }
+
+.style-btn {
+    border-radius: 10px;
+    font-weight: 500;
 }

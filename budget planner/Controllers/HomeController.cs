@@ -15,5 +15,9 @@ namespace budget_planner.Controllers
         {
             return View();
         }
+        public IActionResult Goals()
+        {
+            return View();
+        }
     }
 }

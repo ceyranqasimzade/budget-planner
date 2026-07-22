@@ -19,9 +19,13 @@
             <h2>Büdcəm</h2>
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="#" class="active"><i class="fas fa-home"></i> İcmal</a></li>
+                    <li><a href="/" class="active"><i class="fas fa-home"></i> İcmal</a></li>
                     <li><a href="#"><i class="fas fa-exchange-alt"></i> Əməliyyatlar</a></li>
-                    <li><a href="#"><i class="fas fa-bullseye"></i> Hədəflər</a></li>
+
+                    <!-- Bura Düzəldildi: Hədəflər linki qoşuldu -->
+                    <li>
+                        <a asp-controller="Goal" asp-action="Index"><i class="fas fa-bullseye"></i> Hədəflər</a></li>
+
                     <li><a href="#"><i class="fas fa-chart-pie"></i> Hesabatlar</a></li>
                     <li><a href="#"><i class="fas fa-cog"></i> Parametrlər</a></li>
                 </ul>
