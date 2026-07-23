@@ -1,0 +1,197 @@
+﻿/* ================= DASHBOARD BAŞLIQ ================= */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.dashboard-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+/* ================= STATİSTİKA KARTLARI (Xülasə) ================= */
+.stat-card {
+    padding: 1rem 1.25rem !important; /* Daxili boşluqları optimallaşdırdıq */
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.85rem; /* İkonla mətn arasındakı məsafəni sıxdıq ki, yazıya yer qalsın */
+    overflow: hidden; /* Kartdan çölə heç nə çıxa bilməz */
+}
+
+/* İkon Qutusu */
+.stat-icon {
+    width: 50px; /* İkonu 65px-dən 50px-ə endirdik ki, mətnə daha çox yer açılsın */
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0; /* İkonun sıxılıb formadan düşməsinin qarşısını alır */
+}
+
+    /* Balans İkonu */
+    .stat-icon.balance {
+        background-color: rgba(11, 70, 53, 0.1);
+        color: var(--primary-color);
+    }
+
+    /* Gəlir İkonu */
+    .stat-icon.income {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: var(--color-income);
+    }
+
+    /* Xərc İkonu */
+    .stat-icon.expense {
+        background-color: rgba(239, 68, 68, 0.15);
+        color: var(--color-expense);
+    }
+
+/* Qaranlıq rejimdə balans ikonu */
+[data-theme="dark"] .stat-icon.balance {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.stat-details {
+    flex: 1;
+    min-width: 0; /* Flexbox-da yazının daşmasının qarşısını alan ƏSAS QIZIL QAYDA */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-title {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Məbləğ və Manat işarəsi */
+.stat-amount {
+    font-size: 1.35rem; /* Şrifti mütənasibləşdirdik (1.8rem çox böyük idi) */
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Hətta çox böyük millyonluq rəqəm olsa belə kartı sındırmayacaq */
+}/* ================= QRAFİK QUTUSU ================= */
+.chart-container {
+    position: relative;
+    height: 320px;
+    width: 100%;
+    padding: 1rem 0;
+}
+
+/* Boş vəziyyət (Data olmayanda göstəriləcək ikon) */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+}
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+/* ================= KONTRAST VƏ OXUNURLUQ DÜZƏLİŞLƏRİ ================= */
+
+/* 1. Ümumi Açıq Boz Yazıların Kontrastını Artırırıq */
+.text-muted,
+.page-subtitle,
+small.text-muted {
+    color: #555e68 !important; /* Açıq rejimdə daha tünd və oxunan boz */
+    font-weight: 500;
+}
+
+/* 2. Dark Rejimdə Boz Yazıların Avtomatik Aydınlaşması */
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .page-subtitle,
+[data-theme="dark"] small.text-muted,
+[data-theme="dark"] .stat-title {
+    color: #a1a5b7 !important; /* Qaranlıq fonda aydın seçilən boz */
+}
+
+/* 3. "Kart Əlavə Et" Qutusunun Görünüşünü Bərpa Etmək */
+.add-card-box {
+    border: 2px dashed #8a92a6 !important;
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    transition: all 0.25s ease-in-out;
+}
+
+    .add-card-box:hover {
+        border-color: #0d6efd !important;
+        background-color: rgba(13, 110, 253, 0.05) !important;
+        transform: translateY(-2px);
+    }
+
+    .add-card-box .add-icon {
+        color: #0d6efd !important;
+    }
+
+    .add-card-box h6 {
+        color: var(--text-main, #212529) !important;
+    }
+
+/* Dark Rejimdə "Kart Əlavə Et" Qutusu */
+[data-theme="dark"] .add-card-box {
+    border-color: #474d56 !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+    [data-theme="dark"] .add-card-box h6 {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .add-card-box:hover {
+        border-color: #3d8bfd !important;
+        background-color: rgba(13, 110, 253, 0.15) !important;
+    }
+
+/* 4. Stat Kart Başlıqları (Ümumi Balans, Gəlir, Xərc) */
+.stat-title {
+    color: #495057 !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+/* Stat kartlarının başlıqlarının hər iki rejimdə aydın görünməsi üçün */
+.stat-title {
+    color: var(--bs-body-color);
+    opacity: 0.75;
+    font-weight: 600;
+}
+
+/* Valyuta ticker zolağı */
+.currency-ticker {
+    color: var(--bs-body-color);
+}
+
+/* Modal daxilindəki select qutusu genişliyi */
+.modal-body select.form-select {
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.chart-container {
+    position: relative;
+    height: 300px !important; /* 220px əvəzinə 300px edirik */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,4 +1,16 @@
-﻿function filterTable() {
+﻿document.addEventListener("DOMContentLoaded", function () {
+    const dateInput = document.querySelector("#transactionDate");
+    if (dateInput) {
+        flatpickr("#transactionDate", {
+            locale: "az",
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d.m.Y",
+            allowInput: true
+        });
+    }
+});
+function filterTable() {
     var searchVal = document.getElementById("searchInp").value.toLowerCase();
     var typeVal = document.getElementById("typeFilter").value;
     var rows = document.querySelectorAll("#tableBody tr");
@@ -52,7 +64,7 @@ function processFiskalId() {
         return;
     }
     alert("Fiskal ID qəbul olundu: " + idValue.toUpperCase() + "\nMəlumatlar yoxlanılır...");
-    fiskalInp.value = ""; 
+    fiskalInp.value = "";
 }
 function startQRScanner() {
     alert("Kamera icazəsi istənilir... \n(Gələcəkdə bura html5-qrcode kitabxanası ilə kamera görüntüsü inteqrasiya ediləcək)");

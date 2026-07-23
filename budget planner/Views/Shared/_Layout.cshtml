@@ -1,63 +1,294 @@
-﻿<!DOCTYPE html>
+﻿@using budget_planner.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
+}
+
+<!DOCTYPE html>
 <html lang="az">
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Budget Planner</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/assets/css/base.css" />
-    <link rel="stylesheet" href="~/assets/css/layout.css" />
-    <link rel="stylesheet" href="~/assets/css/components.css" />
-    <link rel="stylesheet" href="~/assets/css/charts.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1" />
+
+    <title>@ViewData["Title"] - Büdcəm</title>
+
+    <meta name="description"
+          content="Şəxsi büdcə idarəetmə sistemi" />
+
+    <meta name="theme-color"
+          content="#0B4635" />
+
+    <link rel="icon"
+          href="~/favicon.ico" />
+
+    <!-- Bootstrap -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          rel="stylesheet" />
+
+    <!-- Global CSS -->
+
+    <link rel="stylesheet"
+          href="~/assets/css/base.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/assets/css/layout.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/assets/css/components.css"
+          asp-append-version="true" />
+
     @RenderSection("Styles", required: false)
+
 </head>
+
 <body>
+
     <div class="app-container">
+        <!-- ================= SIDEBAR ================= -->
+
         <aside class="sidebar">
-            <h2>Büdcəm</h2>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="sidebar-logo">
+
+                <i class="bi bi-wallet2"></i>
+
+                <span>Büdcəm</span>
+
+            </a>
+
             <nav class="sidebar-nav">
-                <ul>
-                    <li><a href="/" class="active"><i class="fas fa-home"></i> İcmal</a></li>
-                    <li><a href="#"><i class="fas fa-exchange-alt"></i> Əməliyyatlar</a></li>
 
-                    <!-- Bura Düzəldildi: Hədəflər linki qoşuldu -->
-                    <li>
-                        <a asp-controller="Goal" asp-action="Index"><i class="fas fa-bullseye"></i> Hədəflər</a></li>
+                <ul class="nav flex-column">
 
-                    <li><a href="#"><i class="fas fa-chart-pie"></i> Hesabatlar</a></li>
-                    <li><a href="#"><i class="fas fa-cog"></i> Parametrlər</a></li>
+                    <li class="nav-item">
+
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="nav-link @(controller == "Home" ? "active" : "")">
+
+                            <i class="fas fa-house"></i>
+
+                            <span>İcmal</span>
+
+                        </a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a asp-controller="Transaction"
+                           asp-action="Index"
+                           class="nav-link @(controller == "Transaction" ? "active" : "")">
+
+                            <i class="fas fa-right-left"></i>
+
+                            <span>Əməliyyatlar</span>
+
+                        </a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a asp-controller="Goal"
+                           asp-action="Goals"
+                           class="nav-link @(controller == "Goal" ? "active" : "")">
+
+                            <i class="fas fa-bullseye"></i>
+
+                            <span>Hədəflər</span>
+
+                        </a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a asp-controller="Report"
+                           asp-action="Index"
+                           class="nav-link @(controller == "Report" ? "active" : "")">
+
+                            <i class="fas fa-chart-pie"></i>
+
+                            <span>Hesabatlar</span>
+
+                        </a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a asp-controller="Settings"
+                           asp-action="Index"
+                           class="nav-link @(controller == "Settings" ? "active" : "")">
+
+                            <i class="fas fa-gear"></i>
+
+                            <span>Parametrlər</span>
+
+                        </a>
+
+                    </li>
+
                 </ul>
+
             </nav>
+
         </aside>
-        <header class="navbar">
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Əməliyyat axtar..." />
-            </div>
-            <div class="navbar-actions">
-                <button class="icon-btn" title="Gecə/Gündüz Rejimi">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-                <button class="icon-btn" title="Bildirişlər">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="badge">3</span>
-                </button>
-                <div class="user-profile">
-                    <img src="https://ui-avatars.com/api/?name=Ceyran+Qasimzade&background=0B4635&color=fff" alt="Profil" class="avatar" />
-                    <div class="user-info">
-                        <span class="user-name profile-name-text">Ceyran Qasimzade</span>
-                        <span class="user-role">Premium plan</span>
-                    </div>
+
+        <!-- ================= MAIN WRAPPER ================= -->
+
+        <div class="main-wrapper">
+            <!-- ================= NAVBAR ================= -->
+
+            <header class="navbar">
+
+                <!-- Search -->
+
+                <form asp-controller="Transaction"
+                      asp-action="Index"
+                      method="get"
+                      class="search-form">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="search"
+                           name="search"
+                           class="form-control"
+                           placeholder="Əməliyyat axtar..."
+                           autocomplete="off" />
+
+                </form>
+
+                <!-- Right Side -->
+
+                <div class="navbar-actions d-flex align-items-center gap-3">
+
+                    <!-- Theme -->
+
+                    <button id="theme-toggle"
+                            class="icon-btn"
+                            type="button"
+                            title="Tema dəyiş">
+
+                        <i id="theme-icon"
+                           class="fa-solid fa-moon"></i>
+
+                    </button>
+
+                    <!-- User / Auth Section -->
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        var currentUser = await UserManager.GetUserAsync(User);
+                        var displayName = currentUser?.FullName ?? User.Identity?.Name ?? "İstifadəçi";
+
+                        <div class="dropdown">
+                            <a class="user-profile dropdown-toggle text-decoration-none d-flex align-items-center gap-2"
+                               href="#"
+                               role="button"
+                               id="userDropdown"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               style="cursor: pointer;">
+
+                                <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(displayName)&background=0B4635&color=fff"
+                                     alt="Profil"
+                                     class="avatar rounded-circle"
+                                     style="width: 38px; height: 38px;" />
+
+                                <div class="user-info d-none d-sm-block">
+                                    <span class="user-name d-block font-weight-bold" style="font-size: 0.9rem;">
+                                        @displayName
+                                    </span>
+                                    <span class="user-role d-block text-muted" style="font-size: 0.75rem;">
+                                        İstifadəçi
+                                    </span>
+                                </div>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userDropdown">
+                                <li>
+                                    <div class="dropdown-item-text">
+                                        <div class="fw-bold">@displayName</div>
+                                        <div class="text-muted small">@currentUser?.Email</div>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                        <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                                            <i class="fa-solid fa-right-from-bracket"></i>
+                                            Çıxış et
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            <span>Daxil ol</span>
+                        </a>
+                    }
+
                 </div>
-            </div>
-        </header>
-        <main class="main-content">
-            @RenderBody()
-        </main>
+
+            </header>
+
+            <!-- ================= MAIN CONTENT ================= -->
+
+            <main class="main-content">
+
+                @RenderBody()
+
+            </main>
+
+            <!-- ================= FOOTER ================= -->
+
+            <footer class="footer">
+
+                <small>
+
+                    © @DateTime.Now.Year Büdcəm. Bütün hüquqlar qorunur.
+
+                </small>
+
+            </footer>
+
+        </div>
+
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- ================= Bootstrap ================= -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ================= Chart.js ================= -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ================= Global Theme ================= -->
+    <script src="~/assets/js/theme.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

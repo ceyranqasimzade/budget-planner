@@ -1,112 +1,79 @@
 ﻿using budget_planner.DAL;
 using budget_planner.Models;
 using budget_planner.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
+
 namespace budget_planner.Controllers
 {
+     [Authorize]
     public class TransactionController : Controller
     {
-        private BudgetDbContext _context { get; }
+        private readonly BudgetDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TransactionController(BudgetDbContext context)
+        public TransactionController(BudgetDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-        public async Task<IActionResult> Index()
-        {
-            var transactions = await _context.Transactions.Where(t => !t.IsDeleted).OrderByDescending(t => t.Date).ToListAsync();
-            decimal totalIncome = transactions.Where(t => t.IsIncome).Sum(t => t.Amount);
-            decimal totalExpense = transactions.Where(t => !t.IsIncome).Sum(t => t.Amount);
-            ViewBag.TotalIncome = totalIncome;
-            ViewBag.TotalExpense = totalExpense;
-            return View(transactions);
-        }
-        public ActionResult Create()
-        {
-            return View();
-        }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateVM createVM)
+        public async Task<IActionResult> Create(TransactionCreateVM model)
         {
             if (!ModelState.IsValid)
             {
-                return View(createVM);
+                TempData["ErrorMessage"] = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage;
+                return RedirectToAction("Index", "Home");
             }
 
-            Transaction newTransaction = new Transaction
+            var user = await _userManager.GetUserAsync(User);
+            var card = await _context.Cards.FindAsync(model.CardId);
+
+            if (user != null && card != null && !card.IsDeleted)
             {
-                Description = createVM.Description,
-                Amount = createVM.Amount,
-                Category = createVM.Category,
-                Date = createVM.Date,
-                Status = createVM.Status,
-                IsIncome = createVM.IsIncome,
-                Currency = createVM.Currency, 
-                IsDeleted = false
-            };
-            await _context.AddAsync(newTransaction);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        public async Task<IActionResult> Update(int? Id)
-        {
-            if (Id == null)
-            {
-                return BadRequest();
+                if (model.IsIncome)
+                {
+                    card.Balance += model.Amount;
+                }
+                else
+                {
+                    if (card.Balance < model.Amount)
+                    {
+                        TempData["ErrorMessage"] = "Kartda kifayət qədər vəsait yoxdur!";
+                        return RedirectToAction("Index", "Home");
+                    }
+                    card.Balance -= model.Amount;
+                }
+
+                var defaultCategory = _context.Categories.FirstOrDefault();
+                if (defaultCategory == null)
+                {
+                    defaultCategory = new Category { Name = "Ümumi", Type = "Müxtəlif" };
+                    _context.Categories.Add(defaultCategory);
+                    await _context.SaveChangesAsync();
+                }
+
+                var transaction = new Transaction
+                {
+                    CardId = model.CardId,
+                    Amount = model.Amount,
+                    Description = model.Description,
+                    IsIncome = model.IsIncome,
+                    Date = DateTime.Now,
+                    Currency = card.Currency,
+                    UserId = user.Id,
+                    CategoryId = defaultCategory.Id,
+                    Status = "Tamamlandı"
+                };
+
+                _context.Transactions.Add(transaction);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Əməliyyat uğurla qeydə alındı!";
             }
 
-            Transaction existTransaction = await _context.Transactions.Where(t => !t.IsDeleted).FirstOrDefaultAsync(t => t.Id == Id);
-            if (existTransaction == null)
-            {
-                return NotFound();
-            }
-            return View(existTransaction);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int? Id, Transaction transaction)
-        {
-            if (Id == null)
-            {
-                return BadRequest();
-            }
-            if (!ModelState.IsValid)
-            {
-                return View(transaction);
-            }
-            Transaction existTransaction = await _context.Transactions.Where(t => !t.IsDeleted).FirstOrDefaultAsync(t => t.Id == Id);
-            if (existTransaction == null)
-            {
-                return NotFound();
-            }
-            existTransaction.Description = transaction.Description;
-            existTransaction.Amount = transaction.Amount;
-            existTransaction.Category = transaction.Category;
-            existTransaction.Date = transaction.Date;
-            existTransaction.Status = transaction.Status;
-            existTransaction.IsIncome = transaction.IsIncome;
-            existTransaction.Currency = transaction.Currency;
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        public async Task<IActionResult> Delete(int? Id)
-        {
-            if (Id == null)
-            {
-                return BadRequest();
-            }
-            Transaction existTransaction = await _context.Transactions.Where(t => !t.IsDeleted).FirstOrDefaultAsync(t => t.Id == Id);
-            if (existTransaction == null)
-            {
-                return NotFound();
-            }
-            existTransaction.IsDeleted = true; 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -1,79 +1,413 @@
 ﻿@model budget_planner.Models.Transaction
+
 @{
     ViewData["Title"] = "Yeni Əməliyyat";
 }
+
+
 @section Styles {
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 }
+
+
+
 <div class="container-fluid py-4">
-    <div class="card page-card shadow-sm border-0" style="max-width: 600px; margin: 0 auto; border-radius: 12px;">
-        <div class="card-header text-white" style="background-color: #1b5e20; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-            <h4 class="mb-0 fw-bold py-1"><i class="fa-solid fa-circle-plus me-2"></i> Yeni Əməliyyat Əlavə Et</h4>
+
+
+    <div class="card page-card shadow-sm border-0"
+         style="max-width:600px;margin:0 auto;border-radius:12px;">
+
+
+
+        <div class="card-header text-white"
+             style="background-color:#1b5e20;border-radius:12px 12px 0 0;">
+
+
+            <h4 class="mb-0 fw-bold py-1">
+
+                <i class="fa-solid fa-circle-plus me-2"></i>
+
+                Yeni Əməliyyat Əlavə Et
+
+            </h4>
+
+
         </div>
+
+
+
+
+
         <div class="card-body p-4">
+
+
             <form asp-action="Create" method="post">
+
+
+
+                <!-- DATE -->
+
                 <div class="mb-3">
-                    <label asp-for="Date" class="form-label fw-bold text-secondary">Tarix</label>
-                    <input asp-for="Date" type="text" id="transactionDate" class="form-control bg-white" placeholder="GG.AA.İİİİ" required />
-                </div>
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label fw-bold text-secondary">Təsvir (Nəyə xərcləndi və ya hardan gəldi?)</label>
-                    <input asp-for="Description" class="form-control" placeholder="Məsələn: Maaş, Market alış-verişi..." required />
-                </div>
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label asp-for="Category" class="form-label fw-bold text-secondary">Kateqoriya</label>
-                        <input asp-for="Category" class="form-control" placeholder="Məsələn: Qida..." required />
-                    </div>
-                    <div class="col-md-5 mb-3">
-                        <label asp-for="Amount" class="form-label fw-bold text-secondary">Məbləğ</label>
-                        <input asp-for="Amount" type="number" step="0.01" class="form-control" placeholder="0.00" required />
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label asp-for="Currency" class="form-label fw-bold text-secondary">Valyuta</label>
-                        <select asp-for="Currency" class="form-select">
-                            <option value="AZN">₼ AZN</option>
-                            <option value="USD">$ USD</option>
-                            <option value="EUR">€ EUR</option>
-                            <option value="TRY">₺ TRY</option> 
-                            <option value="RUB">₽ RUB</option> 
-                            <option value="GBP">£ GBP</option> 
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-4">
-                        <label asp-for="IsIncome" class="form-label fw-bold text-secondary">Əməliyyat Növü</label>
-                        <select asp-for="IsIncome" class="form-select">
-                            <option value="true">Gəlir (+)</option>
-                            <option value="false" selected>Xərc (-)</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <label asp-for="Status" class="form-label fw-bold text-secondary">Status</label>
-                        <select asp-for="Status" class="form-select">
-                            <option value="Tamamlandı">Tamamlandı</option>
-                            <option value="Gözləyir">Gözləyir</option>
-                            <option value="Ləğv edildi">Ləğv edildi</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="fa-solid fa-arrow-left me-1"></i> Geri Qayıt
-                    </a>
-                    <button type="submit" class="btn px-4 fw-bold text-white" style="background-color: #1b5e20;">
-                        <i class="fa-solid fa-check me-1"></i> Yadda Saxla
-                    </button>
+
+
+                    <label asp-for="Date"
+                           class="form-label fw-bold text-secondary">
+
+                        Tarix
+
+                    </label>
+
+
+
+                    <input asp-for="Date"
+                           type="text"
+                           id="transactionDate"
+                           class="form-control"
+                           placeholder="GG.AA.İİİİ"
+                           required />
+
+
+
+                    <span asp-validation-for="Date"
+                          class="text-danger"></span>
+
+
                 </div>
 
+
+
+
+
+                <!-- DESCRIPTION -->
+
+
+                <div class="mb-3">
+
+
+                    <label asp-for="Description"
+                           class="form-label fw-bold text-secondary">
+
+                        Təsvir
+
+                    </label>
+
+
+
+                    <input asp-for="Description"
+                           class="form-control"
+                           placeholder="Məsələn: Maaş, Market..." />
+
+
+
+                    <span asp-validation-for="Description"
+                          class="text-danger"></span>
+
+
+                </div>
+
+
+
+
+
+                <div class="row">
+
+
+                    <!-- CATEGORY -->
+
+
+                    <div class="col-md-5 mb-3">
+
+
+                        <label asp-for="CategoryId"
+                               class="form-label fw-bold text-secondary">
+
+                            Kateqoriya
+
+                        </label>
+
+
+
+                        <select asp-for="CategoryId"
+                                asp-items="ViewBag.Categories"
+                                class="form-select">
+
+
+                            <option value="">
+                                Kateqoriya seçin
+                            </option>
+
+
+                        </select>
+
+
+
+                        <span asp-validation-for="CategoryId"
+                              class="text-danger"></span>
+
+
+                    </div>
+
+
+
+
+
+                    <!-- AMOUNT -->
+
+
+                    <div class="col-md-4 mb-3">
+
+
+                        <label asp-for="Amount"
+                               class="form-label fw-bold text-secondary">
+
+                            Məbləğ
+
+                        </label>
+
+
+
+                        <input asp-for="Amount"
+                               type="number"
+                               step="0.01"
+                               class="form-control"
+                               placeholder="0.00" />
+
+
+
+                        <span asp-validation-for="Amount"
+                              class="text-danger"></span>
+
+
+                    </div>
+
+
+
+
+
+                    <!-- CURRENCY -->
+
+
+                    <div class="col-md-3 mb-3">
+
+
+                        <label asp-for="Currency"
+                               class="form-label fw-bold text-secondary">
+
+                            Valyuta
+
+                        </label>
+
+
+
+                        <select asp-for="Currency"
+                                class="form-select">
+
+
+                            <option value="AZN">
+                                ₼ AZN
+                            </option>
+
+
+                            <option value="USD">
+                                $ USD
+                            </option>
+
+
+                            <option value="EUR">
+                                € EUR
+                            </option>
+
+
+                            <option value="TRY">
+                                ₺ TRY
+                            </option>
+
+
+                        </select>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- INCOME TYPE -->
+
+
+                <div class="mb-4">
+
+
+                    <label asp-for="IsIncome"
+                           class="form-label fw-bold text-secondary">
+
+                        Əməliyyat növü
+
+                    </label>
+
+
+
+                    <select asp-for="IsIncome"
+                            class="form-select">
+
+
+                        <option value="true">
+
+                            Gəlir (+)
+
+                        </option>
+
+
+                        <option value="false">
+
+                            Xərc (-)
+
+                        </option>
+
+
+                    </select>
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- STATUS -->
+
+
+                <div class="mb-4">
+
+
+                    <label asp-for="Status"
+                           class="form-label fw-bold text-secondary">
+
+                        Status
+
+                    </label>
+
+
+
+                    <select asp-for="Status"
+                            class="form-select">
+
+
+                        <option value="Tamamlandı">
+
+                            Tamamlandı
+
+                        </option>
+
+
+
+                        <option value="Gözləyir">
+
+                            Gözləyir
+
+                        </option>
+
+
+
+                        <option value="Ləğv edildi">
+
+                            Ləğv edildi
+
+                        </option>
+
+
+                    </select>
+
+
+
+                    <span asp-validation-for="Status"
+                          class="text-danger"></span>
+
+
+                </div>
+
+
+
+
+
+
+
+                <!-- BUTTONS -->
+
+
+                <div class="d-flex justify-content-between">
+
+
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+
+
+                        <i class="fa-solid fa-arrow-left me-1"></i>
+
+                        Geri qayıt
+
+
+                    </a>
+
+
+
+
+
+                    <button type="submit"
+                            class="btn px-4 fw-bold text-white"
+                            style="background-color:#1b5e20;">
+
+
+                        <i class="fa-solid fa-check me-1"></i>
+
+                        Yadda Saxla
+
+
+                    </button>
+
+
+
+                </div>
+
+
+
+
             </form>
+
+
         </div>
+
+
     </div>
+
+
 </div>
+
+
+
+
+
 @section Scripts {
+
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script src="https://npmcdn.com/flatpickr/dist/l10n/az.js"></script>
-    <script src="~/assets/js/transactionCreate.js" asp-append-version="true"></script>
+
+
+    <script src="~/assets/js/transactionCreate.js"
+            asp-append-version="true"></script>
+
+
 }

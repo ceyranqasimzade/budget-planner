@@ -3,116 +3,204 @@
   "WorkspaceRootPath": "D:\\Users\\User\\Desktop\\budget planner\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\controllers\\goalcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\controllers\\goalcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\goal\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\goal\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\goals.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\goals.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\components.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\components.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\budgetchart.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\budgetchart.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\dashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\dashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transactionmanagement.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\transactionmanagement.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\transactions.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\transactions.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\responsive.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\responsive.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\budgetchart.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\budgetchart.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\base.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\base.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\createvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\createvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\basemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\basemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transactioncreate.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\transactioncreate.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\analytics.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\analytics.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\family.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\family.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\transaction\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\transaction\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\controllers\\cardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\controllers\\cardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\transaction\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\transaction\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\transactionvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\transactionvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\loginvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\loginvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\registervm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\registervm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\controllers\\goalcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\controllers\\goalcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\transactioncreatevm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\transactioncreatevm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Migrations\\20260723192939_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:budget planner\\Migrations\\20260723192939_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\transaction\\update.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\transaction\\update.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\dashboardvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\dashboardvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\cardvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\cardvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\cardcreatevm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\cardcreatevm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\viewmodels\\transfervm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\viewmodels\\transfervm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\goal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\goal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\exchangerate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\exchangerate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\card.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\card.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\budgetrule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\budgetrule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\basemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\basemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\theme.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\theme.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\budgetchart.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\budgetchart.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\goal\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\goal\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\components.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\components.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\goal.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\goal.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\base.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\base.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\dal\\budgetdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\dal\\budgetdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Migrations\\20260723142513_AddTransactionStatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:budget planner\\Migrations\\20260723142513_AddTransactionStatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\transaction\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\transaction\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\transaction\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\views\\transaction\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\setting.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\setting.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\goal.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\goal.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\dashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\dashboard.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\report.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\report.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transaction.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\transaction.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\setting.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\js\\setting.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\transaction.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\transaction.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\report.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|solutionrelative:budget planner\\wwwroot\\assets\\css\\report.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{826D1291-8FA1-9F98-2EAF-67F833F4E8AF}|budget planner\\budget planner.csproj|d:\\users\\user\\desktop\\budget planner\\budget planner\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -138,24 +226,427 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TransactionVM.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\TransactionVM.cs",
+              "RelativeDocumentMoniker": "budget planner\\ViewModels\\TransactionVM.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\TransactionVM.cs",
+              "RelativeToolTip": "budget planner\\ViewModels\\TransactionVM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:16:04.255Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "budget planner\\Controllers\\HomeController.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "budget planner\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-17T15:16:46.619Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TransactionController.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\TransactionController.cs",
+              "RelativeDocumentMoniker": "budget planner\\Controllers\\TransactionController.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\TransactionController.cs",
+              "RelativeToolTip": "budget planner\\Controllers\\TransactionController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-19T13:36:31.159Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CardController.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\CardController.cs",
+              "RelativeDocumentMoniker": "budget planner\\Controllers\\CardController.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\CardController.cs",
+              "RelativeToolTip": "budget planner\\Controllers\\CardController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:08:01.8Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "budget planner\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "budget planner\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAsBAAAAAAAAAAAmwCUBAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-16T11:55:17.998Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "budget planner\\Views\\Account\\Login.cshtml",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "budget planner\\Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAmwCIAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-23T19:43:16.965Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "budget planner\\Views\\Account\\Register.cshtml",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "budget planner\\Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-23T19:42:49.973Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "LoginVM.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\LoginVM.cs",
+              "RelativeDocumentMoniker": "budget planner\\ViewModels\\LoginVM.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\LoginVM.cs",
+              "RelativeToolTip": "budget planner\\ViewModels\\LoginVM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:41:28.55Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "RegisterVM.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\RegisterVM.cs",
+              "RelativeDocumentMoniker": "budget planner\\ViewModels\\RegisterVM.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\RegisterVM.cs",
+              "RelativeToolTip": "budget planner\\ViewModels\\RegisterVM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:41:05.822Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "budget planner\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "budget planner\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAA6wFYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:40:31.944Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "GoalController.cs",
               "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\GoalController.cs",
               "RelativeDocumentMoniker": "budget planner\\Controllers\\GoalController.cs",
               "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\GoalController.cs",
               "RelativeToolTip": "budget planner\\Controllers\\GoalController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-22T19:35:16.335Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 11,
+              "Title": "TransactionCreateVM.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\TransactionCreateVM.cs",
+              "RelativeDocumentMoniker": "budget planner\\ViewModels\\TransactionCreateVM.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\TransactionCreateVM.cs",
+              "RelativeToolTip": "budget planner\\ViewModels\\TransactionCreateVM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:01:48.676Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "20260723192939_InitialCreate.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Migrations\\20260723192939_InitialCreate.cs",
+              "RelativeDocumentMoniker": "budget planner\\Migrations\\20260723192939_InitialCreate.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Migrations\\20260723192939_InitialCreate.cs",
+              "RelativeToolTip": "budget planner\\Migrations\\20260723192939_InitialCreate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:29:39.553Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Update.cshtml",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Update.cshtml",
+              "RelativeDocumentMoniker": "budget planner\\Views\\Transaction\\Update.cshtml",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Update.cshtml",
+              "RelativeToolTip": "budget planner\\Views\\Transaction\\Update.cshtml",
+              "ViewState": "AgIAAFwBAAAAAAAAAAAiwHMBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-20T15:22:10.88Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "budget planner\\Views\\Home\\Index.cshtml",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "budget planner\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAPgAAAAAAAAAAAAAwAwBAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-17T12:38:03.288Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "_ViewImports.cshtml",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\_ViewImports.cshtml",
+              "RelativeDocumentMoniker": "budget planner\\Views\\_ViewImports.cshtml",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\_ViewImports.cshtml",
+              "RelativeToolTip": "budget planner\\Views\\_ViewImports.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-17T18:01:08.094Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "DashboardVM.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\DashboardVM.cs",
+              "RelativeDocumentMoniker": "budget planner\\ViewModels\\DashboardVM.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\DashboardVM.cs",
+              "RelativeToolTip": "budget planner\\ViewModels\\DashboardVM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T09:50:23.438Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "CardVM.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\CardVM.cs",
+              "RelativeDocumentMoniker": "budget planner\\ViewModels\\CardVM.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\CardVM.cs",
+              "RelativeToolTip": "budget planner\\ViewModels\\CardVM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:14:46.175Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "CardCreateVM.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\CardCreateVM.cs",
+              "RelativeDocumentMoniker": "budget planner\\ViewModels\\CardCreateVM.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\CardCreateVM.cs",
+              "RelativeToolTip": "budget planner\\ViewModels\\CardCreateVM.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAA3wBQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:01:31.396Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "TransferVM.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\TransferVM.cs",
+              "RelativeDocumentMoniker": "budget planner\\ViewModels\\TransferVM.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\TransferVM.cs",
+              "RelativeToolTip": "budget planner\\ViewModels\\TransferVM.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T19:02:00.872Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ExchangeRate.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\ExchangeRate.cs",
+              "RelativeDocumentMoniker": "budget planner\\Models\\ExchangeRate.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\ExchangeRate.cs",
+              "RelativeToolTip": "budget planner\\Models\\ExchangeRate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T11:54:51.057Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Category.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Category.cs",
+              "RelativeDocumentMoniker": "budget planner\\Models\\Category.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Category.cs",
+              "RelativeToolTip": "budget planner\\Models\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T11:53:41.914Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Card.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Card.cs",
+              "RelativeDocumentMoniker": "budget planner\\Models\\Card.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Card.cs",
+              "RelativeToolTip": "budget planner\\Models\\Card.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAgwCcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T10:42:24.548Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Transaction.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Transaction.cs",
+              "RelativeDocumentMoniker": "budget planner\\Models\\Transaction.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Transaction.cs",
+              "RelativeToolTip": "budget planner\\Models\\Transaction.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAzwEEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-19T13:05:57.457Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Goal.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Goal.cs",
+              "RelativeDocumentMoniker": "budget planner\\Models\\Goal.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Goal.cs",
+              "RelativeToolTip": "budget planner\\Models\\Goal.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAgwCQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T11:53:50.966Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "BudgetRule.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\BudgetRule.cs",
+              "RelativeDocumentMoniker": "budget planner\\Models\\BudgetRule.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\BudgetRule.cs",
+              "RelativeToolTip": "budget planner\\Models\\BudgetRule.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAgwB8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T11:54:11.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "BaseModel.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\BaseModel.cs",
+              "RelativeDocumentMoniker": "budget planner\\Models\\BaseModel.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\BaseModel.cs",
+              "RelativeToolTip": "budget planner\\Models\\BaseModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-19T13:02:46.386Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "budget planner\\Models\\ApplicationUser.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\ApplicationUser.cs",
+              "RelativeToolTip": "budget planner\\Models\\ApplicationUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T11:55:06.752Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "theme.js",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\theme.js",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\theme.js",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\theme.js",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\theme.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-07-23T11:30:43.74Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "budgetChart.js",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\budgetChart.js",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\budgetChart.js",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\budgetChart.js",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\budgetChart.js",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAQwEoAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-07-19T14:04:13.288Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "dashboard.css",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\dashboard.css",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\dashboard.css",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\dashboard.css",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\dashboard.css",
+              "ViewState": "AgIAALIAAAAAAAAAAAAswMQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-07-19T14:13:21.738Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "components.css",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\components.css",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\components.css",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\components.css",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\components.css",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAAAEQAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-07-18T10:02:25.322Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Goal\\Index.cshtml",
               "RelativeDocumentMoniker": "budget planner\\Views\\Goal\\Index.cshtml",
@@ -168,51 +659,25 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "budgetChart.js",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\budgetChart.js",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\budgetChart.js",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\budgetChart.js",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\budgetChart.js",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAUwCcAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-07-19T14:04:13.288Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "budget planner\\Views\\Home\\Index.cshtml",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "budget planner\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAGoAAAAAAAAAAAAUwIoAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-07-17T12:38:03.288Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "components.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\components.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\components.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\components.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\components.css",
-              "ViewState": "AgIAAGIBAAAAAAAAAAAuwIEBAAANAAAAAAAAAA==",
+              "DocumentIndex": 33,
+              "Title": "layout.css",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\layout.css",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\layout.css",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\layout.css",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\layout.css",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAAwJIAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-07-18T10:02:25.322Z",
+              "WhenOpened": "2026-07-17T15:33:02.247Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "goals.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\goals.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\goals.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\goals.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\goals.css",
+              "DocumentIndex": 34,
+              "Title": "goal.css",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\goal.css",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\goal.css",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\goal.css",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\goal.css",
               "ViewState": "AgIAACoAAAAAAAAAAAAuwD8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2026-07-17T15:33:59.898Z",
@@ -220,77 +685,103 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "budget planner\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "budget planner\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAABEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-07-16T11:55:17.998Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "budget planner\\Controllers\\HomeController.cs",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "budget planner\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-17T15:16:46.619Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "dashboard.js",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\dashboard.js",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\dashboard.js",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\dashboard.js",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\dashboard.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-07-19T11:23:55.938Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "transactionManagement.js",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transactionManagement.js",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\transactionManagement.js",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transactionManagement.js",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\transactionManagement.js",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAYwEMAAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-07-19T17:32:10.002Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "transactions.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\transactions.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\transactions.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\transactions.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\transactions.css",
-              "ViewState": "AgIAACcAAAAAAAAAAAAuwDsAAAAUAAAAAAAAAA==",
+              "DocumentIndex": 35,
+              "Title": "base.css",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\base.css",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\base.css",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\base.css",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\base.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-07-17T15:33:48.268Z",
+              "WhenOpened": "2026-07-17T15:32:40.519Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "responsive.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\responsive.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\responsive.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\responsive.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\responsive.css",
+              "DocumentIndex": 36,
+              "Title": "BudgetDbContext.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\DAL\\BudgetDbContext.cs",
+              "RelativeDocumentMoniker": "budget planner\\DAL\\BudgetDbContext.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\DAL\\BudgetDbContext.cs",
+              "RelativeToolTip": "budget planner\\DAL\\BudgetDbContext.cs",
+              "ViewState": "AgIAAJUAAAAAAAAAAADwv6AAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-20T12:05:13.9Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "20260723142513_AddTransactionStatus.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Migrations\\20260723142513_AddTransactionStatus.cs",
+              "RelativeDocumentMoniker": "budget planner\\Migrations\\20260723142513_AddTransactionStatus.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Migrations\\20260723142513_AddTransactionStatus.cs",
+              "RelativeToolTip": "budget planner\\Migrations\\20260723142513_AddTransactionStatus.cs",
+              "ViewState": "AgIAAKMAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-23T14:25:14.346Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Index.cshtml",
+              "RelativeDocumentMoniker": "budget planner\\Views\\Transaction\\Index.cshtml",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Index.cshtml",
+              "RelativeToolTip": "budget planner\\Views\\Transaction\\Index.cshtml",
+              "ViewState": "AgIAAAABAAAAAAAAAAAiwBcBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-19T13:47:03.805Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Create.cshtml",
+              "RelativeDocumentMoniker": "budget planner\\Views\\Transaction\\Create.cshtml",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Create.cshtml",
+              "RelativeToolTip": "budget planner\\Views\\Transaction\\Create.cshtml",
+              "ViewState": "AgIAAIUBAAAAAAAAAAAiwJwBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-07-20T14:54:34.959Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\appsettings.json",
+              "RelativeDocumentMoniker": "budget planner\\appsettings.json",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\appsettings.json",
+              "RelativeToolTip": "budget planner\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-07-23T12:27:56.835Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Program.cs",
+              "RelativeDocumentMoniker": "budget planner\\Program.cs",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Program.cs",
+              "RelativeToolTip": "budget planner\\Program.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAiwEAAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-16T11:54:36.531Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "setting.css",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\setting.css",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\setting.css",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\setting.css",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\setting.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2026-07-18T09:19:01.205Z",
@@ -298,103 +789,90 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "layout.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\layout.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\layout.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\layout.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\layout.css",
-              "ViewState": "AgIAAHUAAAAAAAAAAAAwwJQAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-07-17T15:33:02.247Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "budgetChart.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\budgetChart.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\budgetChart.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\budgetChart.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\budgetChart.css",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAuwCcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-07-19T14:13:21.738Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "base.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\base.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\base.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\base.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\base.css",
-              "ViewState": "AgIAACsAAAAAAAAAAAAuwEoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-07-17T15:32:40.519Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "CreateVM.cs",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\CreateVM.cs",
-              "RelativeDocumentMoniker": "budget planner\\ViewModels\\CreateVM.cs",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ViewModels\\CreateVM.cs",
-              "RelativeToolTip": "budget planner\\ViewModels\\CreateVM.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAAwBgAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-20T12:27:09.457Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "BaseModel.cs",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\BaseModel.cs",
-              "RelativeDocumentMoniker": "budget planner\\Models\\BaseModel.cs",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\BaseModel.cs",
-              "RelativeToolTip": "budget planner\\Models\\BaseModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T13:02:46.386Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "transactionCreate.js",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transactionCreate.js",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\transactionCreate.js",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transactionCreate.js",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\transactionCreate.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 43,
+              "Title": "goal.js",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\goal.js",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\goal.js",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\goal.js",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\goal.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2026-07-20T15:01:17.158Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "analytics.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\analytics.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\analytics.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\analytics.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\analytics.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-07-17T15:34:32.696Z",
+              "DocumentIndex": 44,
+              "Title": "dashboard.js",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\dashboard.js",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\dashboard.js",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\dashboard.js",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\dashboard.js",
+              "ViewState": "AgIAADEAAAAAAAAAAAAQwEcAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-07-19T11:23:55.938Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "family.css",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\family.css",
-              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\family.css",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\family.css",
-              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\family.css",
+              "DocumentIndex": 45,
+              "Title": "report.js",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\report.js",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\report.js",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\report.js",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\report.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-07-23T11:31:09.737Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "transaction.js",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transaction.js",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\transaction.js",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\transaction.js",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\transaction.js",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAQwFMAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-07-23T11:26:07.127Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "setting.js",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\setting.js",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\js\\setting.js",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\js\\setting.js",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\js\\setting.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-07-19T17:32:10.002Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "transaction.css",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\transaction.css",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\transaction.css",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\transaction.css",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\transaction.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADsAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-07-17T15:33:48.268Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "report.css",
+              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\report.css",
+              "RelativeDocumentMoniker": "budget planner\\wwwroot\\assets\\css\\report.css",
+              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\wwwroot\\assets\\css\\report.css",
+              "RelativeToolTip": "budget planner\\wwwroot\\assets\\css\\report.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2026-07-17T15:34:15.615Z",
@@ -402,69 +880,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Index.cshtml",
-              "RelativeDocumentMoniker": "budget planner\\Views\\Transaction\\Index.cshtml",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Index.cshtml",
-              "RelativeToolTip": "budget planner\\Views\\Transaction\\Index.cshtml",
-              "ViewState": "AgIAAPgAAAAAAAAAAAAuwBMBAABCAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-07-19T13:47:03.805Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "Transaction.cs",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Transaction.cs",
-              "RelativeDocumentMoniker": "budget planner\\Models\\Transaction.cs",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Models\\Transaction.cs",
-              "RelativeToolTip": "budget planner\\Models\\Transaction.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAA1wBkAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T13:05:57.457Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "TransactionController.cs",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\TransactionController.cs",
-              "RelativeDocumentMoniker": "budget planner\\Controllers\\TransactionController.cs",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Controllers\\TransactionController.cs",
-              "RelativeToolTip": "budget planner\\Controllers\\TransactionController.cs",
-              "ViewState": "AgIAAGEAAAAAAAAAAADwv0AAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-19T13:36:31.159Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "Update.cshtml",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Update.cshtml",
-              "RelativeDocumentMoniker": "budget planner\\Views\\Transaction\\Update.cshtml",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Update.cshtml",
-              "RelativeToolTip": "budget planner\\Views\\Transaction\\Update.cshtml",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAACwAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-07-20T15:22:10.88Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Create.cshtml",
-              "RelativeDocumentMoniker": "budget planner\\Views\\Transaction\\Create.cshtml",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\Transaction\\Create.cshtml",
-              "RelativeToolTip": "budget planner\\Views\\Transaction\\Create.cshtml",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAACgAAAA/AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-07-20T14:54:34.959Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 52,
               "Title": "20260720154002_AddCurrencyToTransaction.cs",
               "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Migrations\\20260720154002_AddCurrencyToTransaction.cs",
               "RelativeDocumentMoniker": "budget planner\\Migrations\\20260720154002_AddCurrencyToTransaction.cs",
@@ -472,23 +888,12 @@
               "RelativeToolTip": "budget planner\\Migrations\\20260720154002_AddCurrencyToTransaction.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-20T15:40:03.043Z"
+              "WhenOpened": "2026-07-20T15:40:03.043Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Program.cs",
-              "RelativeDocumentMoniker": "budget planner\\Program.cs",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Program.cs",
-              "RelativeToolTip": "budget planner\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-16T11:54:36.531Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 53,
               "Title": "20260720140306_CreateTransactionTable.cs",
               "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Migrations\\20260720140306_CreateTransactionTable.cs",
               "RelativeDocumentMoniker": "budget planner\\Migrations\\20260720140306_CreateTransactionTable.cs",
@@ -496,35 +901,12 @@
               "RelativeToolTip": "budget planner\\Migrations\\20260720140306_CreateTransactionTable.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-20T14:03:06.656Z"
+              "WhenOpened": "2026-07-20T14:03:06.656Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "BudgetDbContext.cs",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\DAL\\BudgetDbContext.cs",
-              "RelativeDocumentMoniker": "budget planner\\DAL\\BudgetDbContext.cs",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\DAL\\BudgetDbContext.cs",
-              "RelativeToolTip": "budget planner\\DAL\\BudgetDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-20T12:05:13.9Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "_ViewImports.cshtml",
-              "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\_ViewImports.cshtml",
-              "RelativeDocumentMoniker": "budget planner\\Views\\_ViewImports.cshtml",
-              "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\_ViewImports.cshtml",
-              "RelativeToolTip": "budget planner\\Views\\_ViewImports.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-07-17T18:01:08.094Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 50,
               "Title": "_ViewStart.cshtml",
               "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Views\\_ViewStart.cshtml",
               "RelativeDocumentMoniker": "budget planner\\Views\\_ViewStart.cshtml",
@@ -532,11 +914,12 @@
               "RelativeToolTip": "budget planner\\Views\\_ViewStart.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-07-17T18:01:08.998Z"
+              "WhenOpened": "2026-07-17T18:01:08.998Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 51,
               "Title": "ScaffoldingReadMe.txt",
               "DocumentMoniker": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\ScaffoldingReadMe.txt",
               "RelativeDocumentMoniker": "budget planner\\ScaffoldingReadMe.txt",
@@ -544,7 +927,8 @@
               "RelativeToolTip": "budget planner\\ScaffoldingReadMe.txt",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2026-07-16T11:53:30.977Z"
+              "WhenOpened": "2026-07-16T11:53:30.977Z",
+              "EditorCaption": ""
             }
           ]
         }

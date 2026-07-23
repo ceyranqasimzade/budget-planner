@@ -1,28 +1,66 @@
-﻿using budget_planner.Models;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace budget_planner.Models
 {
     public class Transaction : BaseModel
     {
-        [Required]
-        public DateTime Date { get; set; }
-        [Required]
-        [StringLength(100, ErrorMessage = "Təsvir maksimum 100 hərf ola bilər.")]
-        public string Description { get; set; }
-        [Required]
-        [StringLength(50, ErrorMessage = "Kateqoriya maksimum 50 hərf ola bilər.")]
-        public string Category { get; set; }
-        [Required]
-        [Range(0.01, 999999.99, ErrorMessage = "Məbləğ 0-dan böyük olmalıdır.")]
+        [Required(ErrorMessage = "Təsvir daxil edilməlidir")]
+        public string Description { get; set; } = null!;
+
+
+
+        [Range(0, double.MaxValue,
+            ErrorMessage = "Məbləğ mənfi ola bilməz")]
         public decimal Amount { get; set; }
-        [Required]
-        [StringLength(30, ErrorMessage = "Status maksimum 30 hərf ola bilər.")]
-        public string Status { get; set; }
-        [Required]
+
+
+
+        public DateTime Date { get; set; }
+
+
+
         public bool IsIncome { get; set; }
-        [Required]
-        [StringLength(10, ErrorMessage = "Valyuta maksimum 10 hərf ola bilər.")]
+
+
+
         public string Currency { get; set; } = "AZN";
+
+
+
+        public string Status { get; set; } = "Tamamlandı";
+
+
+
+        // =====================
+        // Category relation
+        // =====================
+
+        public int CategoryId { get; set; }
+
+        public Category Category { get; set; } = null!;
+
+
+
+        // =====================
+        // Card relation
+        // =====================
+
+        public int? CardId { get; set; }
+
+        public Card? Card { get; set; }
+
+
+
+        // =====================
+        // User relation
+        // =====================
+
+        public string UserId { get; set; } = null!;
+
+        public ApplicationUser User { get; set; } = null!;
+
+        public string? ReceiptUrl { get; set; } // Qəbzlərin/Çeklərin şəkli üçün
+        public bool IsRecurring { get; set; } = false; // Təkrarlanan (abonəlik) ödənişdirmi?
+        public string? RecurringFrequency { get; set; } // "Aylıq", "Həftəlik", "İllik"
     }
 }

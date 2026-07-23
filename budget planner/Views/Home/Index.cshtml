@@ -1,139 +1,569 @@
-﻿@{
+﻿@model budget_planner.ViewModels.DashboardVM
+@{
     ViewData["Title"] = "İcmal";
 }
 
-<!-- Üst hissə: İcmal Kartları -->
-<div class="dashboard-cards">
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Ümumi Balans</span>
-            <i class="bi bi-wallet2 text-blue icon-lg"></i>
-        </div>
-        <h3 class="stat-val">$2,450.00</h3>
-    </div>
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/dashboard.css" asp-append-version="true" />
+}
 
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Gəlir</span>
-            <i class="bi bi-arrow-up-right-circle-fill text-green icon-lg"></i>
+<!-- ================= 1. LIVE CURRENCY TICKER (VALYUTA KURLARI) ================= -->
+<div class="card mb-4 border-0 shadow-sm bg-body-tertiary">
+    <div class="card-body py-2 px-3 d-flex align-items-center justify-content-between flex-wrap gap-2" style="font-size: 0.85rem;">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary">AMB Kursları</span>
+            <span class="text-muted small">Canlı Məzənnə</span>
         </div>
-        <h3 class="stat-val text-green">+$3,200.00</h3>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-header">
-            <span class="stat-title">Xərc</span>
-            <i class="bi bi-arrow-down-left-circle-fill text-red icon-lg"></i>
-        </div>
-        <h3 class="stat-val text-red">-$750.00</h3>
-    </div>
-
-    <!-- YENİLƏNMİŞ: 4-cü Kart (Kart Əlavə Et) -->
-    <div class="stat-card add-card-box" data-bs-toggle="modal" data-bs-target="#addCardModal">
-        <div class="add-content">
-            <i class="bi bi-plus-circle"></i>
-            <span>Kart əlavə et</span>
+        <div class="d-flex gap-4 fw-medium">
+            <span>🇺🇸 USD: <strong class="text-success">1.7000 ₼</strong></span>
+            <span>🇪🇺 EUR: <strong class="text-success">1.8450 ₼</strong></span>
+            <span>🇹🇷 TRY: <strong class="text-danger">0.0510 ₼</strong></span>
+            <span>🇬🇧 GBP: <strong class="text-success">2.1820 ₼</strong></span>
         </div>
     </div>
 </div>
 
-<!-- Alt hissə: Cədvəl və Qrafik -->
-<div class="dashboard-content">
-    <!-- Sol tərəf: Cədvəl -->
-    <div class="transactions-section">
-        <div class="stat-header" style="margin-bottom: 25px;">
-            <h5 class="section-title">Son Əməliyyatlar</h5>
-            <a href="#" class="text-blue" style="text-decoration: none; font-size: 14px;">Hamısına bax</a>
+<!-- ================= PAGE HEADER & QUICK ACTIONS (TEZ ƏMƏLİYYAT DÜYMƏLƏRİ) ================= -->
+<div class="page-header mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <!-- Başlıq və Büdcə Seçicisi (Multi-budget) -->
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+        <div>
+            <h1 class="page-title fs-3 fw-bold mb-1">İcmal</h1>
+            <p class="page-subtitle text-muted mb-0">Maliyyə vəziyyətinizə ümumi baxış</p>
         </div>
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th>Tarix</th>
-                    <th>Təsvir</th>
-                    <th>Kateqoriya</th>
-                    <th>Məbləğ</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>18 İyul 2026</td>
-                    <td>Maaş</td>
-                    <td><span class="status-badge bg-income">Gəlir</span></td>
-                    <td class="text-green fw-bold">+$3,200.00</td>
-                    <td><span class="status-badge bg-income">Tamamlandı</span></td>
-                </tr>
-                <tr>
-                    <td>17 İyul 2026</td>
-                    <td>Market alış-verişi</td>
-                    <td><span class="status-badge bg-expense-food">Qida</span></td>
-                    <td class="text-red fw-bold">-$120.50</td>
-                    <td><span class="status-badge bg-income">Tamamlandı</span></td>
-                </tr>
-                <tr>
-                    <td>15 İyul 2026</td>
-                    <td>Elektrik enerjisi</td>
-                    <td><span class="status-badge bg-expense-utility">Kommunal</span></td>
-                    <td class="text-red fw-bold">-$45.00</td>
-                    <td><span class="status-badge bg-expense-utility">Gözləyir</span></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <!-- Sağ tərəf: Qrafik -->
-    <div class="chart-section">
-        <h5 class="section-title" style="margin-bottom: 25px;">Xərclərin bölgüsü</h5>
-        <canvas id="expenseChart" style="max-height: 250px;"></canvas>
-    </div>
-</div>
 
-<!-- YENİLƏNMİŞ: Real Bank Kartları Modalı -->
-<div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="border-radius: 15px; border: none;">
-            <div class="modal-header" style="border-bottom: 1px solid #f1f1f1; padding: 20px 25px;">
-                <h5 class="modal-title fw-bold" id="addCardModalLabel">Yeni Kart Əlavə Et</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Büdcə Seçicisi Dropdown -->
+        <div class="dropdown ms-md-2">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle rounded-pill px-3 fw-medium d-flex align-items-center gap-2 shadow-sm"
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-fill text-success"></i>
+                <span>Şəxsi Büdcə</span>
+            </button>
+            <ul class="dropdown-menu shadow-lg border-0" style="background-color: #2b3035;">
+                <li>
+                    <a class="dropdown-item text-white d-flex align-items-center gap-2 active" href="?budgetId=1">
+                        <i class="bi bi-person-fill text-success"></i> Şəxsi Büdcə
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item text-white d-flex align-items-center gap-2" href="?budgetId=2">
+                        <i class="bi bi-people-fill text-info"></i> Ailə Büdcəsi
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider border-secondary"></li>
+                <li>
+                    <a class="dropdown-item text-primary d-flex align-items-center gap-2 fw-medium" asp-controller="Settings" asp-action="Budgets">
+                        <i class="bi bi-plus-circle"></i> Yeni Büdcə / Dəvət Et
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Right Actions: Bildiriş Mərkəzi + Tez Əməliyyat Düymələri -->
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+
+        <!-- Bildiriş Mərkəzi (Notification Bell) -->
+        <div class="dropdown me-1">
+            <button class="btn btn-outline-secondary btn-sm position-relative rounded-circle p-2 shadow-sm d-flex align-items-center justify-content-center"
+                    style="width: 38px; height: 38px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-bell fs-6"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                    2
+                </span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-2" style="width: 310px; background-color: #2b3035;">
+                <div class="d-flex justify-content-between align-items-center px-2 py-1 border-bottom border-secondary mb-2">
+                    <h6 class="fw-bold mb-0 text-white" style="font-size: 0.85rem;">Bildirişlər</h6>
+                    <span class="badge bg-primary rounded-pill">2 yeni</span>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                    <a href="#" class="dropdown-item p-2 rounded d-flex align-items-start gap-2 text-wrap">
+                        <i class="bi bi-exclamation-circle-fill text-warning fs-5"></i>
+                        <div>
+                            <strong class="d-block text-white" style="font-size: 0.8rem;">Büdcə Xəbərdarlığı</strong>
+                            <span class="text-muted d-block" style="font-size: 0.75rem;">"Qida & Restoran" kateqoriyası 85%-ə çatdı.</span>
+                        </div>
+                    </a>
+                    <a href="#" class="dropdown-item p-2 rounded d-flex align-items-start gap-2 text-wrap">
+                        <i class="bi bi-clock-history text-danger fs-5"></i>
+                        <div>
+                            <strong class="d-block text-white" style="font-size: 0.8rem;">Yaxınlaşan Ödəniş</strong>
+                            <span class="text-muted d-block" style="font-size: 0.75rem;">Katv1 ödənişinə 5 gün qaldı (-18.00 ₼).</span>
+                        </div>
+                    </a>
+                </div>
             </div>
-            <div class="modal-body" style="padding: 25px;">
-                <p style="color: #6c757d; margin-bottom: 25px;">Əlavə etmək istədiyiniz bankı seçin:</p>
+        </div>
 
-                <!-- Bootstrap Row/Col ilə qüsursuz Grid -->
-                <div class="row g-3">
-                    <!-- Leobank -->
-                    <div class="col-6 col-md-3">
-                        <div class="bank-card-option leobank">
-                            <h4 class="bank-logo">Leo</h4>
-                            <span class="bank-name">Leobank</span>
-                        </div>
+        <!-- Quick Action Buttons -->
+        <button class="btn btn-success btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#quickIncomeModal">
+            <i class="bi bi-plus-lg"></i> Gəlir Əlavə Et
+        </button>
+        <button class="btn btn-danger btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#quickExpenseModal">
+            <i class="bi bi-dash-lg"></i> Xərc Əlavə Et
+        </button>
+        <button class="btn btn-outline-primary btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#transferModal">
+            <i class="bi bi-arrow-left-right"></i> Transfer
+        </button>
+    </div>
+</div>
+
+<!-- ================= 2. BÜDCƏ LİMİTİ VƏ AĞILLI MƏSLƏHƏTÇİ BANNERS ================= -->
+<div class="row mb-4 g-3">
+    <!-- Büdcə Xəbərdarlığı -->
+    <div class="col-md-7">
+        <div class="alert alert-warning border-0 shadow-sm mb-0 d-flex align-items-center gap-3 p-3">
+            <i class="bi bi-exclamation-triangle-fill fs-3 text-warning"></i>
+            <div>
+                <strong class="d-block">Büdcə Xəbərdarlığı!</strong>
+                <span class="small">"Qida & Restoran" kateqoriyası üzrə aylıq limitinizin 85%-ni xərcləmisiniz.</span>
+            </div>
+        </div>
+    </div>
+    <!-- Ağıllı Maliyyə Məsləhətçisi -->
+    <div class="col-md-5">
+        <div class="alert alert-info border-0 shadow-sm mb-0 d-flex align-items-center gap-3 p-3">
+            <i class="bi bi-lightbulb-fill fs-3 text-info"></i>
+            <div>
+                <strong class="d-block">Maliyyə Məsləhəti</strong>
+                <span class="small">Bu ay gəlirinizin 20%-ni qənaət etmisiniz. Mükəmməl göstəricidir!</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 3. STATISTICS (ÖTƏN AYLA MÜQAYİSƏ İLƏ) ================= -->
+<div class="row g-4 mb-4">
+    <!-- Total Balance -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="stat-icon balance">
+                <i class="bi bi-wallet2"></i>
+            </div>
+            <div class="stat-details">
+                <div class="stat-title">Ümumi Balans</div>
+                <h3 class="stat-amount">
+                    @Model.TotalBalance.ToString("N2") ₼
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Income -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="stat-icon income">
+                <i class="bi bi-arrow-up-circle"></i>
+            </div>
+            <div class="stat-details">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="stat-title">Gəlir</div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.7rem;">↑ 8% keçən aydan</span>
+                </div>
+                <h3 class="stat-amount text-income">
+                    +@Model.TotalIncome.ToString("N2") ₼
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card stat-card h-100">
+            <div class="stat-icon expense">
+                <i class="bi bi-arrow-down-circle"></i>
+            </div>
+            <div class="stat-details">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="stat-title">Xərc</div>
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill" style="font-size: 0.7rem;">↓ 4% keçən aydan</span>
+                </div>
+                <h3 class="stat-amount text-expense">
+                    -@Model.TotalExpense.ToString("N2") ₼
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 4. MƏNİM KARTLARIM ================= -->
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0">Mənim Kartlarım</h5>
+    </div>
+
+    <div class="d-flex gap-3 overflow-auto pb-2" style="scrollbar-width: thin;">
+        @if (Model.Cards != null && Model.Cards.Any())
+        {
+            @foreach (var card in Model.Cards)
+            {
+                <div class="card p-3 shadow-sm border-0 text-white rounded-3 flex-shrink-0"
+                     style="width: 260px; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-bold fs-6">@card.CardName</span>
+                        <i class="bi bi-credit-card-2-front fs-4"></i>
                     </div>
-                    <!-- Birbank -->
-                    <div class="col-6 col-md-3">
-                        <div class="bank-card-option birbank">
-                            <h4 class="bank-logo">Birbank</h4>
-                            <span class="bank-name">Kapital Bank</span>
-                        </div>
+                    <div class="mb-2">
+                        <small class="opacity-75 d-block" style="font-size: 0.75rem;">Balans</small>
+                        <h4 class="fw-bold mb-0">@card.Balance.ToString("N2") @card.Currency</h4>
                     </div>
-                    <!-- ABB -->
-                    <div class="col-6 col-md-3">
-                        <div class="bank-card-option abb">
-                            <h4 class="bank-logo">ABB</h4>
-                            <span class="bank-name">TamKart</span>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small class="opacity-75">•••• @card.Last4Digits</small>
+                        <span class="badge bg-light text-dark fw-normal" style="font-size: 0.7rem;">@card.Currency</span>
                     </div>
-                    <!-- Ubank -->
-                    <div class="col-6 col-md-3">
-                        <div class="bank-card-option ubank">
-                            <h4 class="bank-logo">Ubank</h4>
-                            <span class="bank-name">Unibank</span>
+                </div>
+            }
+        }
+
+        <!-- "Kart əlavə et" düyməsi -->
+        <div class="card add-card-box d-flex flex-column justify-content-center align-items-center text-center p-3 flex-shrink-0"
+             style="width: 180px; min-height: 130px; cursor: pointer;"
+             data-bs-toggle="modal"
+             data-bs-target="#addCardModal">
+            <i class="bi bi-plus-circle fs-2 add-icon mb-1"></i>
+            <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">Kart əlavə et</h6>
+            <small class="text-muted" style="font-size: 0.75rem;">Yeni bank kartı</small>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 5. MAIN DASHBOARD CONTENT ================= -->
+<div class="row g-4">
+
+    <!-- SOL TƏRƏF (Son Əməliyyatlar + Qarşıdan Gələn Ödənişlər) -->
+    <div class="col-xl-8 d-flex flex-column gap-4">
+
+        <!-- Son Əməliyyatlar -->
+        <div class="card shadow-sm">
+            <div class="card-header border-0 pb-0 mt-2 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Son Əməliyyatlar</h5>
+                <a asp-controller="Transaction" asp-action="Index" class="btn btn-sm btn-outline-success">Hamısına bax</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Tarix</th>
+                                <th>Təsvir</th>
+                                <th>Kateqoriya</th>
+                                <th>Məbləğ</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.LastTransactions != null && Model.LastTransactions.Any())
+                            {
+                                @foreach (var item in Model.LastTransactions)
+                                {
+                                    <tr>
+                                        <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                                        <td><span class="desc-text">@item.Description</span></td>
+                                        <td><span class="budget-badge">@(item.CategoryName ?? "Ümumi")"Ümumi")</span></td>
+                                        <td>
+                                            <span class="@(item.IsIncome ? "text-income" : "text-expense")">
+                                                @(item.IsIncome ? "+" : "-")@item.Amount.ToString("N2") @item.Currency
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (item.IsIncome)
+                                            {
+                                                <span class="badge bg-success px-3 py-2 rounded-pill">Gəlir</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger px-3 py-2 rounded-pill">Xərc</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">Hələ heç bir əməliyyat yoxdur.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Qarşıdan Gələn Ödənişlər (Upcoming Bills) -->
+        <div class="card shadow-sm">
+            <div class="card-header border-0 pb-0 mt-2">
+                <h5 class="fw-bold mb-0">Qarşıdan Gələn Ödənişlər</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center justify-content-between p-2 rounded border border-translucent">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-primary text-white p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="bi bi-wifi"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-body">İnternet Ödənişi (Katv1)</h6>
+                                <small class="text-muted">Son tarix: 28 İyul 2026</small>
+                            </div>
                         </div>
+                        <span class="fw-bold text-danger">-18.00 ₼</span>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between p-2 rounded border border-translucent">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-danger text-white p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="bi bi-tv"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold text-body">Netflix Abunəliyi</h6>
+                                <small class="text-muted">Son tarix: 01 Avqust 2026</small>
+                            </div>
+                        </div>
+                        <span class="fw-bold text-danger">-22.00 ₼</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SAĞ TƏRƏF (Xərclərin Bölgüsü + Hədəflərim) -->
+    <div class="col-xl-4 d-flex flex-column gap-4">
+
+        <!-- Xərclərin Bölgüsü Qrafiki -->
+        <div class="card shadow-sm">
+            <div class="card-header border-0 pb-0 mt-2">
+                <h5 class="fw-bold mb-0">Xərclərin bölgüsü</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Hədəflərim Vidceti (Financial Goals) -->
+        <div class="card shadow-sm">
+            <div class="card-header border-0 pb-0 mt-2 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Hədəflərim</h5>
+                <a asp-controller="Goal" asp-action="Index" class="btn btn-sm btn-link text-decoration-none">Bütün Hədəflər</a>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                        <span class="text-body">📱 Yeni Telefon</span>
+                        <span class="text-primary">600 / 1000 ₼ (60%)</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 60%"></div>
                     </div>
                 </div>
 
+                <div>
+                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                        <span class="text-body">✈️ Yay Tətili</span>
+                        <span class="text-success">400 / 2000 ₼ (20%)</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 20%"></div>
+                    </div>
+                </div>
             </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= MODALS (PƏNCƏRƏLƏR) ================= -->
+<!-- 1. ADD CARD MODAL -->
+<div class="modal fade" id="addCardModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-controller="Card" asp-action="Create" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Yeni Kart Əlavə Et</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Kartın adı</label>
+                        <input type="text" name="CardName" class="form-control" placeholder="Məsələn: Kapital Bank" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kart nömrəsinin son 4 rəqəmi</label>
+                        <input type="text" name="Last4Digits" maxlength="4" class="form-control" placeholder="1234" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Valyuta</label>
+                            <select name="Currency" class="form-select text-truncate">
+                                <option value="AZN" selected>AZN (₼) - Manat</option>
+                                <option value="USD">USD ($) - Dollar</option>
+                                <option value="EUR">EUR (€) - Avro</option>
+                                <option value="TRY">TRY (₺) - Lirə</option>
+                                <option value="RUB">RUB (₽) - Rubl</option>
+                                <option value="GBP">GBP (£) - Sterlinq</option>
+                                <option value="GEL">GEL (₾) - Lari</option>
+                                <option value="AED">AED (د.إ) - Dirhəm</option>
+                                <option value="CHF">CHF (CHF) - Frank</option>
+                                <option value="CNY">CNY (¥) - Yuan</option>
+                                <option value="CAD">CAD ($) - Kanada Dolları</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">İlkin Balans</label>
+                            <input type="number" name="Balance" class="form-control" value="0" step="0.01" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Ləğv et</button>
+                    <button type="submit" class="btn btn-success">Əlavə et</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="~/assets/js/dashboard.js"></script>
+<!-- 2. QUICK INCOME MODAL (TEZ GƏLİR) -->
+<div class="modal fade" id="quickIncomeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-controller="Transaction" asp-action="Create" method="post">
+                <input type="hidden" name="IsIncome" value="true" />
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">+ Tez Gəlir Əlavə Et</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Hesab / Kart</label>
+                        <select name="CardId" class="form-select" required>
+                            @if (Model.Cards != null && Model.Cards.Any())
+                            {
+                                foreach (var c in Model.Cards)
+                                {
+                                    <option value="@c.Id">@c.CardName (@c.Balance @c.Currency)</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="">Kart yoxdur (Əvvəlcə kart əlavə edin)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Məbləğ</label>
+                        <input type="number" name="Amount" step="0.01" class="form-control" placeholder="0.00" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Təsvir</label>
+                        <input type="text" name="Description" class="form-control" placeholder="Məsələn: Maaş, Əlavə gəlir" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success w-100">Gəliri Təsdiqlə</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 3. QUICK EXPENSE MODAL (TEZ XƏRC) -->
+<div class="modal fade" id="quickExpenseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-controller="Transaction" asp-action="Create" method="post">
+                <input type="hidden" name="IsIncome" value="false" />
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold">- Tez Xərc Əlavə Et</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Hesab / Kart</label>
+                        <select name="CardId" class="form-select" required>
+                            @if (Model.Cards != null && Model.Cards.Any())
+                            {
+                                foreach (var c in Model.Cards)
+                                {
+                                    <option value="@c.Id">@c.CardName (@c.Balance @c.Currency)</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="">Kart yoxdur (Əvvəlcə kart əlavə edin)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Məbləğ</label>
+                        <input type="number" name="Amount" step="0.01" class="form-control" placeholder="0.00" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Təsvir</label>
+                        <input type="text" name="Description" class="form-control" placeholder="Məsələn: Market xərci" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger w-100">Xərci Təsdiqlə</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 4. CARD TRANSFER MODAL (KARTLAR ARASI TRANSFER) -->
+<div class="modal fade" id="transferModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-controller="Card" asp-action="Transfer" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">⇄ Kartlar Arası Transfer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Göndərən Kart</label>
+                        <select name="FromCardId" class="form-select" required>
+                            @if (Model.Cards != null)
+                            {
+                                foreach (var c in Model.Cards)
+                                {
+                                    <option value="@c.Id">@c.CardName (@c.Balance @c.Currency)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Alan Kart</label>
+                        <select name="ToCardId" class="form-select" required>
+                            @if (Model.Cards != null)
+                            {
+                                foreach (var c in Model.Cards)
+                                {
+                                    <option value="@c.Id">@c.CardName (@c.Balance @c.Currency)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Köçürüləcək Məbləğ</label>
+                        <input type="number" name="Amount" step="0.01" class="form-control" placeholder="0.00" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary w-100">Köçürməni İcra Et</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/js/dashboard.js" asp-append-version="true"></script>
+    <script src="~/assets/js/budgetChart.js" asp-append-version="true"></script>
+}

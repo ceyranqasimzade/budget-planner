@@ -1,149 +1,156 @@
-﻿.app-container {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    grid-template-rows: 76px 1fr;
-    grid-template-areas:
-        "sidebar navbar"
-        "sidebar main";
-    height: 100vh;
-    overflow: hidden; 
+﻿/* ================= ƏSAS STRUKTUR ================= */
+.app-container {
+    display: flex;
+    min-height: 100vh;
 }
+
+/* ================= SIDEBAR (Sol Menyu) ================= */
 .sidebar {
-    grid-area: sidebar;
-    background-color: var(--color-neutral-surface);
-    border-right: 1px solid rgba(0, 0, 0, 0.05); 
-    padding: var(--space-24);
+    width: var(--sidebar-width);
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    z-index: 10;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+    transition: var(--transition);
 }
+
+.sidebar-logo {
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    gap: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-nav {
+    padding: 1.5rem 1rem;
+    flex-grow: 1;
+}
+
+    .sidebar-nav .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 15px;
+        border-radius: var(--radius-md);
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-bottom: 5px;
+        transition: var(--transition);
+    }
+
+        .sidebar-nav .nav-link:hover {
+            background-color: rgba(11, 70, 53, 0.05);
+            color: var(--primary-color);
+        }
+
+        .sidebar-nav .nav-link.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+/* ================= MAIN WRAPPER ================= */
+.main-wrapper {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ================= NAVBAR (Üst Panel) ================= */
 .navbar {
-    grid-area: navbar;
-    background-color: var(--color-neutral-bg);
-    padding: 0 var(--space-32);
+    height: var(--navbar-height);
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 999;
 }
-.main-content {
-    grid-area: main;
-    padding: var(--space-32);
-    overflow-y: auto; 
-    background-color: var(--color-neutral-bg);
-}
-/* --- NAVBAR (ÜST PANEL)--- */
-.search-bar {
-    display: flex;
-    align-items: center;
-    background-color: var(--color-neutral-surface);
-    padding: var(--space-8) var(--space-16);
-    border-radius: 24px;
+
+.search-form {
+    position: relative;
     width: 300px;
-    gap: var(--space-8);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    transition: var(--transition-hover);
 }
-    .search-bar:focus-within {
-        border-color: var(--color-main);
-        box-shadow: 0 0 0 3px rgba(11, 70, 53, 0.1);
+
+    .search-form i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
     }
-    .search-bar i {
-        color: var(--color-neutral-text);
-        opacity: 0.5;
+
+    .search-form .form-control {
+        padding-left: 40px;
+        background-color: var(--bg-body);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        color: var(--text-main);
     }
-    .search-bar input {
-        border: none;
-        background: transparent;
-        outline: none;
-        color: var(--color-neutral-text);
-        width: 100%;
-        font-family: var(--font-body);
-    }
+
 .navbar-actions {
     display: flex;
     align-items: center;
-    gap: var(--space-24);
+    gap: 20px;
 }
+
 .icon-btn {
-    background: transparent;
+    background: none;
     border: none;
+    color: var(--text-muted);
     font-size: 1.2rem;
-    color: var(--color-neutral-text);
     cursor: pointer;
-    transition: var(--transition-hover);
-    position: relative;
+    transition: var(--transition);
 }
+
     .icon-btn:hover {
-        color: var(--color-main);
+        color: var(--primary-color);
     }
-.badge {
-    position: absolute;
-    top: -6px;
-    right: -8px;
-    background-color: var(--color-accent);
-    color: white;
-    font-size: 0.7rem;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 10px;
-}
+
 .user-profile {
     display: flex;
     align-items: center;
-    gap: var(--space-16);
-    cursor: pointer;
-    padding-left: var(--space-24);
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    gap: 10px;
 }
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
+
 .user-info {
     display: flex;
     flex-direction: column;
+    line-height: 1.2;
 }
+
 .user-name {
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
+
 .user-role {
-    font-size: 0.8rem;
-    color: var(--color-neutral-text);
-    opacity: 0.6;
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
-.sidebar-nav ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 30px;
+
+/* ================= MƏZMUN & FOOTER ================= */
+.main-content {
+    padding: 2rem;
+    flex: 1;
 }
-.sidebar-nav li {
-    margin-bottom: 5px;
+
+.footer {
+    padding: 1.5rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-surface);
 }
-.sidebar-nav a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #666;
-    padding: 12px 20px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    font-size: 15px;
-}
-    .sidebar-nav a i {
-        margin-right: 15px;
-        font-size: 18px;
-        width: 20px; 
-        text-align: center;
-    }
-    .sidebar-nav a:hover,
-    .sidebar-nav a.active {
-        background-color: #f0f2f5;
-        color: #2c3e50;
-    }
-    .sidebar-nav a.active {
-        font-weight: bold;
-        color: #3498db;
-    }
