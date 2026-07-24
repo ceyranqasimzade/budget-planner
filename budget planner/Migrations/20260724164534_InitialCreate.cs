@@ -6,75 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace budget_planner.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTransactionStatus : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Category",
-                table: "Transactions");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Status",
-                table: "Transactions",
-                type: "nvarchar(max)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(30)",
-                oldMaxLength: 30);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Description",
-                table: "Transactions",
-                type: "nvarchar(max)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(100)",
-                oldMaxLength: 100);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Currency",
-                table: "Transactions",
-                type: "nvarchar(max)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(10)",
-                oldMaxLength: 10);
-
-            migrationBuilder.AddColumn<int>(
-                name: "CardId",
-                table: "Transactions",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "CategoryId",
-                table: "Transactions",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedDate",
-                table: "Transactions",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedDate",
-                table: "Transactions",
-                type: "datetime2",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "UserId",
-                table: "Transactions",
-                type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -95,6 +31,7 @@ namespace budget_planner.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FamilyGroupId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -124,6 +61,7 @@ namespace budget_planner.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Icon = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BudgetType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
@@ -336,20 +274,50 @@ namespace budget_planner.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_CardId",
-                table: "Transactions",
-                column: "CardId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_CategoryId",
-                table: "Transactions",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_UserId",
-                table: "Transactions",
-                column: "UserId");
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsIncome = table.Column<bool>(type: "bit", nullable: false),
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CardId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ReceiptUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsRecurring = table.Column<bool>(type: "bit", nullable: false),
+                    RecurringFrequency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Cards_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Cards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -406,46 +374,25 @@ namespace budget_planner.Migrations
                 table: "Goals",
                 column: "UserId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Transactions_AspNetUsers_UserId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_CardId",
                 table: "Transactions",
-                column: "UserId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                column: "CardId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Transactions_Cards_CardId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_CategoryId",
                 table: "Transactions",
-                column: "CardId",
-                principalTable: "Cards",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
+                column: "CategoryId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Transactions_Categories_CategoryId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_UserId",
                 table: "Transactions",
-                column: "CategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Transactions_AspNetUsers_UserId",
-                table: "Transactions");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Transactions_Cards_CardId",
-                table: "Transactions");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Transactions_Categories_CategoryId",
-                table: "Transactions");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -465,89 +412,25 @@ namespace budget_planner.Migrations
                 name: "BudgetRules");
 
             migrationBuilder.DropTable(
-                name: "Cards");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
                 name: "ExchangeRates");
 
             migrationBuilder.DropTable(
                 name: "Goals");
 
             migrationBuilder.DropTable(
+                name: "Transactions");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Cards");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Transactions_CardId",
-                table: "Transactions");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Transactions_CategoryId",
-                table: "Transactions");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Transactions_UserId",
-                table: "Transactions");
-
-            migrationBuilder.DropColumn(
-                name: "CardId",
-                table: "Transactions");
-
-            migrationBuilder.DropColumn(
-                name: "CategoryId",
-                table: "Transactions");
-
-            migrationBuilder.DropColumn(
-                name: "CreatedDate",
-                table: "Transactions");
-
-            migrationBuilder.DropColumn(
-                name: "UpdatedDate",
-                table: "Transactions");
-
-            migrationBuilder.DropColumn(
-                name: "UserId",
-                table: "Transactions");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Status",
-                table: "Transactions",
-                type: "nvarchar(30)",
-                maxLength: 30,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Description",
-                table: "Transactions",
-                type: "nvarchar(100)",
-                maxLength: 100,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Currency",
-                table: "Transactions",
-                type: "nvarchar(10)",
-                maxLength: 10,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Category",
-                table: "Transactions",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: "");
         }
     }
 }

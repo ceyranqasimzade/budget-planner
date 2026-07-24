@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace budget_planner.Controllers
 {
-     [Authorize]
+    [Authorize]
     public class TransactionController : Controller
     {
         private readonly BudgetDbContext _context;
@@ -29,10 +29,24 @@ namespace budget_planner.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
-            var card = await _context.Cards.FindAsync(model.CardId);
-
-            if (user != null && card != null && !card.IsDeleted)
+            if (user == null)
             {
+                return RedirectToAction("Login", "Account");
+            }
+
+            string currency = "AZN"; // Nağd əməliyyat üçün susmaya görə valyuta
+
+            // 1. KART BALANSININ YENİLƏNMƏSİ (Əgər kart seçilibsə)
+            if (model.CardId.HasValue && model.CardId.Value > 0)
+            {
+                var card = await _context.Cards.FindAsync(model.CardId);
+
+                if (card == null || card.IsDeleted)
+                {
+                    TempData["ErrorMessage"] = "Seçilmiş kart tapılmadı və ya silinib!";
+                    return RedirectToAction("Index", "Home");
+                }
+
                 if (model.IsIncome)
                 {
                     card.Balance += model.Amount;
@@ -47,7 +61,35 @@ namespace budget_planner.Controllers
                     card.Balance -= model.Amount;
                 }
 
-                var defaultCategory = _context.Categories.FirstOrDefault();
+                currency = card.Currency; // Kartın öz valyutası
+            }
+
+            // 2. KATEQORİYA MƏNTİQİ (Siyahıdan seçilibsə / yeni yazılıbsa / boşdursa)
+            int categoryId;
+            if (!string.IsNullOrWhiteSpace(model.CategoryName))
+            {
+                var categoryNameClean = model.CategoryName.Trim();
+                var category = _context.Categories
+                    .FirstOrDefault(c => c.Name.ToLower() == categoryNameClean.ToLower());
+
+                // Əgər yazılan kateqoriya bazada yoxdursa, yeni yaradılır
+                if (category == null)
+                {
+                    category = new Category
+                    {
+                        Name = categoryNameClean,
+                        Type = model.IsIncome ? "Gəlir" : "Xərc"
+                    };
+                    _context.Categories.Add(category);
+                    await _context.SaveChangesAsync();
+                }
+
+                categoryId = category.Id;
+            }
+            else
+            {
+                // Kateqoriya boş buraxılıbsa "Ümumi" kateqoriyası istifadə olunur
+                var defaultCategory = _context.Categories.FirstOrDefault(c => c.Name == "Ümumi");
                 if (defaultCategory == null)
                 {
                     defaultCategory = new Category { Name = "Ümumi", Type = "Müxtəlif" };
@@ -55,24 +97,27 @@ namespace budget_planner.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                var transaction = new Transaction
-                {
-                    CardId = model.CardId,
-                    Amount = model.Amount,
-                    Description = model.Description,
-                    IsIncome = model.IsIncome,
-                    Date = DateTime.Now,
-                    Currency = card.Currency,
-                    UserId = user.Id,
-                    CategoryId = defaultCategory.Id,
-                    Status = "Tamamlandı"
-                };
-
-                _context.Transactions.Add(transaction);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Əməliyyat uğurla qeydə alındı!";
+                categoryId = defaultCategory.Id;
             }
 
+            // 3. ƏMƏLİYYATIN BAZAYA YAZILMASI
+            var transaction = new Transaction
+            {
+                CardId = model.CardId, // Nağd olduqda null olaraq yazılır
+                Amount = model.Amount,
+                Description = model.Description,
+                IsIncome = model.IsIncome,
+                Date = DateTime.Now,
+                Currency = currency,
+                UserId = user.Id,
+                CategoryId = categoryId,
+                Status = "Tamamlandı"
+            };
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Əməliyyat uğurla qeydə alındı!";
             return RedirectToAction("Index", "Home");
         }
     }

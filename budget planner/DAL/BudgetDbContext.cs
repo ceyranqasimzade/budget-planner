@@ -26,6 +26,9 @@ namespace budget_planner.DAL
 
         public DbSet<ExchangeRate> ExchangeRates { get; set; } = null!;
 
+        // YENİ ƏLAVƏ EDİLDİ
+        public DbSet<Subscription> Subscriptions { get; set; } = null!;
+
 
 
 
@@ -102,6 +105,19 @@ namespace budget_planner.DAL
 
 
             // ==========================
+            // USER - SUBSCRIPTION (YENİ ƏLAVƏ EDİLDİ)
+            // One User -> Many Subscriptions
+            // ==========================
+
+            modelBuilder.Entity<Subscription>()
+                .HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+
+            // ==========================
             // USER - BUDGET RULE
             // One User -> One BudgetRule
             // ==========================
@@ -139,6 +155,13 @@ namespace budget_planner.DAL
 
             modelBuilder.Entity<Goal>()
                 .Property(x => x.CurrentAmount)
+                .HasPrecision(18, 2);
+
+
+
+            // YENİ ƏLAVƏ EDİLDİ
+            modelBuilder.Entity<Subscription>()
+                .Property(x => x.Amount)
                 .HasPrecision(18, 2);
 
 

@@ -1,13 +1,46 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿// --- 1. KART XANASINI GÖSTƏR / GİZLƏ FUNKSİYASI ---
+function toggleCardField(selectElement) {
+    // Form daxilindəki kart seçimi bölməsini tapırıq
+    var modalBody = selectElement.closest('.modal-body');
+    var cardGroup = modalBody.querySelector('.card-select-group');
+    var cardSelect = cardGroup.querySelector('select[name="CardId"]');
 
-    // --- 1. DARK MODE & İKON ---
+    if (selectElement.value === 'card') {
+        // "Bank Kartı" seçilərsə xananı göstər və məcburi et
+        cardGroup.style.display = 'block';
+        if (cardSelect) cardSelect.required = true;
+    } else {
+        // "Nağd pul" seçilərsə xananı gizlə və dəyərini təmizlə
+        cardGroup.style.display = 'none';
+        if (cardSelect) {
+            cardSelect.required = false;
+            cardSelect.value = ''; // Serverə null gedəcək
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // --- 2. MODAL BAĞLANANDA FORMANI SIFIRLAMAQ ---
+    // Modal bağlandıqda kart siyahısını yenidən gizlədir və Nağd rejiminə qaytarır
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('hidden.bs.modal', function () {
+            const form = modal.querySelector('form');
+            if (form) form.reset();
+
+            const cardGroup = modal.querySelector('.card-select-group');
+            if (cardGroup) cardGroup.style.display = 'none';
+        });
+    });
+
+    // --- 3. DARK MODE & İKON ---
     const themeToggleBtn = document.getElementById("theme-toggle");
     const themeIcon = document.getElementById("theme-icon");
     const savedTheme = localStorage.getItem("theme");
 
-    // İkonu təhlükəsiz şəkildə dəyişmək üçün köməkçi funksiya
     function updateIcon(isDark) {
-        if (!themeIcon) return; // İkon tapılmasa xəta verməsin
+        if (!themeIcon) return;
 
         if (isDark) {
             themeIcon.classList.remove("fa-moon", "bi-moon", "bi-moon-stars");
@@ -18,7 +51,6 @@
         }
     }
 
-    // Yüklənərkən saxlanılmış temanı tətbiq et
     if (savedTheme === "dark") {
         document.documentElement.setAttribute("data-theme", "dark");
         updateIcon(true);
@@ -41,7 +73,7 @@
         });
     }
 
-    // --- 2. QRAFİK DATA (Fetch API ilə Controller-dən çəkmək) ---
+    // --- 4. QRAFİK DATA ---
     const canvas = document.getElementById('expenseChart');
     if (canvas && typeof Chart !== 'undefined') {
 

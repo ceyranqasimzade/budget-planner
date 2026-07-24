@@ -4,8 +4,11 @@ namespace budget_planner.ViewModels
 {
     public class TransactionCreateVM
     {
-        [Required(ErrorMessage = "Kart seçilməlidir")]
-        public int CardId { get; set; }
+        // Nağd ödəniş seçildikdə boş (null) ola biləcəyi üçün [Required] silindi
+        public int? CardId { get; set; }
+
+        // Formadan daxil edilən və ya seçilən kateqoriya adı
+        public string? CategoryName { get; set; }
 
         [Required(ErrorMessage = "Məbləğ daxil edilməlidir")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Məbləğ 0-dan böyük olmalıdır")]

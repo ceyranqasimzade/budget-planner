@@ -1,5 +1,11 @@
-﻿@{
+﻿@model IEnumerable<budget_planner.ViewModels.GoalVM>
+@{
     Layout = null;
+
+    // Statistik hesablama dinamik məntiqləri
+    var totalTarget = Model?.Sum(g => g.TargetAmount) ?? 0;
+    var totalCurrent = Model?.Sum(g => g.CurrentAmount) ?? 0;
+    var activeCount = Model?.Count() ?? 0;
 }
 
 <!DOCTYPE html>
@@ -32,7 +38,7 @@
             </button>
         </div>
 
-        <!-- Statistik İcmal Kartları -->
+        <!-- Statistik İcmal Kartları (DİNAMİK) -->
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <div class="goal-stat-card">
@@ -41,7 +47,7 @@
                     </div>
                     <div>
                         <span class="text-muted small d-block">Ümumi Hədəf Məbləği</span>
-                        <h4 class="fw-bold text-dark m-0">$18,500.00</h4>
+                        <h4 class="fw-bold text-dark m-0">₼@totalTarget.ToString("N2")</h4>
                     </div>
                 </div>
             </div>
@@ -52,7 +58,7 @@
                     </div>
                     <div>
                         <span class="text-muted small d-block">Toplanan Məbləğ</span>
-                        <h4 class="fw-bold text-dark m-0">$5,700.00</h4>
+                        <h4 class="fw-bold text-dark m-0">₼@totalCurrent.ToString("N2")</h4>
                     </div>
                 </div>
             </div>
@@ -63,69 +69,59 @@
                     </div>
                     <div>
                         <span class="text-muted small d-block">Aktiv Hədəflər</span>
-                        <h4 class="fw-bold text-dark m-0">3 Adət</h4>
+                        <h4 class="fw-bold text-dark m-0">@activeCount Adət</h4>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Hədəf Kartları -->
+        <!-- Hədəf Kartları (DİNAMİK) -->
         <div class="row g-4">
-            <!-- Hədəf 1: Maşın -->
-            <div class="col-md-6 col-lg-4">
-                <div class="goal-card">
-                    <div class="goal-card-header">
-                        <div class="goal-avatar bg-primary-subtle text-primary">
-                            <i class="bi bi-car-front-fill"></i>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var goal in Model)
+                {
+                    // GoalVM daxilindəki Percentage istifadə olunur
+                    var percentage = goal.Percentage;
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="goal-card">
+                            <div class="goal-card-header">
+                                <div class="goal-avatar bg-primary-subtle text-primary">
+                                    <i class="bi @(string.IsNullOrEmpty(goal.IconClass) ? "bi-flag-fill" : goal.IconClass)"></i>
+                                </div>
+                            </div>
+
+                            <h5 class="fw-bold text-dark mt-3 mb-1">@goal.Name</h5>
+
+                            <div class="d-flex justify-content-between mb-1 mt-3">
+                                <span class="small text-muted">Yığılan: <strong class="text-dark">₼@goal.CurrentAmount.ToString("N0")</strong></span>
+                                <span class="small fw-bold text-primary">@percentage.ToString("0.#")%</span>
+                            </div>
+
+                            <div class="progress custom-goal-progress mb-3">
+                                <div class="progress-bar @(string.IsNullOrEmpty(goal.ColorClass) ? "bg-primary" : goal.ColorClass)" role="progressbar" style="width: @Math.Min(100, percentage).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                <span class="small text-muted">Hədəf: <strong>₼@goal.TargetAmount.ToString("N0")</strong></span>
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">+ Pul Əlavə Et</button>
+                            </div>
                         </div>
                     </div>
-
-                    <h5 class="fw-bold text-dark mt-3 mb-1">Yeni Maşın</h5>
-                    <span class="text-muted small d-block mb-3"><i class="bi bi-calendar3 me-1"></i> 15 Noyabr 2026-dək</span>
-
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="small text-muted">Yığılan: <strong class="text-dark">$4,500</strong></span>
-                        <span class="small fw-bold text-primary">37.5%</span>
-                    </div>
-
-                    <div class="progress custom-goal-progress mb-3">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 37.5%"></div>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                        <span class="small text-muted">Hədəf: <strong>$12,000</strong></span>
-                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3">+ Pul Əlavə Et</button>
+                }
+            }
+            else
+            {
+                <!-- Baza boş olduqda göstəriləcək təmiz bildiriş -->
+                <div class="col-12">
+                    <div class="text-center py-5 bg-white rounded-3 shadow-sm border">
+                        <i class="bi bi-flag opacity-25 text-muted display-4 d-block mb-3"></i>
+                        <h5 class="fw-bold text-dark">Hələ ki heç bir hədəfiniz yoxdur</h5>
+                        <p class="text-muted small mb-3">Maliyyə planlarınızı idarə etmək üçün ilk hədəfinizi əlavə edin.</p>
                     </div>
                 </div>
-            </div>
-
-            <!-- Hədəf 2: Səyahət -->
-            <div class="col-md-6 col-lg-4">
-                <div class="goal-card">
-                    <div class="goal-card-header">
-                        <div class="goal-avatar bg-success-subtle text-success">
-                            <i class="bi bi-airplane-fill"></i>
-                        </div>
-                    </div>
-
-                    <h5 class="fw-bold text-dark mt-3 mb-1">Avropa Səyahəti</h5>
-                    <span class="text-muted small d-block mb-3"><i class="bi bi-calendar3 me-1"></i> 20 Avqust 2026-dək</span>
-
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="small text-muted">Yığılan: <strong class="text-dark">$1,200</strong></span>
-                        <span class="small fw-bold text-success">40%</span>
-                    </div>
-
-                    <div class="progress custom-goal-progress mb-3">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 40%"></div>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                        <span class="small text-muted">Hədəf: <strong>$3,000</strong></span>
-                        <button class="btn btn-sm btn-outline-success rounded-pill px-3">+ Pul Əlavə Et</button>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 

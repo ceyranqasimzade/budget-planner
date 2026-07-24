@@ -12,7 +12,7 @@ using budget_planner.DAL;
 namespace budget_planner.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20260723192939_InitialCreate")]
+    [Migration("20260724164534_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
