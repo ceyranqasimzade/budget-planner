@@ -1,4 +1,9 @@
-﻿/* ================= DASHBOARD BAŞLIQ ================= */
+﻿/* ================= QLOBAL FONT DƏSTƏYİ (Manat Simvolu Üçün) ================= */
+body, html, .stat-amount, span, strong {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+/* ================= DASHBOARD BAŞLIQ ================= */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -88,7 +93,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; /* Hətta çox böyük millyonluq rəqəm olsa belə kartı sındırmayacaq */
-}/* ================= QRAFİK QUTUSU ================= */
+}
+
+/* ================= QRAFİK QUTUSU ================= */
 .chart-container {
     position: relative;
     height: 320px;
@@ -108,6 +115,7 @@
         margin-bottom: 1rem;
         opacity: 0.5;
     }
+
 /* ================= KONTRAST VƏ OXUNURLUQ DÜZƏLİŞLƏRİ ================= */
 
 /* 1. Ümumi Açıq Boz Yazıların Kontrastını Artırırıq */
@@ -187,6 +195,7 @@ small.text-muted {
     white-space: nowrap;
     overflow: hidden;
 }
+
 .chart-container {
     position: relative;
     height: 300px !important; /* 220px əvəzinə 300px edirik */

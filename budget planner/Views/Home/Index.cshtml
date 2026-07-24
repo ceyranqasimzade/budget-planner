@@ -5,6 +5,25 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/assets/css/dashboard.css" asp-append-version="true" />
+
+    <!-- Flag Icons CDN (Rəngli bayraqlar üçün) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.0/css/flag-icons.min.css" />
+
+    <!-- ================= QLOBAL ŞRİFT VƏ OXUNURLUQ DƏSTƏYİ ================= -->
+    <style>
+        /* Manat (₼) simvolunun bütün cihazlarda düzgün görünməsi üçün */
+        body, html, .stat-amount, span, strong, td, th, h1, h2, h3, h4, h5, h6 {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        }
+
+        /* Modal daxilində uzun valyuta/kart adlarının daşmasının qarşısını almaq üçün */
+        .modal-body select.form-select {
+            width: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    </style>
 }
 
 <!-- ================= 1. LIVE CURRENCY TICKER (VALYUTA KURLARI) ================= -->
@@ -14,11 +33,50 @@
             <span class="badge bg-primary">AMB Kursları</span>
             <span class="text-muted small">Canlı Məzənnə</span>
         </div>
-        <div class="d-flex gap-4 fw-medium">
-            <span>🇺🇸 USD: <strong class="text-success">1.7000 ₼</strong></span>
-            <span>🇪🇺 EUR: <strong class="text-success">1.8450 ₼</strong></span>
-            <span>🇹🇷 TRY: <strong class="text-danger">0.0510 ₼</strong></span>
-            <span>🇬🇧 GBP: <strong class="text-success">2.1820 ₼</strong></span>
+        <div class="d-flex gap-3 fw-medium">
+            @if (Model.ExchangeRates != null && Model.ExchangeRates.Any())
+            {
+                @foreach (var item in Model.ExchangeRates)
+                {
+                    // Valyuta koduna uyğun bayraq klassını təyin edirik
+                    string flagClass = item.Code switch
+                    {
+                                    "USD" => "fi fi-us",
+                                    "EUR" => "fi fi-eu",
+                                    "TRY" => "fi fi-tr",
+                                    "GBP" => "fi fi-gb",
+                                    "RUB" => "fi fi-ru",
+                                    "GEL" => "fi fi-ge",
+                                    "AED" => "fi fi-ae",
+                                    "CHF" => "fi fi-ch",
+                                    "CNY" => "fi fi-cn",
+                                    "CAD" => "fi fi-ca",
+                        _ => "fi fi-xx"
+                    };
+
+                    // YENİ MƏNTİQ: Dəyişimə görə rəng və Bootstrap İkonu
+                    string colorClass = item.IsUp ? "text-success" : (item.IsDown ? "text-danger" : "text-secondary");
+                    string iconClass = item.IsUp ? "bi-caret-up-fill" : (item.IsDown ? "bi-caret-down-fill" : "bi-dash");
+
+                    <div class="d-inline-flex align-items-center">
+                        <!-- Rəngli Bayraq İkonu və Kod -->
+                        <span class="@flagClass me-1 rounded-1"></span>
+                        <span class="fw-bold text-body me-2">@item.Code:</span>
+
+                        <!-- Əsas Məzənnə Rəqəmi -->
+                        <strong class="@colorClass me-2">@item.Rate.ToString("0.0000") @Model.BaseCurrencySymbol</strong>
+
+                        <!-- Fərq və Ox İşarəsi -->
+                        <small class="@colorClass d-flex align-items-center" style="font-size: 0.75rem;">
+                            <i class="bi @iconClass me-1"></i> @Math.Abs(item.Change).ToString("0.0000")
+                        </small>
+                    </div>
+                }
+            }
+            else
+            {
+                <span class="text-muted">Məzənnələr yüklənir...</span>
+            }
         </div>
     </div>
 </div>
@@ -260,7 +318,7 @@
                                     <tr>
                                         <td>@item.Date.ToString("dd.MM.yyyy")</td>
                                         <td><span class="desc-text">@item.Description</span></td>
-                                        <td><span class="budget-badge">@(item.CategoryName ?? "Ümumi")"Ümumi")</span></td>
+                                        <td><span class="budget-badge">@(item.CategoryName ?? "Ümumi")</span></td>
                                         <td>
                                             <span class="@(item.IsIncome ? "text-income" : "text-expense")">
                                                 @(item.IsIncome ? "+" : "-")@item.Amount.ToString("N2") @item.Currency
@@ -394,12 +452,12 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Kart nömrəsinin son 4 rəqəmi</label>
-                        <input type="text" name="Last4Digits" maxlength="4" class="form-control" placeholder="1234" required />
+                        <input type="text" name="Last4Digits" maxlength="4" pattern="\d{4}" inputmode="numeric" class="form-control" placeholder="1234" title="Dəqiq 4 rəqəm daxil edin" required />
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Valyuta</label>
-                            <select name="Currency" class="form-select text-truncate">
+                            <select name="Currency" class="form-select text-truncate" required>
                                 <option value="AZN" selected>AZN (₼) - Manat</option>
                                 <option value="USD">USD ($) - Dollar</option>
                                 <option value="EUR">EUR (€) - Avro</option>
@@ -415,7 +473,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">İlkin Balans</label>
-                            <input type="number" name="Balance" class="form-control" value="0" step="0.01" />
+                            <input type="number" name="Amount" step="0.01" min="0.00" class="form-control" placeholder="0.00" required />
                         </div>
                     </div>
                 </div>
@@ -457,7 +515,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Məbləğ</label>
-                        <input type="number" name="Amount" step="0.01" class="form-control" placeholder="0.00" required />
+                        <input type="number" name="Amount" step="0.01" min="0.01" class="form-control" placeholder="0.00" required />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Təsvir</label>
@@ -501,7 +559,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Məbləğ</label>
-                        <input type="number" name="Amount" step="0.01" class="form-control" placeholder="0.00" required />
+                        <input type="number" name="Amount" step="0.01" min="0.01" class="form-control" placeholder="0.00" required />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Təsvir</label>
@@ -552,7 +610,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Köçürüləcək Məbləğ</label>
-                        <input type="number" name="Amount" step="0.01" class="form-control" placeholder="0.00" required />
+                        <input type="number" name="Amount" step="0.01" min="0.01" class="form-control" placeholder="0.00" required />
                     </div>
                 </div>
                 <div class="modal-footer">
