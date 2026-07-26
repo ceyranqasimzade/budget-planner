@@ -1,6 +1,9 @@
-﻿@model budget_planner.ViewModels.DashboardVM
+﻿@using budget_planner.Services
+@model budget_planner.ViewModels.DashboardVM
 @{
     ViewData["Title"] = "İcmal";
+    // 1. İstifadəçinin sistemə daxil olub-olmadığını yoxlayırıq
+    bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 }
 
 @section Styles {
@@ -25,7 +28,6 @@
         }
     </style>
 }
-
 <!-- ================= 1. LIVE CURRENCY TICKER (VALYUTA KURLARI) ================= -->
 <div class="card mb-4 border-0 shadow-sm bg-body-tertiary">
     <div class="card-body py-2 px-3 d-flex align-items-center justify-content-between flex-wrap gap-2" style="font-size: 0.85rem;">
@@ -89,69 +91,22 @@
             <h1 class="page-title fs-3 fw-bold mb-1">İcmal</h1>
             <p class="page-subtitle text-muted mb-0">Maliyyə vəziyyətinizə ümumi baxış</p>
         </div>
-       
     </div>
 
-    <!-- Right Actions: Bildiriş Mərkəzi + Tez Əməliyyat Düymələri -->
+    <!-- Right Actions: Əməliyyat Düymələri -->
     <div class="d-flex align-items-center gap-2 flex-wrap">
 
-        <!-- Bildiriş Mərkəzi (Notification Bell) - DİNAMİK VƏZİYYƏT -->
-        <div class="dropdown me-1">
-            <button class="btn btn-outline-secondary btn-sm position-relative rounded-circle p-2 shadow-sm d-flex align-items-center justify-content-center"
-                    style="width: 38px; height: 38px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-bell fs-6"></i>
-                <!-- Rəqəm ancaq bildiriş olduqda görünür -->
-                @if (Model.Notifications != null && Model.Notifications.Any())
-                {
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                        @Model.Notifications.Count
-                    </span>
-                }
-            </button>
-            <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-2" style="width: 310px; background-color: #2b3035;">
-                <div class="d-flex justify-content-between align-items-center px-2 py-1 border-bottom border-secondary mb-2">
-                    <h6 class="fw-bold mb-0 text-white" style="font-size: 0.85rem;">Bildirişlər</h6>
-                    @if (Model.Notifications != null && Model.Notifications.Any())
-                    {
-                        <span class="badge bg-primary rounded-pill">@Model.Notifications.Count yeni</span>
-                    }
-                </div>
-                <div class="d-flex flex-column gap-1">
-                    <!-- Bildirişlər Baza vasitəsilə Yüklənir -->
-                    @if (Model.Notifications != null && Model.Notifications.Any())
-                    {
-                        foreach (var notif in Model.Notifications)
-                        {
-                            <a href="#" class="dropdown-item p-2 rounded d-flex align-items-start gap-2 text-wrap">
-                                <i class="bi @notif.IconClass fs-5 @notif.TextColorClass"></i>
-                                <div>
-                                    <strong class="d-block text-white" style="font-size: 0.8rem;">@notif.Title</strong>
-                                    <span class="text-muted d-block" style="font-size: 0.75rem;">@notif.Message</span>
-                                </div>
-                            </a>
-                        }
-                    }
-                    else
-                    {
-                        <div class="p-3 text-center text-muted">
-                            <i class="bi bi-bell-slash fs-4 d-block mb-1"></i>
-                            <small>Hazırda yeni bildirişiniz yoxdur.</small>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Action Buttons -->
-        <button class="btn btn-success btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#quickIncomeModal">
+        <!-- Quick Action Buttons - Dəyişdirildi -->
+        <button type="button" class="btn btn-success btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" onclick="openModalIfAuth('#quickIncomeModal')">
             <i class="bi bi-plus-lg"></i> Gəlir Əlavə Et
         </button>
-        <button class="btn btn-danger btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#quickExpenseModal">
+        <button type="button" class="btn btn-danger btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" onclick="openModalIfAuth('#quickExpenseModal')">
             <i class="bi bi-dash-lg"></i> Xərc Əlavə Et
         </button>
-        <button class="btn btn-outline-primary btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#transferModal">
+        <button type="button" class="btn btn-outline-primary btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" onclick="openModalIfAuth('#transferModal')">
             <i class="bi bi-arrow-left-right"></i> Transfer
         </button>
+
     </div>
 </div>
 
@@ -189,6 +144,25 @@
     </div>
 
 </div>
+
+<!-- Ümumi Valyuta Seçimi -->
+<div class="d-flex justify-content-end align-items-center mb-3">
+    <label for="globalCurrency" class="fw-bold me-2">Göstərici Valyuta:</label>
+    <select id="globalCurrency" class="form-select shadow-sm w-auto" onchange="changeGlobalCurrency()">
+        <option value="AZN" selected>AZN (₼) - Manat</option>
+        <option value="USD">USD ($) - Dollar</option>
+        <option value="EUR">EUR (€) - Avro</option>
+        <option value="TRY">TRY (₺) - Lirə</option>
+        <option value="RUB">RUB (₽) - Rubl</option>
+        <option value="GBP">GBP (£) - Sterlinq</option>
+        <option value="GEL">GEL (₾) - Lari</option>
+        <option value="AED">AED (د.إ) - Dirhəm</option>
+        <option value="CHF">CHF (CHF) - Frank</option>
+        <option value="CNY">CNY (¥) - Yuan</option>
+        <option value="CAD">CAD ($) - Kanada Dolları</option>
+    </select>
+</div>
+
 <!-- ================= 3. STATISTICS (ÖTƏN AYLA MÜQAYİSƏ İLƏ) ================= -->
 <div class="row g-4 mb-4">
     <!-- Total Balance -->
@@ -199,8 +173,11 @@
             </div>
             <div class="stat-details">
                 <div class="stat-title">Ümumi Balans</div>
+                <!-- 🟢 Bütün valyutalar AZN-ə çevrilərək toplandığı üçün burada AZN/₼ qalır -->
                 <h3 class="stat-amount">
-                    @Model.TotalBalance.ToString("N2") ₼
+                    <span class="dynamic-amount" data-base-amount="@Model.TotalBalance.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                        @Model.TotalBalance.ToString("N2") ₼
+                    </span>
                 </h3>
             </div>
         </div>
@@ -220,7 +197,11 @@
                     @{
                         decimal incTrend = Model.IncomeTrend ?? 0;
                     }
-                    @if (incTrend >= 0)
+                    @if (incTrend == 0)
+                    {
+                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill" style="font-size: 0.7rem;">- 0% keçən aydan</span>
+                    }
+                    else if (incTrend > 0)
                     {
                         <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.7rem;">↑ @incTrend.ToString("0.#")% keçən aydan</span>
                     }
@@ -230,7 +211,9 @@
                     }
                 </div>
                 <h3 class="stat-amount text-income">
-                    +@Model.TotalIncome.ToString("N2") ₼
+                    +<span class="dynamic-amount" data-base-amount="@Model.TotalIncome.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                        @Model.TotalIncome.ToString("N2") ₼
+                    </span>
                 </h3>
             </div>
         </div>
@@ -250,7 +233,11 @@
                     @{
                         decimal expTrend = Model.ExpenseTrend ?? 0;
                     }
-                    @if (expTrend > 0)
+                    @if (expTrend == 0)
+                    {
+                        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill" style="font-size: 0.7rem;">- 0% keçən aydan</span>
+                    }
+                    else if (expTrend > 0)
                     {
                         <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill" style="font-size: 0.7rem;">↑ @expTrend.ToString("0.#")% keçən aydan</span>
                     }
@@ -260,7 +247,9 @@
                     }
                 </div>
                 <h3 class="stat-amount text-expense">
-                    -@Model.TotalExpense.ToString("N2") ₼
+                    -<span class="dynamic-amount" data-base-amount="@Model.TotalExpense.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                        @Model.TotalExpense.ToString("N2") ₼
+                    </span>
                 </h3>
             </div>
         </div>
@@ -272,22 +261,25 @@
         <h5 class="fw-bold mb-0">Mənim Kartlarım və Balansım</h5>
     </div>
 
-    <div class="d-flex gap-3 overflow-auto pb-2" style="scrollbar-width: thin;">
+    <!-- BOOTSTRAP GRID (ROW) TƏTBİQ OLUNDU - flex-wrap problemi tam həll edildi -->
+    <div class="row g-3">
 
-        <!-- 🟢 1. NAĞD PUL (CİBDƏKİ PUL) KARTI - HƏMİŞƏ ƏN BAŞDA GÖRÜNÜR -->
-        <div class="card p-3 shadow-sm border-0 text-white rounded-3 flex-shrink-0"
-             style="width: 260px; background: linear-gradient(135deg, #0f5132 0%, #198754 100%);">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="fw-bold fs-6">Nağd Pul</span>
-                <i class="bi bi-wallet2 fs-4"></i>
-            </div>
-            <div class="mb-2">
-                <small class="opacity-75 d-block" style="font-size: 0.75rem;">Balans</small>
-                <h4 class="fw-bold mb-0">@Model.CashBalance.ToString("N2") ₼</h4>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                <small class="opacity-75">Cib / Cüzdan</small>
-                <span class="badge bg-light text-dark fw-normal" style="font-size: 0.7rem;">AZN</span>
+        <!-- 🟢 1. NAĞD PUL (CİBDƏKİ PUL) KARTI -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+            <div class="card p-3 shadow-sm border-0 text-white rounded-3 h-100"
+                 style="background: linear-gradient(135deg, #0f5132 0%, #198754 100%); min-height: 130px;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-bold fs-6">Nağd Pul</span>
+                    <i class="bi bi-wallet2 fs-4"></i>
+                </div>
+                <div class="mb-2">
+                    <small class="opacity-75 d-block" style="font-size: 0.75rem;">Balans</small>
+                    <h4 class="fw-bold mb-0">@Model.CashBalance.ToString("N2") ₼</h4>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <small class="opacity-75">Cib / Cüzdan</small>
+                    <span class="badge bg-light text-dark fw-normal" style="font-size: 0.7rem;">AZN</span>
+                </div>
             </div>
         </div>
 
@@ -296,52 +288,68 @@
         {
             @foreach (var card in Model.Cards)
             {
-                <div class="card p-3 shadow-sm border-0 text-white rounded-3 flex-shrink-0"
-                     style="width: 260px; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="fw-bold fs-6">@card.CardName</span>
-                        <i class="bi bi-credit-card-2-front fs-4"></i>
-                    </div>
-                    <div class="mb-2">
-                        <small class="opacity-75 d-block" style="font-size: 0.75rem;">Balans</small>
-                        <h4 class="fw-bold mb-0">@card.Balance.ToString("N2") @card.Currency</h4>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                        <small class="opacity-75">•••• @card.Last4Digits</small>
-                        <span class="badge bg-light text-dark fw-normal" style="font-size: 0.7rem;">@card.Currency</span>
+                <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+                    <div class="card p-3 shadow-sm border-0 text-white rounded-3 h-100"
+                         style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 130px;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fw-bold fs-6">@card.CardName</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-credit-card-2-front fs-4"></i>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger border-0 text-white p-0"
+                                        onclick="openDeleteCardModal(@card.Id, '@card.CardName')"
+                                        title="Kartı Sil">
+                                    <i class="bi bi-trash fs-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <small class="opacity-75 d-block" style="font-size: 0.75rem;">Balans</small>
+                            <!-- 🟢 Yeniləndi: Valyuta kodu yerinə dinamik valyuta simvolu göstərilir -->
+                            <h4 class="fw-bold mb-0">@card.Balance.ToString("N2") @CurrencyService.GetCurrencySymbol(card.Currency)</h4>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="opacity-75">•••• @card.Last4Digits</small>
+                            <span class="badge bg-light text-dark fw-normal" style="font-size: 0.7rem;">@card.Currency</span>
+                        </div>
                     </div>
                 </div>
             }
         }
 
         <!-- ➕ 3. "Kart əlavə et" düyməsi -->
-        <div class="card add-card-box d-flex flex-column justify-content-center align-items-center text-center p-3 flex-shrink-0"
-             style="width: 180px; min-height: 130px; cursor: pointer;"
-             data-bs-toggle="modal"
-             data-bs-target="#addCardModal">
-            <i class="bi bi-plus-circle fs-2 add-icon mb-1"></i>
-            <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">Kart əlavə et</h6>
-            <small class="text-muted" style="font-size: 0.75rem;">Yeni bank kartı</small>
+        <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+            <div class="card add-card-box d-flex flex-column justify-content-center align-items-center text-center p-3 h-100"
+                 style="min-height: 130px; cursor: pointer;"
+                 data-bs-toggle="modal"
+                 data-bs-target="#addCardModal">
+                <i class="bi bi-plus-circle fs-2 add-icon mb-1"></i>
+                <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">Kart əlavə et</h6>
+                <small class="text-muted" style="font-size: 0.75rem;">Yeni bank kartı</small>
+            </div>
         </div>
-    </div>
+
+    </div> <!-- row sonu -->
 </div>
 <!-- ================= 5. MAIN DASHBOARD CONTENT ================= -->
 <div class="row g-4">
 
     <!-- SOL TƏRƏF (Son Əməliyyatlar + Qarşıdan Gələn Ödənişlər) -->
-    <div class="col-xl-8 d-flex flex-column gap-4">
+    <div class="col-xl-8 col-lg-7 d-flex flex-column gap-4">
 
-        <!-- Son Əməliyyatlar -->
-        <div class="card shadow-sm">
-            <div class="card-header border-0 pb-0 mt-2 d-flex justify-content-between align-items-center">
+        <!-- 1. Son Əməliyyatlar -->
+        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold mb-0">Son Əməliyyatlar</h5>
-                <a asp-controller="Transaction" asp-action="Index" class="btn btn-sm btn-outline-success">Hamısına bax</a>
+                <a asp-controller="Transaction" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    Hamısına bax <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead>
-                            <tr>
+                            <tr class="text-secondary border-bottom border-secondary">
                                 <th>Tarix</th>
                                 <th>Təsvir</th>
                                 <th>Kateqoriya</th>
@@ -357,38 +365,35 @@
                                 {
                                     <tr>
                                         <td>@item.Date.ToString("dd.MM.yyyy")</td>
-                                        <td><span class="desc-text">@item.Description</span></td>
-                                        <td><span class="budget-badge">@(item.CategoryName ?? "Ümumi")</span></td>
-
-                                        <!-- ÖDƏNİŞ ÜSULU (KART VƏ YA NAĞD) -->
+                                        <td><span class="text-truncate d-inline-block" style="max-width: 120px;">@item.Description</span></td>
+                                        <td><span class="badge bg-secondary bg-opacity-25 text-body fw-normal">@(item.CategoryName ?? "Ümumi")</span></td>
                                         <td>
                                             @if (item.CardId.HasValue && item.CardId > 0)
                                             {
-                                                <span class="badge bg-primary-subtle text-primary border border-primary px-2 py-1">
-                                                    <i class="bi bi-credit-card me-1"></i> @(item.CardName ?? "Kart")
+                                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 px-2 py-1">
+                                                    <i class="fa-solid fa-credit-card me-1"></i> @(item.CardName ?? "Kart")
                                                 </span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-secondary-subtle text-secondary border border-secondary px-2 py-1">
-                                                    <i class="bi bi-wallet2 me-1"></i> Nağd
+                                                <span class="badge bg-secondary bg-opacity-25 text-body border border-secondary border-opacity-25 px-2 py-1">
+                                                    <i class="fa-solid fa-wallet me-1"></i> Nağd
                                                 </span>
                                             }
                                         </td>
-
                                         <td>
-                                            <span class="@(item.IsIncome ? "text-income" : "text-expense")">
-                                                @(item.IsIncome ? "+" : "-")@item.Amount.ToString("N2") @item.Currency
+                                            <span class="fw-bold @(item.IsIncome ? "text-success" : "text-danger")">
+                                                @(item.IsIncome ? "+" : "-")@item.Amount.ToString("N2") @CurrencyService.GetCurrencySymbol(item.Currency)
                                             </span>
                                         </td>
                                         <td>
                                             @if (item.IsIncome)
                                             {
-                                                <span class="badge bg-success px-3 py-2 rounded-pill">Gəlir</span>
+                                                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1">Gəlir</span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-danger px-3 py-2 rounded-pill">Xərc</span>
+                                                <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 px-2 py-1">Xərc</span>
                                             }
                                         </td>
                                     </tr>
@@ -406,90 +411,108 @@
             </div>
         </div>
 
-        <!-- 6. Qarşıdan Gələn Ödənişlər (Upcoming Bills) -->
-        <div class="card shadow-sm">
-            <div class="card-header border-0 pb-0 mt-2">
-                <h5 class="fw-bold mb-0">Qarşıdan Gələn Ödənişlər</h5>
-            </div>
-            <div class="card-body">
-                <div class="d-flex flex-column gap-3">
-                    @if (Model.UpcomingPayments != null && Model.UpcomingPayments.Any())
-                    {
-                        foreach (var payment in Model.UpcomingPayments)
+        <!-- 2. Qarşıdan Gələn Ödənişlər (Upcoming Payments) -->
+        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="card-body p-4">
+                <!-- Başlıq və Keçid Düyməsi -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Qarşıdan Gələn Ödənişlər</h5>
+                    <a asp-controller="UpcomingPayment" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                        Hamısına bax <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
+                @{
+                    var upcomingPayments = ViewBag.UpcomingPayments as List<budget_planner.Models.UpcomingPayment>;
+                }
+
+                @if (upcomingPayments != null && upcomingPayments.Any())
+                {
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var item in upcomingPayments)
                         {
-                            <div class="d-flex align-items-center justify-content-between p-2 rounded border border-translucent">
+                            var daysLeft = (item.DueDate.Date - DateTime.Now.Date).Days;
+                            string dateColor = daysLeft < 0 ? "text-danger" : (daysLeft <= 3 ? "text-warning" : "text-secondary");
+                            string daysText = daysLeft < 0 ? $"{Math.Abs(daysLeft)} gün gecikib" : (daysLeft == 0 ? "Bu gün!" : $"{daysLeft} gün qalıb");
+
+                            <div class="d-flex justify-content-between align-items-center p-3 rounded bg-body-tertiary">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="@payment.ColorClass text-white p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                        <i class="bi @payment.IconClass"></i>
+                                    <div class="bg-secondary bg-opacity-25 p-2 rounded text-body">
+                                        <i class="fa-regular fa-calendar-check"></i>
                                     </div>
                                     <div>
-                                        <h6 class="mb-0 fw-bold text-body">@payment.Name</h6>
-                                        <small class="text-muted">Son tarix: @payment.NextPaymentDate.ToString("dd MMMM yyyy")</small>
+                                        <h6 class="mb-0 fw-semibold">@item.Title</h6>
+                                        <small class="@dateColor">@item.DueDate.ToString("dd MMM yyyy") (@daysText)</small>
                                     </div>
                                 </div>
-                                <span class="fw-bold text-danger">-@payment.Amount.ToString("N2") ₼</span>
+                                <div class="text-end">
+                                    <h6 class="mb-0 fw-bold text-danger">-@item.Amount.ToString("N2") <span style="font-size: 0.8em;">@item.Currency</span></h6>
+                                </div>
                             </div>
                         }
-                    }
-                    else
-                    {
-                        <div class="text-center text-muted p-3">
-                            <i class="bi bi-calendar-x opacity-50" style="font-size: 2rem;"></i>
-                            <p class="mt-2 mb-0">Yaxınlaşan heç bir ödəniş yoxdur.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center text-muted my-4">
+                        <div class="bg-secondary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-calendar-xmark fs-4 text-secondary"></i>
                         </div>
-                    }
-                </div>
+                        <p class="mb-0">Yaxınlaşan heç bir ödəniş yoxdur.</p>
+                    </div>
+                }
             </div>
         </div>
 
-    </div>
-
+    </div> <!-- Sol Tərəf Sonu -->
     <!-- SAĞ TƏRƏF (Xərclərin Bölgüsü + Hədəflərim) -->
-    <div class="col-xl-4 d-flex flex-column gap-4">
+    <div class="col-xl-4 col-lg-5 d-flex flex-column gap-4">
 
-        <!-- Xərclərin Bölgüsü -->
-        <div class="card stat-card shadow-sm">
-            <div class="card-body d-flex flex-column">
-                <h5 class="card-title fw-bold mb-4">Xərclərin bölgüsü</h5>
+        <!-- 3. Xərclərin Bölgüsü -->
+        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="card-body p-4 d-flex flex-column">
+                <h5 class="fw-bold mb-3">Xərclərin bölgüsü</h5>
 
-                <div class="flex-grow-1 d-flex align-items-center justify-content-center" style="min-height: 250px;">
+                <div class="w-100 d-flex align-items-center justify-content-center position-relative" style="min-height: 320px; height: 320px;">
                     @if (Model.CategoryExpenses != null && Model.CategoryExpenses.Any())
                     {
-                        <canvas id="expenseChart"></canvas>
+                        <canvas id="expenseChart" style="width: 100% !important; height: 100% !important;"></canvas>
                     }
                     else
                     {
                         <div class="text-center text-muted">
-                            <i class="bi bi-pie-chart text-secondary opacity-25" style="font-size: 4rem;"></i>
-                            <p class="mt-3 mb-0">Bölgü aparmaq üçün hələ heç bir xərciniz yoxdur.</p>
+                            <i class="fa-solid fa-chart-pie text-secondary opacity-25 display-4 mb-3"></i>
+                            <p class="mb-0 small">Bölgü aparmaq üçün hələ heç bir xərciniz yoxdur.</p>
                         </div>
                     }
                 </div>
             </div>
         </div>
 
-        <!-- 7. Hədəflərim Vidceti -->
-        <div class="card stat-card shadow-sm" style="display: block !important;">
-            <div class="card-body" style="width: 100% !important;">
+        <!-- 4. Hədəflərim Vidceti -->
+        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="card-body p-4">
 
-                <!-- BAŞLIQ HİSSƏSİ (Üst-üstə düşməyən tam zəmanətli yapı) -->
-                <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin-bottom: 1.5rem !important;">
-                    <h5 class="fw-bold mb-0 text-white" style="white-space: nowrap !important;">Hədəflərim</h5>
-                    <a asp-controller="Goal" asp-action="Index" class="text-success text-decoration-none fw-semibold small" style="white-space: nowrap !important; margin-left: auto !important;">Bütün Hədəflər</a>
+                <!-- Başlıq -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Hədəflərim</h5>
+                    <a asp-controller="Goal" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                        Hamısına bax
+                    </a>
                 </div>
 
-                <!-- MƏZMUN HİSSƏSİ -->
-                <div class="d-flex flex-column gap-3" style="width: 100% !important;">
+                <!-- Məzmun -->
+                <div class="d-flex flex-column gap-3">
                     @if (Model.ActiveGoals != null && Model.ActiveGoals.Any())
                     {
                         foreach (var goal in Model.ActiveGoals)
                         {
                             <div>
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="fw-medium"><i class="bi @goal.IconClass me-2 text-muted"></i>@goal.Name</span>
+                                    <span class="fw-medium small"><i class="fa-solid @goal.IconClass me-2 text-muted"></i>@goal.Name</span>
                                     <span class="small text-muted">@goal.CurrentAmount.ToString("N0") / @goal.TargetAmount.ToString("N0") ₼ (@goal.Percentage.ToString("0")%)</span>
                                 </div>
-                                <div class="progress" style="height: 8px; background-color: #3b4045;">
+                                <div class="progress bg-secondary bg-opacity-25" style="height: 8px;">
                                     <div class="progress-bar @goal.ColorClass rounded-pill" role="progressbar" style="width: @Math.Min(100, goal.Percentage).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;" aria-valuenow="@goal.Percentage" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
@@ -497,8 +520,8 @@
                     }
                     else
                     {
-                        <div class="text-center text-muted py-3" style="width: 100% !important;">
-                            <i class="bi bi-flag opacity-50 d-block mb-2" style="font-size: 2rem;"></i>
+                        <div class="text-center text-muted py-3">
+                            <i class="fa-solid fa-bullseye opacity-50 display-6 mb-2"></i>
                             <p class="mb-0 small">Hələ heç bir hədəf təyin etməmisiniz.</p>
                         </div>
                     }
@@ -507,33 +530,39 @@
             </div>
         </div>
 
-    </div>
+    </div> <!-- Sağ Tərəf Sonu -->
 
-</div>
-    </div>
-
-</div>
-
+</div> <!-- Main Row Sonu -->
 <!-- ================= MODALS (PƏNCƏRƏLƏR) ================= -->
 <!-- 1. ADD CARD MODAL -->
 <div class="modal fade" id="addCardModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form asp-controller="Card" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title fw-bold">Yeni Kart Əlavə Et</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Kart Adı -->
                     <div class="mb-3">
                         <label class="form-label">Kartın adı</label>
-                        <input type="text" name="CardName" class="form-control" placeholder="Məsələn: Kapital Bank" required />
+                        <input type="text" name="CardName" class="form-control" placeholder="Məsələn: Kapital Bank" required
+                               oninvalid="this.setCustomValidity('Zəhmət olmasa kartın adını daxil edin.')"
+                               oninput="this.setCustomValidity('')" />
                     </div>
+
+                    <!-- Kartın son 4 rəqəmi -->
                     <div class="mb-3">
                         <label class="form-label">Kart nömrəsinin son 4 rəqəmi</label>
-                        <input type="text" name="Last4Digits" maxlength="4" pattern="\d{4}" inputmode="numeric" class="form-control" placeholder="1234" title="Dəqiq 4 rəqəm daxil edin" required />
+                        <input type="text" name="Last4Digits" maxlength="4" pattern="\d{4}" inputmode="numeric" class="form-control" placeholder="1234" title="Dəqiq 4 rəqəm daxil edin" required
+                               oninvalid="this.setCustomValidity('Zəhmət olmasa kartın son 4 rəqəmini dəqiq daxil edin.')"
+                               oninput="this.setCustomValidity('')" />
                     </div>
+
                     <div class="row">
+                        <!-- Valyuta -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Valyuta</label>
                             <select name="Currency" class="form-select text-truncate" required>
@@ -550,9 +579,13 @@
                                 <option value="CAD">CAD ($) - Kanada Dolları</option>
                             </select>
                         </div>
+
+                        <!-- İlkin Balans -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">İlkin Balans</label>
-                            <input type="number" name="Amount" step="0.01" min="0.00" class="form-control" placeholder="0.00" required />
+                            <input type="number" name="Balance" step="0.01" min="0.00" class="form-control" placeholder="0.00" required
+                                   oninvalid="this.setCustomValidity('Zəhmət olmasa ilkin balansı daxil edin.')"
+                                   oninput="this.setCustomValidity('')" />
                         </div>
                     </div>
                 </div>
@@ -565,11 +598,12 @@
     </div>
 </div>
 
-<!-- 1. TEZ GƏLİR MODALI -->
+<!-- 2. GƏLİR MODALI -->
 <div class="modal fade" id="quickIncomeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-controller="Transaction" asp-action="Create" method="post">
+            <form asp-controller="Home" asp-action="CreateTransaction" method="post">
+                @Html.AntiForgeryToken()
                 <input type="hidden" name="IsIncome" value="true" />
 
                 <div class="modal-header bg-success text-white">
@@ -591,38 +625,69 @@
                         </select>
                     </div>
 
-                    <!-- 2-ci yer: Kartı Seçin (Gizli açılır) -->
+                    <!-- 2-ci yer: Kartı Seçin -->
                     <div class="mb-3 card-select-group" style="display: none;">
                         <label class="form-label fw-semibold">
                             <i class="bi bi-credit-card text-primary me-1"></i> Kartı Seçin
                         </label>
-                        <select name="CardId" class="form-select">
+                        <select name="CardId" class="form-select card-input" disabled
+                                oninvalid="this.setCustomValidity('Zəhmət olmasa gəlirin daxil olacağı kartı seçin.')"
+                                oninput="this.setCustomValidity('')">
                             <option value="">Kart seçin...</option>
                             @if (Model.Cards != null && Model.Cards.Any())
                             {
                                 foreach (var c in Model.Cards)
                                 {
-                                    <option value="@c.Id">@c.CardName (@c.Balance.ToString("N2") @c.Currency)</option>
+                                    <option value="@c.Id" data-currency="@c.Currency">@c.CardName (@c.Balance.ToString("F2") @c.Currency)</option>
                                 }
                             }
                         </select>
                     </div>
 
-                    <!-- 3-cü yer: Kateqoriya -->
+                    <!-- 3-cü yer: Kateqoriya Seçimi -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
-                            <i class="bi bi-tags text-info me-1"></i> Kateqoriya
+                            <i class="bi bi-tags text-info me-1"></i> Var olan kateqoriyanı seçin
                         </label>
-                        <input type="text" name="CategoryName" class="form-control" list="incomeCategoryList" placeholder="Kateqoriya adı yazın və ya seçin" />
-                        <datalist id="incomeCategoryList">
+                        <select name="CategoryId" class="form-select">
+                            <option value="">-- Siyahıdan seçin --</option>
                             @if (Model.Categories != null && Model.Categories.Any())
                             {
                                 foreach (var cat in Model.Categories)
                                 {
-                                    <option value="@cat.Name"></option>
+                                    <option value="@cat.Id">@cat.Name</option>
                                 }
                             }
-                        </datalist>
+                        </select>
+                    </div>
+
+                    <div class="text-center my-2 fw-bold text-muted small">--- VƏ YA ---</div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-plus-circle text-success me-1"></i> Yeni kateqoriya əlavə edin
+                        </label>
+                        <input type="text" name="NewCategoryName" class="form-control" placeholder="Məsləhət: Maaş, Əlavə gəlir və s." />
+                    </div>
+
+                    <!-- Valyuta (ƏLAVƏ EDİLDİ) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-coin text-secondary me-1"></i> Valyuta
+                        </label>
+                        <select name="Currency" class="form-select transaction-currency" required>
+                            <option value="AZN" selected>AZN (₼) - Manat</option>
+                            <option value="USD">USD ($) - Dollar</option>
+                            <option value="EUR">EUR (€) - Avro</option>
+                            <option value="TRY">TRY (₺) - Lirə</option>
+                            <option value="RUB">RUB (₽) - Rubl</option>
+                            <option value="GBP">GBP (£) - Sterlinq</option>
+                            <option value="GEL">GEL (₾) - Lari</option>
+                            <option value="AED">AED (د.إ) - Dirhəm</option>
+                            <option value="CHF">CHF (CHF) - Frank</option>
+                            <option value="CNY">CNY (¥) - Yuan</option>
+                            <option value="CAD">CAD ($) - Kanada Dolları</option>
+                        </select>
                     </div>
 
                     <!-- Məbləğ -->
@@ -656,12 +721,12 @@
     </div>
 </div>
 
-
-<!-- 2. TEZ XƏRC MODALI -->
+<!-- 3. XƏRC MODALI -->
 <div class="modal fade" id="quickExpenseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-controller="Transaction" asp-action="Create" method="post">
+            <form asp-controller="Home" asp-action="CreateTransaction" method="post">
+                @Html.AntiForgeryToken()
                 <input type="hidden" name="IsIncome" value="false" />
 
                 <div class="modal-header bg-danger text-white">
@@ -688,33 +753,64 @@
                         <label class="form-label fw-semibold">
                             <i class="bi bi-credit-card text-primary me-1"></i> Kartı Seçin
                         </label>
-                        <select name="CardId" class="form-select">
+                        <select name="CardId" class="form-select card-input" disabled
+                                oninvalid="this.setCustomValidity('Zəhmət olmasa ödəniş edilən kartı seçin.')"
+                                oninput="this.setCustomValidity('')">
                             <option value="">Kart seçin...</option>
                             @if (Model.Cards != null && Model.Cards.Any())
                             {
                                 foreach (var c in Model.Cards)
                                 {
-                                    <option value="@c.Id">@c.CardName (@c.Balance.ToString("N2") @c.Currency)</option>
+                                    <option value="@c.Id" data-currency="@c.Currency">@c.CardName (@c.Balance.ToString("F2") @c.Currency)</option>
                                 }
                             }
                         </select>
                     </div>
 
-                    <!-- 3-cü yer: Kateqoriya -->
+                    <!-- 3-cü yer: Kateqoriya Seçimi -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
-                            <i class="bi bi-tags text-info me-1"></i> Kateqoriya
+                            <i class="bi bi-tags text-info me-1"></i> Var olan kateqoriyanı seçin
                         </label>
-                        <input type="text" name="CategoryName" class="form-control" list="expenseCategoryList" placeholder="Kateqoriya adı yazın və ya seçin" />
-                        <datalist id="expenseCategoryList">
+                        <select name="CategoryId" class="form-select">
+                            <option value="">-- Siyahıdan seçin --</option>
                             @if (Model.Categories != null && Model.Categories.Any())
                             {
                                 foreach (var cat in Model.Categories)
                                 {
-                                    <option value="@cat.Name"></option>
+                                    <option value="@cat.Id">@cat.Name</option>
                                 }
                             }
-                        </datalist>
+                        </select>
+                    </div>
+
+                    <div class="text-center my-2 fw-bold text-muted small">--- VƏ YA ---</div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-plus-circle text-danger me-1"></i> Yeni kateqoriya əlavə edin
+                        </label>
+                        <input type="text" name="NewCategoryName" class="form-control" placeholder="Məsləhət: Kofe, Restoran və s." />
+                    </div>
+
+                    <!-- Valyuta (ƏLAVƏ EDİLDİ) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-coin text-secondary me-1"></i> Valyuta
+                        </label>
+                        <select name="Currency" class="form-select transaction-currency" required>
+                            <option value="AZN" selected>AZN (₼) - Manat</option>
+                            <option value="USD">USD ($) - Dollar</option>
+                            <option value="EUR">EUR (€) - Avro</option>
+                            <option value="TRY">TRY (₺) - Lirə</option>
+                            <option value="RUB">RUB (₽) - Rubl</option>
+                            <option value="GBP">GBP (£) - Sterlinq</option>
+                            <option value="GEL">GEL (₾) - Lari</option>
+                            <option value="AED">AED (د.إ) - Dirhəm</option>
+                            <option value="CHF">CHF (CHF) - Frank</option>
+                            <option value="CNY">CNY (¥) - Yuan</option>
+                            <option value="CAD">CAD ($) - Kanada Dolları</option>
+                        </select>
                     </div>
 
                     <!-- Məbləğ -->
@@ -747,12 +843,13 @@
         </div>
     </div>
 </div>
+
 <!-- 4. CARD TRANSFER MODAL (KARTLAR ARASI TRANSFER) -->
 <div class="modal fade" id="transferModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form asp-controller="Card" asp-action="Transfer" method="post">
-
+                @Html.AntiForgeryToken()
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title fw-bold">
                         <i class="bi bi-arrow-left-right me-2"></i>Kartlar Arası Transfer
@@ -766,13 +863,15 @@
                         <label class="form-label fw-semibold">
                             <i class="bi bi-credit-card-2-front text-danger me-1"></i> Göndərən Kart
                         </label>
-                        <select name="FromCardId" class="form-select" required>
+                        <select name="FromCardId" class="form-select" required
+                                oninvalid="this.setCustomValidity('Zəhmət olmasa göndərən kartı seçin.')"
+                                oninput="this.setCustomValidity('')">
                             <option value="" disabled selected>Göndərən kartı seçin...</option>
                             @if (Model.Cards != null && Model.Cards.Any())
                             {
                                 foreach (var c in Model.Cards)
                                 {
-                                    <option value="@c.Id">@c.CardName (@c.Balance.ToString("N2") @c.Currency)</option>
+                                    <option value="@c.Id" data-currency="@c.Currency">@c.CardName (@c.Balance.ToString("F2") @c.Currency)</option>
                                 }
                             }
                         </select>
@@ -783,15 +882,37 @@
                         <label class="form-label fw-semibold">
                             <i class="bi bi-credit-card-2-back text-success me-1"></i> Alan Kart
                         </label>
-                        <select name="ToCardId" class="form-select" required>
+                        <select name="ToCardId" class="form-select" required
+                                oninvalid="this.setCustomValidity('Zəhmət olmasa alan kartı seçin.')"
+                                oninput="this.setCustomValidity('')">
                             <option value="" disabled selected>Alan kartı seçin...</option>
                             @if (Model.Cards != null && Model.Cards.Any())
                             {
                                 foreach (var c in Model.Cards)
                                 {
-                                    <option value="@c.Id">@c.CardName (@c.Balance.ToString("N2") @c.Currency)</option>
+                                    <option value="@c.Id" data-currency="@c.Currency">@c.CardName (@c.Balance.ToString("F2") @c.Currency)</option>
                                 }
                             }
+                        </select>
+                    </div>
+
+                    <!-- Valyuta (ƏLAVƏ EDİLDİ) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-coin text-secondary me-1"></i> Valyuta
+                        </label>
+                        <select name="Currency" class="form-select transaction-currency" required>
+                            <option value="AZN" selected>AZN (₼) - Manat</option>
+                            <option value="USD">USD ($) - Dollar</option>
+                            <option value="EUR">EUR (€) - Avro</option>
+                            <option value="TRY">TRY (₺) - Lirə</option>
+                            <option value="RUB">RUB (₽) - Rubl</option>
+                            <option value="GBP">GBP (£) - Sterlinq</option>
+                            <option value="GEL">GEL (₾) - Lari</option>
+                            <option value="AED">AED (د.إ) - Dirhəm</option>
+                            <option value="CHF">CHF (CHF) - Frank</option>
+                            <option value="CNY">CNY (¥) - Yuan</option>
+                            <option value="CAD">CAD ($) - Kanada Dolları</option>
                         </select>
                     </div>
 
@@ -815,14 +936,59 @@
         </div>
     </div>
 </div>
+<!-- 5. KART SİLMƏ MODALI -->
+<div class="modal fade" id="deleteCardModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-controller="Card" asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Silinəcək kartın ID-si bura JavaScript ilə yazılacaq -->
+                <input type="hidden" id="deleteCardId" name="id" value="" />
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Kartı Sil
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3 text-danger">
+                        <i class="bi bi-trash3-fill display-3"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Kartı silmək istədiyinizə əminsiniz?</h5>
+                    <p class="text-muted mb-0">
+                        <strong id="deleteCardName" class="text-dark"></strong> kartı silinəcək. Bu əməliyyatı geri qaytarmaq mümkün olmaya bilər.
+                    </p>
+                </div>
+
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Ləğv et</button>
+                    <button type="submit" class="btn btn-danger px-4 fw-bold">
+                        <i class="bi bi-trash me-1"></i> Bəli, Sil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @section Scripts {
-    <!-- Model məlumatlarının JS qrafiki (Chart.js) üçün dinamik ötürülməsi -->
+    <!-- Model məlumatlarının JS qrafiki və valyuta hesablama üçün dinamik ötürülməsi -->
     <script>
+        // Qrafik məlumatları
         window.dashboardChartData = {
             labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryExpenses?.Select(x => x.CategoryName) ?? new List<string>())),
             data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryExpenses?.Select(x => x.Amount) ?? new List<decimal>()))
         };
-    </script>
+
+        // VALYUTA MƏZƏNNƏLƏRİ (Düzəliş edilmiş hissə)
+        // Model.ExchangeRates listini Code və Rate-ə görə Dictionary-yə çeviririk
+        window.exchangeRates = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                    Model.ExchangeRates?.ToDictionary(x => x.Code, x => x.Rate) ?? new Dictionary<string, decimal>()
+            ));
+</script>
+
     <script src="~/assets/js/dashboard.js" asp-append-version="true"></script>
     <script src="~/assets/js/budgetChart.js" asp-append-version="true"></script>
 }

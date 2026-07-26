@@ -6,91 +6,136 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using budget_planner.ViewModels;
+using Microsoft.Extensions.Caching.Memory; // 🟢 Keş üçün əlavə edildi
 
 namespace budget_planner.Services
 {
     public class CurrencyService
     {
         private readonly HttpClient _httpClient;
+        private readonly IMemoryCache _cache; // 🟢 Keş interfeysi əlavə olundu
+        private const string RatesCacheKey = "CBAR_ExchangeRates"; // Keş üçün unikal açar söz
 
-        public CurrencyService(HttpClient httpClient)
+        // Constructor-a IMemoryCache dəstəyi əlavə edildi
+        public CurrencyService(HttpClient httpClient, IMemoryCache cache)
         {
             _httpClient = httpClient;
+            _cache = cache;
         }
 
         public async Task<List<CurrencyRateVM>> GetExchangeRatesAsync()
         {
+            // 🟢 1. YADDAŞ YOXLANIŞI: Məzənnələr artıq yaddaşda varsa, CBAR-a getmədən anında qaytar
+            if (_cache.TryGetValue(RatesCacheKey, out List<CurrencyRateVM>? cachedRates) && cachedRates != null)
+            {
+                return cachedRates;
+            }
+
+            // 🔴 2. Yaddaşda yoxdursa, CBAR-dan məlumatları çəkmək üçün orijinal koda davam et
             var rates = new List<CurrencyRateVM>();
 
-            // 1. Bu günün və Dünənin URL-lərini təyin edirik
             string todayUrl = "https://www.cbar.az/currencies/today.xml";
 
-            // Həftəsonlarını (Şənbə/Bazar) nəzərə alaraq əvvəlki iş gününü tapırıq
             DateTime prevDate = DateTime.Now;
             if (prevDate.DayOfWeek == DayOfWeek.Monday)
-                prevDate = prevDate.AddDays(-3); // Bazar ertəsidirsə -> Cüməyə get
+                prevDate = prevDate.AddDays(-3);
             else if (prevDate.DayOfWeek == DayOfWeek.Sunday)
-                prevDate = prevDate.AddDays(-2); // Bazardırsa -> Cüməyə get
+                prevDate = prevDate.AddDays(-2);
             else
-                prevDate = prevDate.AddDays(-1); // Normal iş günüdürsə -> Dünənə get
+                prevDate = prevDate.AddDays(-1);
 
             string prevUrl = $"https://www.cbar.az/currencies/{prevDate:dd.MM.yyyy}.xml";
 
             try
             {
-                // 2. Həm bugünkü, həm də əvvəlki günün məlumatlarını eyni anda çəkirik
-                var todayTask = _httpClient.GetStringAsync(todayUrl);
-                var prevTask = _httpClient.GetStringAsync(prevUrl);
+                string todayXml = await FetchXmlAsync(todayUrl);
+                string prevXml = await FetchXmlAsync(prevUrl);
 
-                await Task.WhenAll(todayTask, prevTask);
+                if (string.IsNullOrEmpty(todayXml))
+                {
+                    throw new Exception("Bugünkü məzənnə XML-i CBAR-dan çəkilə bilmədi.");
+                }
 
-                XDocument todayDoc = XDocument.Parse(await todayTask);
-                XDocument prevDoc = XDocument.Parse(await prevTask);
+                XDocument todayDoc = XDocument.Parse(todayXml);
+                XDocument? prevDoc = !string.IsNullOrEmpty(prevXml) ? XDocument.Parse(prevXml) : null;
 
-                string[] targetCurrencies = { "USD", "EUR", "RUB", "GBP", "TRY" };
+                string[] targetCurrencies = { "USD", "EUR", "RUB", "GBP", "TRY", "GEL", "AED", "CHF", "CNY", "CAD" };
 
                 var valutesToday = todayDoc.Descendants("Valute")
                                            .Where(x => targetCurrencies.Contains(x.Attribute("Code")?.Value))
                                            .ToList();
 
-                // 3. Modeli hər iki məlumatla doldururuq
                 foreach (var val in valutesToday)
                 {
                     string code = val.Attribute("Code")!.Value;
-                    decimal rate = Convert.ToDecimal(val.Element("Value")!.Value, CultureInfo.InvariantCulture);
+                    string rawValue = val.Element("Value")?.Value?.Replace(',', '.') ?? "1";
 
-                    // Əvvəlki günün XML-dən eyni valyutanı tapırıq
-                    var prevVal = prevDoc.Descendants("Valute").FirstOrDefault(x => x.Attribute("Code")?.Value == code);
-                    decimal prevRate = rate; // Default olaraq bu günə bərabər edirik (birdən dünənki tapılmazsa xəta verməsin)
+                    decimal rate = Convert.ToDecimal(rawValue, CultureInfo.InvariantCulture);
 
-                    if (prevVal != null)
+                    decimal prevRate = rate;
+                    if (prevDoc != null)
                     {
-                        prevRate = Convert.ToDecimal(prevVal.Element("Value")!.Value, CultureInfo.InvariantCulture);
+                        var prevVal = prevDoc.Descendants("Valute").FirstOrDefault(x => x.Attribute("Code")?.Value == code);
+                        if (prevVal != null)
+                        {
+                            string rawPrevValue = prevVal.Element("Value")?.Value?.Replace(',', '.') ?? rawValue;
+                            prevRate = Convert.ToDecimal(rawPrevValue, CultureInfo.InvariantCulture);
+                        }
                     }
 
                     rates.Add(new CurrencyRateVM
                     {
                         Code = code,
                         Rate = rate,
-                        PreviousRate = prevRate, // YENİ: Dünənki kursu bura ötürürük
+                        PreviousRate = prevRate,
                         Symbol = GetCurrencySymbol(code)
                     });
                 }
+
+                // 🟢 3. YADDAŞA YAZILMA: CBAR-dan uğurla çəkilən məlumatları 1 saatlıq cache-ə atırıq
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+
+                _cache.Set(RatesCacheKey, rates, cacheOptions);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Valyuta çəkilərkən xəta: {ex.Message}");
 
-                // API işləməzsə və ya internet kəsilərsə, default dəyərlər (Vizual olaraq rəngləri görmək üçün bəzilərinə fərqli PreviousRate yazdım)
-                rates.Add(new CurrencyRateVM { Code = "USD", Symbol = "$", Rate = 1.70M, PreviousRate = 1.70M }); // Boz olacaq (Dəyişməyib)
-                rates.Add(new CurrencyRateVM { Code = "EUR", Symbol = "€", Rate = 1.85M, PreviousRate = 1.84M }); // Yaşıl olacaq (Artıb)
-                rates.Add(new CurrencyRateVM { Code = "TRY", Symbol = "₺", Rate = 0.051M, PreviousRate = 0.052M }); // Qırmızı olacaq (Azalıb)
+                rates = new List<CurrencyRateVM>
+                {
+                    new CurrencyRateVM { Code = "USD", Symbol = "$", Rate = 1.70M, PreviousRate = 1.70M },
+                    new CurrencyRateVM { Code = "EUR", Symbol = "€", Rate = 1.85M, PreviousRate = 1.84M },
+                    new CurrencyRateVM { Code = "TRY", Symbol = "₺", Rate = 0.051M, PreviousRate = 0.052M },
+                    new CurrencyRateVM { Code = "RUB", Symbol = "₽", Rate = 0.018M, PreviousRate = 0.018M },
+                    new CurrencyRateVM { Code = "GBP", Symbol = "£", Rate = 2.15M, PreviousRate = 2.14M },
+                    new CurrencyRateVM { Code = "GEL", Symbol = "₾", Rate = 0.63M, PreviousRate = 0.63M },
+                    new CurrencyRateVM { Code = "AED", Symbol = "د.إ", Rate = 0.46M, PreviousRate = 0.46M },
+                    new CurrencyRateVM { Code = "CHF", Symbol = "CHF", Rate = 1.92M, PreviousRate = 1.91M },
+                    new CurrencyRateVM { Code = "CNY", Symbol = "¥", Rate = 0.23M, PreviousRate = 0.23M },
+                    new CurrencyRateVM { Code = "CAD", Symbol = "CA$", Rate = 1.25M, PreviousRate = 1.25M }
+                };
             }
 
             return rates;
         }
 
-        private string GetCurrencySymbol(string code)
+        private async Task<string> FetchXmlAsync(string url)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+
+        // 🟢 STATIC öz yerində qaldı
+        public static string GetCurrencySymbol(string code)
         {
             return code switch
             {
@@ -99,6 +144,12 @@ namespace budget_planner.Services
                 "RUB" => "₽",
                 "GBP" => "£",
                 "TRY" => "₺",
+                "GEL" => "₾",
+                "AED" => "د.إ",
+                "CHF" => "CHF",
+                "CNY" => "¥",
+                "CAD" => "CA$",
+                "AZN" => "₼",
                 _ => code
             };
         }

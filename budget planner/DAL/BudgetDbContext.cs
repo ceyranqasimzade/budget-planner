@@ -29,7 +29,7 @@ namespace budget_planner.DAL
         // YENİ ƏLAVƏ EDİLDİ
         public DbSet<Subscription> Subscriptions { get; set; } = null!;
 
-
+        public DbSet<UpcomingPayment> UpcomingPayments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

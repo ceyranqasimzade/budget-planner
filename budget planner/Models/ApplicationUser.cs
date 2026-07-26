@@ -10,20 +10,17 @@ namespace budget_planner.Models
         public string FullName { get; set; } = null!;
         public BudgetRule? BudgetRule { get; set; }
 
-
-        public string? FamilyGroupId { get; set; } // Ailə üzvlərini bağlamaq üçün
+        // Kontrollerin işləməsi üçün əlavə edilən xassələr
+        public decimal TotalBalance { get; set; }
+        public decimal CashBalance { get; set; }
 
         public ICollection<Transaction> Transactions { get; set; }
             = new List<Transaction>();
 
-
         public ICollection<Card> Cards { get; set; }
             = new List<Card>();
 
-
         public ICollection<Goal> Goals { get; set; }
             = new List<Goal>();
-
-
     }
-    }
+}

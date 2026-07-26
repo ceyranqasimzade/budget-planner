@@ -1,32 +1,40 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    let themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
     const htmlElement = document.documentElement;
-    const savedTheme = localStorage.getItem('budget_theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-    function setTheme(theme) {
+
+    // Yaddaşdakı temanı oxu (yoxdursa 'light' götür)
+    const savedTheme = localStorage.getItem('budget_theme') || 'light';
+
+    // Temanı tətbiq edən funksiya
+    function applyTheme(theme) {
         htmlElement.setAttribute('data-bs-theme', theme);
         htmlElement.setAttribute('data-theme', theme);
         localStorage.setItem('budget_theme', theme);
 
-        if (themeToggleBtn) {
+        if (themeIcon) {
             if (theme === 'dark') {
-                themeToggleBtn.innerHTML = '<i class="fa-solid fa-sun" style="font-size: 1.2rem;"></i>';
+                // Qaranlıq rejimdə Günəş ikonu göstərilir
+                themeIcon.className = 'bi bi-sun-fill text-warning';
             } else {
-                themeToggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="font-size: 1.2rem;"></i>';
+                // İşıqlı rejimdə Ay ikonu göstərilir
+                themeIcon.className = 'bi bi-moon-stars-fill text-dark';
             }
         }
     }
-    setTheme(initialTheme);
+
+    // Əvvəlcədən seçilmiş temanı yükle
+    applyTheme(savedTheme);
+
+    // Düyməyə kliklədikdə
     if (themeToggleBtn) {
-        const newBtn = themeToggleBtn.cloneNode(true);
-        themeToggleBtn.parentNode.replaceChild(newBtn, themeToggleBtn);
-        themeToggleBtn = newBtn; 
         themeToggleBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const current = htmlElement.getAttribute('data-theme') || 'light';
-            const next = current === 'dark' ? 'light' : 'dark';
-            setTheme(next);
+
+            const currentTheme = htmlElement.getAttribute('data-bs-theme') || 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            applyTheme(nextTheme);
         });
     }
 });

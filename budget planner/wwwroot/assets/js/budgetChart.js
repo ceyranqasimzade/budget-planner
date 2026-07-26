@@ -1,10 +1,13 @@
-﻿let myChartInstance = null;
+﻿// ==========================================
+// YENİ ƏLAVƏ: GƏLİR VƏ XƏRC QRAFİKİ (POLAR AREA)
+// ==========================================
+let myChartInstance = null;
 
-async function renderChart() {
+async function renderPolarBudgetChart() {
     const ctx = document.getElementById('myBudgetChart');
     if (!ctx) return;
 
-    const currencySelector = document.getElementById('chartCurrencySelector');
+    const currencySelector = document.getElementById('chartCurrencySelector') || document.getElementById('globalCurrency');
     const targetCurrency = currencySelector ? currencySelector.value : 'AZN';
 
     const rawData = JSON.parse(ctx.getAttribute('data-totals') || '[]');
@@ -82,4 +85,7 @@ async function renderChart() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", renderChart);
+// Səhifə yükləndikdə Gəlir/Xərc qrafikini işə salır
+document.addEventListener("DOMContentLoaded", function () {
+    renderPolarBudgetChart();
+});

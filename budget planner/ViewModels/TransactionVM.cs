@@ -11,6 +11,7 @@ namespace budget_planner.ViewModels
         public string Currency { get; set; } = "AZN";
         public bool IsIncome { get; set; }
         public string? CategoryName { get; set; }
+        public string? Status { get; set; }
 
         // --- XƏTANI HƏLL EDƏN YENİ SƏTİRLƏR ---
         public int? CardId { get; set; }

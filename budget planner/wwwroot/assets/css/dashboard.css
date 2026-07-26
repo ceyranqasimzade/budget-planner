@@ -204,3 +204,86 @@ small.text-muted {
     justify-content: center;
     align-items: center;
 }
+/* ================= BANK KARTLARI (BANK CARDS) ================= */
+.bank-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.bank-card-item {
+    position: relative;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    /* Şəffaf dekorativ dairə effekti */
+    .bank-card-item::after {
+        content: '';
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .bank-card-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+    }
+
+.bank-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.bank-card-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    text-transform: capitalize;
+}
+
+.bank-card-delete {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #ffffff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 2;
+}
+
+    .bank-card-delete:hover {
+        background: rgba(239, 68, 68, 0.8);
+    }
+
+.bank-card-number {
+    font-family: 'Courier New', Courier, monospace !important;
+    letter-spacing: 2px;
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin-bottom: 0.75rem;
+}
+
+.bank-card-balance {
+    font-size: 1.35rem;
+    font-weight: 800;
+}

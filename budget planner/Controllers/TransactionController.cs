@@ -1,9 +1,14 @@
 ﻿using budget_planner.DAL;
 using budget_planner.Models;
+using budget_planner.Services;
 using budget_planner.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace budget_planner.Controllers
 {
@@ -12,11 +17,45 @@ namespace budget_planner.Controllers
     {
         private readonly BudgetDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly CurrencyService _currencyService; // Canlı CBAR məzənnə servisi
 
-        public TransactionController(BudgetDbContext context, UserManager<ApplicationUser> userManager)
+        public TransactionController(
+            BudgetDbContext context,
+            UserManager<ApplicationUser> userManager,
+            CurrencyService currencyService)
         {
             _context = context;
             _userManager = userManager;
+            _currencyService = currencyService;
+        }
+
+        // GET: /Transaction/Index (Bütün əməliyyatların siyahısı)
+        public async Task<IActionResult> Index()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var transactions = await _context.Transactions
+                .Include(t => t.Category)
+                .Include(t => t.Card)
+                .Where(t => t.UserId == user.Id && !t.IsDeleted)
+                .OrderByDescending(t => t.Date)
+                .Select(t => new TransactionVM
+                {
+                    Id = t.Id,
+                    Amount = t.Amount,
+                    Description = t.Description,
+                    Date = t.Date,
+                    IsIncome = t.IsIncome,
+                    CategoryName = t.Category != null ? t.Category.Name : "Ümumi",
+                    Currency = t.Currency ?? "AZN",
+                    CardId = t.CardId,
+                    CardName = t.Card != null ? t.Card.CardName : "Nağd",
+                    Status = t.Status // <-- BURAYA ƏLAVƏ EDİLDİ
+                })
+                .ToListAsync();
+
+            return View(transactions);
         }
 
         [HttpPost]
@@ -34,7 +73,9 @@ namespace budget_planner.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            string currency = "AZN"; // Nağd əməliyyat üçün susmaya görə valyuta
+            // Formadan gələn valyutanı götürürük (boşdursa AZN istifadə olunur)
+            string transactionCurrency = !string.IsNullOrWhiteSpace(model.Currency) ? model.Currency : "AZN";
+            string currency = transactionCurrency;
 
             // 1. KART BALANSININ YENİLƏNMƏSİ (Əgər kart seçilibsə)
             if (model.CardId.HasValue && model.CardId.Value > 0)
@@ -47,21 +88,26 @@ namespace budget_planner.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
+                // --- CANLI MƏZƏNNƏ İLƏ KONVERTASİYA MƏNTİQİ ---
+                // Əgər kartın valyutası əməliyyat valyutasından fərqlidirsə, CBAR API vasitəsilə çeviririk
+                decimal rate = await GetExchangeRateAsync(transactionCurrency, card.Currency);
+                decimal convertedAmount = model.Amount * rate;
+
                 if (model.IsIncome)
                 {
-                    card.Balance += model.Amount;
+                    card.Balance += convertedAmount;
                 }
                 else
                 {
-                    if (card.Balance < model.Amount)
+                    if (card.Balance < convertedAmount)
                     {
-                        TempData["ErrorMessage"] = "Kartda kifayət qədər vəsait yoxdur!";
+                        TempData["ErrorMessage"] = $"Kartda kifayət qədər vəsait yoxdur! (Tələb olunan: {convertedAmount:N2} {card.Currency})";
                         return RedirectToAction("Index", "Home");
                     }
-                    card.Balance -= model.Amount;
+                    card.Balance -= convertedAmount;
                 }
 
-                currency = card.Currency; // Kartın öz valyutası
+                currency = transactionCurrency; // Əməliyyatın öz valyutası bazaya yazılır
             }
 
             // 2. KATEQORİYA MƏNTİQİ (Siyahıdan seçilibsə / yeni yazılıbsa / boşdursa)
@@ -107,7 +153,7 @@ namespace budget_planner.Controllers
                 Amount = model.Amount,
                 Description = model.Description,
                 IsIncome = model.IsIncome,
-                Date = DateTime.Now,
+                Date = model.Date != default ? model.Date : DateTime.Now,
                 Currency = currency,
                 UserId = user.Id,
                 CategoryId = categoryId,
@@ -119,6 +165,27 @@ namespace budget_planner.Controllers
 
             TempData["SuccessMessage"] = "Əməliyyat uğurla qeydə alındı!";
             return RedirectToAction("Index", "Home");
+        }
+
+        // --- CANLI CBAR MƏZƏNNƏSİNİ İSTİFADƏ EDƏN KÖMƏKÇİ FUNKSİYA ---
+        private async Task<decimal> GetExchangeRateAsync(string fromCurrency, string toCurrency)
+        {
+            if (fromCurrency == toCurrency) return 1.0m;
+
+            // CurrencyService-dən canlı məzənnələri çəkirik
+            var rates = await _currencyService.GetExchangeRatesAsync();
+
+            // CBAR məzənnələri AZN-ə nəzərən olduğu üçün AZN məzənnəsini 1.0 götürürük
+            decimal fromRateInAzn = fromCurrency == "AZN"
+                ? 1.0m
+                : rates.FirstOrDefault(r => r.Code == fromCurrency)?.Rate ?? 1.0m;
+
+            decimal toRateInAzn = toCurrency == "AZN"
+                ? 1.0m
+                : rates.FirstOrDefault(r => r.Code == toCurrency)?.Rate ?? 1.0m;
+
+            // Nisbəti hesablayırıq
+            return fromRateInAzn / toRateInAzn;
         }
     }
 }

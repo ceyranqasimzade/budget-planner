@@ -1,7 +1,7 @@
 using budget_planner.DAL;
 using budget_planner.ViewModels;
 using budget_planner.Services;
-using budget_planner.Models; // ApplicationUser modelinizin olduğu yer
+using budget_planner.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace budget_planner.Controllers
 {
-    // [Authorize] silindi - Ana səhifə hər kəsə açıqdır
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly BudgetDbContext _context;
         private readonly CurrencyService _currencyService;
-        private readonly UserManager<ApplicationUser> _userManager; // AppUser əvəzinə ApplicationUser yazıldı
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public HomeController(
             BudgetDbContext context,
@@ -33,14 +33,39 @@ namespace budget_planner.Controllers
         public async Task<IActionResult> Index()
         {
             var vm = new DashboardVM();
-
-            // 0. Daxil olan istifadəçini yoxlayırıq
             var user = await _userManager.GetUserAsync(User);
 
-            // Əgər istifadəçi sistemə daxil olubsa, onun şəxsi məlumatlarını çəkirik
+            if (user == null) return RedirectToAction("Login", "Account");
+
             if (user != null)
             {
-                // 1. Yalnız daxil olan istifadəçinin silinməmiş kartlarını çəkirik
+                // --- YENİ ƏLAVƏ EDİLƏCƏK KOD ---
+                // Ödənilməmiş və vaxtı ən yaxın olan ilk 5 ödənişi çəkirik
+                var upcomingPayments = await _context.UpcomingPayments
+                    .Where(u => u.UserId == user.Id && !u.IsPaid)
+                    .OrderBy(u => u.DueDate)
+                    .Take(5)
+                    .ToListAsync();
+
+                ViewBag.UpcomingPayments = upcomingPayments;
+                // --------------------------------
+
+                // Canlı kursları çəkirik
+                var rates = await _currencyService.GetExchangeRatesAsync();
+
+                // DİNANİK ÇEVİRMƏ METODU: İstənilən məbləğ və valyutanı AZN-ə çevirir
+                decimal ConvertToAzn(decimal amount, string? currency)
+                {
+                    if (string.IsNullOrWhiteSpace(currency) || currency.Equals("AZN", StringComparison.OrdinalIgnoreCase))
+                        return amount;
+
+                    var rateObj = rates?.FirstOrDefault(r => r.Code.Equals(currency, StringComparison.OrdinalIgnoreCase));
+                    decimal rate = rateObj != null ? rateObj.Rate : 1.0m;
+
+                    return amount * rate;
+                }
+
+                // 1. İstifadəçinin kartlarını gətiririk
                 vm.Cards = await _context.Cards
                     .Where(c => c.UserId == user.Id && !c.IsDeleted)
                     .Select(c => new CardVM
@@ -53,36 +78,65 @@ namespace budget_planner.Controllers
                     })
                     .ToListAsync();
 
-                // 2. Nağd pul balansını hesablayırıq (CardId == null olanlar)
-                var cashIncome = await _context.Transactions
-                    .Where(t => t.UserId == user.Id && t.CardId == null && t.IsIncome && !t.IsDeleted)
-                    .SumAsync(t => (decimal?)t.Amount) ?? 0;
+                // 2. Nağd pul balansını hesablayırıq (Valyutalar AZN-ə çevrilərək toplanır)
+                var cashTransactions = await _context.Transactions
+                    .Where(t => t.UserId == user.Id && t.CardId == null && !t.IsDeleted)
+                    .ToListAsync();
 
-                var cashExpense = await _context.Transactions
-                    .Where(t => t.UserId == user.Id && t.CardId == null && !t.IsIncome && !t.IsDeleted)
-                    .SumAsync(t => (decimal?)t.Amount) ?? 0;
+                var cashIncome = cashTransactions
+                    .Where(t => t.IsIncome)
+                    .Sum(t => ConvertToAzn(t.Amount, t.Currency));
+
+                var cashExpense = cashTransactions
+                    .Where(t => !t.IsIncome)
+                    .Sum(t => ConvertToAzn(t.Amount, t.Currency));
 
                 vm.CashBalance = cashIncome - cashExpense;
 
-                // 3. Ümumi balansı hesablayırıq (Kartlar + Nağd Pul)
-                vm.TotalBalance = vm.Cards.Sum(c => c.Balance) + vm.CashBalance;
+                // =========================================================================
+                // 🟢 DÜZGÜN: Hər kartın balansını AZN-ə çevirib toplayır (Sizin verdiyiniz kod)
+                // =========================================================================
+                decimal totalBalanceInAZN = 0;
 
-                // 4. Bu ayın gəlir və xərclərini hesablayırıq
+                foreach (var card in vm.Cards)
+                {
+                    if (card.Currency == "AZN")
+                    {
+                        totalBalanceInAZN += card.Balance;
+                    }
+                    else
+                    {
+                        // Kartın valyutasına uyğun kursu tapırıq
+                        var rateObj = rates?.FirstOrDefault(r => r.Code.Equals(card.Currency, StringComparison.OrdinalIgnoreCase));
+
+                        decimal rate = rateObj != null ? rateObj.Rate : 1.0m; // Əgər tapılmazsa 1 götürsün
+
+                        // Məsələn: 1000 TRY * 0.051 = 51 AZN
+                        totalBalanceInAZN += card.Balance * rate;
+                    }
+                }
+
+                // Kartların AZN cəmi + Nağd pul balansının cəmi
+                vm.TotalBalance = totalBalanceInAZN + vm.CashBalance;
+                // =========================================================================
+
+                // 4. Bu ayın gəlir və xərclərini AZN ilə cəmləyirik
                 var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
 
-                var thisMonthTransactions = _context.Transactions
-                    .Where(t => t.UserId == user.Id && t.Date.Month == currentMonth && t.Date.Year == currentYear && !t.IsDeleted);
+                var thisMonthTransactions = await _context.Transactions
+                    .Where(t => t.UserId == user.Id && t.Date.Month == currentMonth && t.Date.Year == currentYear && !t.IsDeleted)
+                    .ToListAsync();
 
-                vm.TotalIncome = await thisMonthTransactions
+                vm.TotalIncome = thisMonthTransactions
                     .Where(t => t.IsIncome)
-                    .SumAsync(t => (decimal?)t.Amount) ?? 0;
+                    .Sum(t => ConvertToAzn(t.Amount, t.Currency));
 
-                vm.TotalExpense = await thisMonthTransactions
+                vm.TotalExpense = thisMonthTransactions
                     .Where(t => !t.IsIncome)
-                    .SumAsync(t => (decimal?)t.Amount) ?? 0;
+                    .Sum(t => ConvertToAzn(t.Amount, t.Currency));
 
-                // 5. Son əməliyyatları çəkirik (Son 5 əməliyyat)
+                // 5. Son 5 əməliyyatı çəkirik
                 vm.LastTransactions = await _context.Transactions
                     .Include(t => t.Category)
                     .Include(t => t.Card)
@@ -97,51 +151,55 @@ namespace budget_planner.Controllers
                         Date = t.Date,
                         IsIncome = t.IsIncome,
                         CategoryName = t.Category != null ? t.Category.Name : "Ümumi",
-                        Currency = t.Currency ?? "₼",
+                        Currency = t.Currency ?? "AZN",
                         CardId = t.CardId,
                         CardName = t.Card != null ? t.Card.CardName : null
                     })
                     .ToListAsync();
 
-                // 7. Qrafik (Chart.js) üçün xərclərin kateqoriyalara görə bölgüsü
-                vm.CategoryExpenses = await _context.Transactions
+                // 6. Qrafik üçün xərclərin kateqoriya üzrə AZN bölgüsü
+                var expenseTransactionsForChart = await _context.Transactions
+                    .Include(t => t.Category)
                     .Where(t => t.UserId == user.Id && !t.IsDeleted && !t.IsIncome && t.Category != null)
+                    .ToListAsync();
+
+                vm.CategoryExpenses = expenseTransactionsForChart
                     .GroupBy(t => t.Category.Name)
                     .Select(g => new CategoryExpenseVM
                     {
                         CategoryName = g.Key,
-                        Amount = g.Sum(t => t.Amount)
+                        Amount = g.Sum(t => ConvertToAzn(t.Amount, t.Currency))
                     })
-                    .ToListAsync();
+                    .ToList();
 
-                // --- YENİ ƏLAVƏ EDİLƏN HİSSƏ: TRENDLƏR, MƏSLƏHƏTLƏR, BİLDİRİŞLƏR ---
-
-                // 8. TREND (FAİZ) HESABLAMALARI
+                // 7. Trend (Faiz) hesablamaları
                 var firstDayOfThisMonth = new DateTime(currentYear, currentMonth, 1);
                 var firstDayOfLastMonth = firstDayOfThisMonth.AddMonths(-1);
 
-                var lastMonthTransactions = _context.Transactions
-                    .Where(t => t.UserId == user.Id && t.Date >= firstDayOfLastMonth && t.Date < firstDayOfThisMonth && !t.IsDeleted);
+                var lastMonthTransactions = await _context.Transactions
+                    .Where(t => t.UserId == user.Id && t.Date >= firstDayOfLastMonth && t.Date < firstDayOfThisMonth && !t.IsDeleted)
+                    .ToListAsync();
 
-                var lastMonthIncome = await lastMonthTransactions
-                    .Where(t => t.IsIncome)
-                    .SumAsync(t => (decimal?)t.Amount) ?? 0;
+                var lastMonthIncome = lastMonthTransactions.Where(t => t.IsIncome).Sum(t => ConvertToAzn(t.Amount, t.Currency));
+                var lastMonthExpense = lastMonthTransactions.Where(t => !t.IsIncome).Sum(t => ConvertToAzn(t.Amount, t.Currency));
 
-                var lastMonthExpense = await lastMonthTransactions
-                    .Where(t => !t.IsIncome)
-                    .SumAsync(t => (decimal?)t.Amount) ?? 0;
-
+                // Gəlir trendi
                 if (lastMonthIncome > 0)
-                {
                     vm.IncomeTrend = ((vm.TotalIncome - lastMonthIncome) / lastMonthIncome) * 100;
-                }
+                else if (vm.TotalIncome > 0)
+                    vm.IncomeTrend = 100; // Keçən ay 0, bu ay gəlir varsa = 100% artım
+                else
+                    vm.IncomeTrend = 0;
 
+                // Xərc trendi
                 if (lastMonthExpense > 0)
-                {
                     vm.ExpenseTrend = ((vm.TotalExpense - lastMonthExpense) / lastMonthExpense) * 100;
-                }
+                else if (vm.TotalExpense > 0)
+                    vm.ExpenseTrend = 100; // Keçən ay 0, bu ay xərc varsa = 100% artım
+                else
+                    vm.ExpenseTrend = 0;
 
-                // 9. DİNAMİK MALİYYƏ MƏSLƏHƏTİ
+                // 8. Maliyyə məsləhəti və xəbərdarlıqlar
                 if (vm.TotalIncome > 0)
                 {
                     var netSavings = vm.TotalIncome - vm.TotalExpense;
@@ -157,21 +215,19 @@ namespace budget_planner.Controllers
                     }
                 }
 
-                // 10. DİNAMİK BÜDCƏ XƏBƏRDARLIĞI
                 if (vm.CategoryExpenses != null && vm.CategoryExpenses.Any() && vm.TotalExpense > 0)
                 {
                     var topCategory = vm.CategoryExpenses.OrderByDescending(c => c.Amount).FirstOrDefault();
                     if (topCategory != null)
                     {
                         var percentOfTotal = (topCategory.Amount / vm.TotalExpense) * 100;
-                        if (percentOfTotal >= 40) // Ümumi xərclərin 40%-ni keçirsə xəbərdarlıq edir
+                        if (percentOfTotal >= 40)
                         {
                             vm.BudgetWarning = $"\"{topCategory.CategoryName}\" kateqoriyası ümumi xərclərinizin {percentOfTotal:F0}%-ni təşkil edir. Limitinizə diqqət edin!";
                         }
                     }
                 }
 
-                // 11. DİNAMİK BİLDİRİŞLƏR (Zəng ikonu üçün)
                 if (!string.IsNullOrEmpty(vm.BudgetWarning))
                 {
                     vm.Notifications.Add(new NotificationVM
@@ -194,7 +250,7 @@ namespace budget_planner.Controllers
                     });
                 }
 
-                // 12. QARŞIDAN GƏLƏN ÖDƏNİŞLƏRİ ÇƏKMƏK
+                // 9. Qarşıdan gələn ödənişlər və Hədəflər
                 vm.UpcomingPayments = await _context.Subscriptions
                     .Where(s => s.UserId == user.Id && !s.IsDeleted)
                     .OrderBy(s => s.NextPaymentDate)
@@ -209,7 +265,6 @@ namespace budget_planner.Controllers
                     })
                     .ToListAsync();
 
-                // 13. HƏDƏFLƏRİ ÇƏKMƏK (Sizin Goal modelinizə uyğunlaşdırıldı)
                 vm.ActiveGoals = await _context.Goals
                     .Where(g => g.UserId == user.Id && !g.IsDeleted)
                     .OrderBy(g => g.Deadline)
@@ -225,7 +280,7 @@ namespace budget_planner.Controllers
                     .ToListAsync();
             }
 
-            // 6. Gəlir/Xərc modalları üçün kateqoriyalar siyahısını çəkirik (Qonaqlar üçün də işləyir)
+            // Gəlir/Xərc modalları üçün kateqoriyalar
             vm.Categories = await _context.Categories
                 .Where(c => !c.IsDeleted)
                 .Select(c => new CategorySelectVM
@@ -235,11 +290,232 @@ namespace budget_planner.Controllers
                 })
                 .ToListAsync();
 
-            // 8. Valyuta və Simvol parametrləri
             vm.BaseCurrencySymbol = "₼";
             vm.ExchangeRates = await _currencyService.GetExchangeRatesAsync();
 
             return View(vm);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetExpenseChartData()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Json(new { labels = new string[0], values = new decimal[0] });
+            }
+
+            var rates = await _currencyService.GetExchangeRatesAsync();
+
+            decimal ConvertToAzn(decimal amount, string? currency)
+            {
+                if (string.IsNullOrWhiteSpace(currency) || currency.Equals("AZN", StringComparison.OrdinalIgnoreCase))
+                    return amount;
+
+                var rateObj = rates?.FirstOrDefault(r => r.Code.Equals(currency, StringComparison.OrdinalIgnoreCase));
+                decimal rate = rateObj != null ? rateObj.Rate : 1.0m;
+
+                return amount * rate;
+            }
+
+            var categoryExpensesRaw = await _context.Transactions
+                .Include(t => t.Category)
+                .Where(t => t.UserId == user.Id && !t.IsDeleted && !t.IsIncome && t.Category != null)
+                .ToListAsync();
+
+            var categoryExpenses = categoryExpensesRaw
+                .GroupBy(t => t.Category.Name)
+                .Select(g => new
+                {
+                    CategoryName = g.Key,
+                    Amount = g.Sum(t => ConvertToAzn(t.Amount, t.Currency))
+                })
+                .ToList();
+
+            var labels = categoryExpenses.Select(x => x.CategoryName).ToArray();
+            var values = categoryExpenses.Select(x => x.Amount).ToArray();
+
+            return Json(new { labels, values });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateTransaction(TransactionCreateVM model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Zəhmət olmasa formadakı məlumatları düzgün doldurun.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            int categoryId = 0;
+
+            if (!string.IsNullOrWhiteSpace(model.NewCategoryName))
+            {
+                var trimmedName = model.NewCategoryName.Trim();
+                var existingCategory = await _context.Categories
+                    .FirstOrDefaultAsync(c => c.Name.ToLower() == trimmedName.ToLower() && !c.IsDeleted);
+
+                if (existingCategory != null)
+                {
+                    categoryId = existingCategory.Id;
+                }
+                else
+                {
+                    var newCategory = new Category
+                    {
+                        Name = trimmedName,
+                        Type = model.IsIncome ? "Income" : "Expense"
+                    };
+                    _context.Categories.Add(newCategory);
+                    await _context.SaveChangesAsync();
+
+                    categoryId = newCategory.Id;
+                }
+            }
+            else if (model.CategoryId.HasValue && model.CategoryId.Value > 0)
+            {
+                var categoryExists = await _context.Categories.AnyAsync(c => c.Id == model.CategoryId.Value && !c.IsDeleted);
+                if (!categoryExists)
+                {
+                    TempData["ErrorMessage"] = "Seçilmiş kateqoriya bazada tapılmadı.";
+                    return RedirectToAction(nameof(Index));
+                }
+                categoryId = model.CategoryId.Value;
+            }
+            else if (!string.IsNullOrWhiteSpace(model.CategoryName))
+            {
+                var trimmedName = model.CategoryName.Trim();
+                var category = await _context.Categories
+                    .FirstOrDefaultAsync(c => c.Name.ToLower() == trimmedName.ToLower() && !c.IsDeleted);
+
+                if (category != null)
+                {
+                    categoryId = category.Id;
+                }
+                else
+                {
+                    var newCategory = new Category
+                    {
+                        Name = trimmedName,
+                        Type = model.IsIncome ? "Income" : "Expense"
+                    };
+                    _context.Categories.Add(newCategory);
+                    await _context.SaveChangesAsync();
+
+                    categoryId = newCategory.Id;
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Zəhmət olmasa bir kateqoriya seçin və ya yeni kateqoriya daxil edin.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            string selectedCurrency = !string.IsNullOrWhiteSpace(model.Currency) ? model.Currency : "AZN";
+
+            var transaction = new Transaction
+            {
+                UserId = user.Id,
+                Amount = model.Amount,
+                Description = model.Description,
+                IsIncome = model.IsIncome,
+                CardId = model.CardId,
+                CategoryId = categoryId,
+                Currency = selectedCurrency,
+                Date = model.Date != default ? model.Date : DateTime.Now
+            };
+
+            // 🟢 Əgər əməliyyat karta edilirsə, balans yoxlanılır və konvertasiya ilə güncəllənir
+            if (model.CardId.HasValue)
+            {
+                var card = await _context.Cards
+                    .FirstOrDefaultAsync(c => c.Id == model.CardId.Value && c.UserId == user.Id && !c.IsDeleted);
+
+                if (card != null)
+                {
+                    var rates = await _currencyService.GetExchangeRatesAsync();
+
+                    decimal fromRate = selectedCurrency.Equals("AZN", StringComparison.OrdinalIgnoreCase)
+                        ? 1.0m
+                        : rates?.FirstOrDefault(r => r.Code.Equals(selectedCurrency, StringComparison.OrdinalIgnoreCase))?.Rate ?? 1.0m;
+
+                    decimal toRate = (card.Currency ?? "AZN").Equals("AZN", StringComparison.OrdinalIgnoreCase)
+                        ? 1.0m
+                        : rates?.FirstOrDefault(r => r.Code.Equals(card.Currency, StringComparison.OrdinalIgnoreCase))?.Rate ?? 1.0m;
+
+                    decimal convertedAmount = model.Amount * (fromRate / toRate);
+
+                    if (model.IsIncome)
+                    {
+                        card.Balance += convertedAmount;
+                    }
+                    else
+                    {
+                        // ❌ Mənfiyə düşmə xəbərdarlığı
+                        if (card.Balance < convertedAmount)
+                        {
+                            TempData["ErrorMessage"] = "Kartda kifayət qədər vəsait yoxdur.";
+                            return RedirectToAction(nameof(Index));
+                        }
+
+                        card.Balance -= convertedAmount;
+                    }
+                }
+            }
+            // 🟡 Əgər əməliyyat NAĞD PUL ilə edilirsə (CardId yoxdursa)
+            else
+            {
+                // Yalnız nağd XƏRC yazıldıqda balansı yoxlayırıq
+                if (!model.IsIncome)
+                {
+                    var rates = await _currencyService.GetExchangeRatesAsync();
+
+                    decimal ConvertToAzn(decimal amount, string? currency)
+                    {
+                        if (string.IsNullOrWhiteSpace(currency) || currency.Equals("AZN", StringComparison.OrdinalIgnoreCase))
+                            return amount;
+
+                        var rateObj = rates?.FirstOrDefault(r => r.Code.Equals(currency, StringComparison.OrdinalIgnoreCase));
+                        return amount * (rateObj != null ? rateObj.Rate : 1.0m);
+                    }
+
+                    // İstifadəçinin mövcud bütün nağd əməliyyatlarını gətiririk
+                    var cashTransactions = await _context.Transactions
+                        .Where(t => t.UserId == user.Id && t.CardId == null && !t.IsDeleted)
+                        .ToListAsync();
+
+                    decimal cashIncome = cashTransactions
+                        .Where(t => t.IsIncome)
+                        .Sum(t => ConvertToAzn(t.Amount, t.Currency));
+
+                    decimal cashExpense = cashTransactions
+                        .Where(t => !t.IsIncome)
+                        .Sum(t => ConvertToAzn(t.Amount, t.Currency));
+
+                    decimal currentCashBalance = cashIncome - cashExpense;
+                    decimal newExpenseInAzn = ConvertToAzn(model.Amount, selectedCurrency);
+
+                    // ❌ Nağd pul kifayət etmirsə əməliyyatı dayandırırıq
+                    if (currentCashBalance < newExpenseInAzn)
+                    {
+                        TempData["ErrorMessage"] = $"Nağd balansı kifayət etmir! Mövcud Nağd Balansınız: {currentCashBalance:N2} AZN";
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+            }
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Əməliyyat uğurla əlavə edildi!";
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

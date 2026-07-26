@@ -1,5 +1,5 @@
 ﻿@using System.Text.Json
-@model IEnumerable<budget_planner.Models.Transaction>
+@model IEnumerable<budget_planner.ViewModels.TransactionVM>
 @{
     ViewData["Title"] = "Tranzaksiyalar Paneli";
 
@@ -185,7 +185,7 @@
                         <td class="text-secondary text-center small fw-bold">@item.Date.ToString("dd MMM yyyy")</td>
                         <td class="fw-semibold text-dark text-wrap">@item.Description</td>
                         <td class="text-center align-middle">
-                            @item.Category
+                            @item.CategoryName
                         </td>
                         <td class="text-end fw-bold @(item.IsIncome ? "text-success" : "text-danger")" data-amount="@item.Amount" data-currency="@item.Currency">
                             @(item.IsIncome ? "+" : "-") @item.Amount.ToString("N2")

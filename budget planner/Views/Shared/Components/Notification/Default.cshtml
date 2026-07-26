@@ -1,0 +1,61 @@
+﻿@model List<budget_planner.ViewModels.NotificationVM>
+
+<div class="dropdown">
+    <button class="icon-btn position-relative d-flex align-items-center justify-content-center"
+            type="button"
+            id="notificationDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style="background: transparent; border: none; color: inherit; padding: 8px;">
+
+        <i class="fa-regular fa-bell fs-5"></i>
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <!-- Əgər bildiriş varsa, qırmızı nöqtəni göstər -->
+            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-warning border border-light rounded-circle" style="width: 10px; height: 10px; margin-top: 5px; margin-left: -5px;">
+                <span class="visually-hidden">Yeni bildirişlər</span>
+            </span>
+        }
+    </button>
+
+    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="notificationDropdown" style="width: 320px; border-radius: 12px;">
+        <li>
+            <div class="d-flex justify-content-between align-items-center px-2">
+                <h6 class="dropdown-header fw-bold text-dark fs-6 p-0">Bildirişlər</h6>
+                @if (Model != null && Model.Count > 0)
+                {
+                    <span class="badge bg-danger rounded-pill">@Model.Count</span>
+                }
+            </div>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <li>
+                <div class="p-3 text-center text-muted small">
+                    Heç bir yeni bildirişiniz yoxdur.
+                </div>
+            </li>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <li class="mb-2">
+                    <div class="p-3 rounded" style="background-color: #fdf5e6; border-left: 4px solid #f59e0b;">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="@item.IconClass @item.TextColorClass"></i>
+                            <small class="fw-bold text-dark d-block mb-0">@item.Title</small>
+                        </div>
+                        <small class="text-muted d-block ms-4">@item.Message</small>
+                    </div>
+                </li>
+            }
+        }
+
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-center small text-primary fw-bold" href="#">Bütün bildirişlərə bax</a></li>
+    </ul>
+</div>
