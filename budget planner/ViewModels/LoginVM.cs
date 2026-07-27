@@ -4,9 +4,8 @@ namespace budget_planner.ViewModels
 {
     public class LoginVM
     {
-        [Required(ErrorMessage = "E-poçt vacibdir")]
-        [EmailAddress]
-        public string Email { get; set; } = null!;
+        [Required(ErrorMessage = "İstifadəçi adı və ya e-poçt daxil etmək məcburidir")]
+        public string UsernameOrEmail { get; set; } = null!;
 
         [Required(ErrorMessage = "Şifrə vacibdir")]
         [DataType(DataType.Password)]

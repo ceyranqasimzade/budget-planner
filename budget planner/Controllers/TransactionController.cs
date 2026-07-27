@@ -2,17 +2,16 @@
 using budget_planner.Models;
 using budget_planner.Services;
 using budget_planner.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace budget_planner.Controllers
 {
-    [Authorize]
     public class TransactionController : Controller
     {
         private readonly BudgetDbContext _context;
@@ -33,7 +32,12 @@ namespace budget_planner.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+
+            // 🟢 1-Cİ HƏLL: Login səhifəsinə atmaq əvəzinə qonaqlar üçün boş siyahı qaytarırıq
+            if (user == null)
+            {
+                return View(new List<TransactionVM>());
+            }
 
             var transactions = await _context.Transactions
                 .Include(t => t.Category)
@@ -51,7 +55,7 @@ namespace budget_planner.Controllers
                     Currency = t.Currency ?? "AZN",
                     CardId = t.CardId,
                     CardName = t.Card != null ? t.Card.CardName : "Nağd",
-                    Status = t.Status // <-- BURAYA ƏLAVƏ EDİLDİ
+                    Status = t.Status
                 })
                 .ToListAsync();
 
@@ -68,9 +72,12 @@ namespace budget_planner.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
+
+            // 🟢 2-Cİ HƏLL: Loginə atmaq əvəzinə qonaq istifadəçi üçün sınaq rejimini aktiv edirik
             if (user == null)
             {
-                return RedirectToAction("Login", "Account");
+                TempData["SuccessMessage"] = "Əməliyyat sınaq rejimində qeydə alındı! Saytdan çıxdıqda və ya səhifəni yenilədikdə məlumatlar sıfırlanacaq.";
+                return RedirectToAction("Index", "Home");
             }
 
             // Formadan gələn valyutanı götürürük (boşdursa AZN istifadə olunur)
@@ -89,7 +96,6 @@ namespace budget_planner.Controllers
                 }
 
                 // --- CANLI MƏZƏNNƏ İLƏ KONVERTASİYA MƏNTİQİ ---
-                // Əgər kartın valyutası əməliyyat valyutasından fərqlidirsə, CBAR API vasitəsilə çeviririk
                 decimal rate = await GetExchangeRateAsync(transactionCurrency, card.Currency);
                 decimal convertedAmount = model.Amount * rate;
 

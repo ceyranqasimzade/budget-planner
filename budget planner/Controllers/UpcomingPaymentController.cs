@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace budget_planner.Controllers
 {
-    [Authorize]
     public class UpcomingPaymentController : Controller
     {
         private readonly BudgetDbContext _context;
@@ -26,7 +26,13 @@ namespace budget_planner.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+
+            // 🟢 1-Cİ HƏLL: Qonaqlar üçün Login əvəzinə boş siyahı və boş kartlar göndəririk
+            if (user == null)
+            {
+                ViewBag.Cards = new List<Card>();
+                return View(new List<UpcomingPayment>());
+            }
 
             var payments = await _context.UpcomingPayments
                 .Where(u => u.UserId == user.Id)
@@ -47,7 +53,13 @@ namespace budget_planner.Controllers
         public async Task<IActionResult> Create(UpcomingPayment model)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+
+            // 🟢 2-Cİ HƏLL: Qonaq istifadəçi üçün sınaq rejimi bildirişi
+            if (user == null)
+            {
+                TempData["SuccessMessage"] = "Qarşıdan gələn ödəniş sınaq rejimində əlavə edildi! Məlumatlar yadda saxlanılmayacaq.";
+                return RedirectToAction(nameof(Index));
+            }
 
             ModelState.Remove("UserId");
             ModelState.Remove("User");
@@ -84,7 +96,13 @@ namespace budget_planner.Controllers
         public async Task<IActionResult> MarkAsPaid(int id, string paymentMethod)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+
+            // 🟢 3-CÜ HƏLL: Sınaq rejimi bildirişi
+            if (user == null)
+            {
+                TempData["SuccessMessage"] = "Ödəniş sınaq rejimində icra olundu! Saytdan çıxdıqda sıfırlanacaq.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var payment = await _context.UpcomingPayments
                 .FirstOrDefaultAsync(u => u.Id == id && u.UserId == user.Id);
@@ -183,7 +201,13 @@ namespace budget_planner.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+
+            // 🟢 4-CÜ HƏLL: Sınaq rejimi bildirişi
+            if (user == null)
+            {
+                TempData["SuccessMessage"] = "Ödəniş sınaq rejimində silindi!";
+                return RedirectToAction(nameof(Index));
+            }
 
             var payment = await _context.UpcomingPayments
                 .FirstOrDefaultAsync(u => u.Id == id && u.UserId == user.Id);

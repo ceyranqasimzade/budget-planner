@@ -93,32 +93,10 @@ function toggleCardField(selectElement) {
 
 // AUTH YOXLANIŞI VƏ MODAL AÇILIŞI
 function openModalIfAuth(modalId) {
-    if (!window.isUserAuthenticated) {
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Diqqət!',
-                text: 'Əməliyyat etmək üçün zəhmət olmasa sistemə daxil olun və ya qeydiyyatdan keçin.',
-                showCancelButton: true,
-                confirmButtonText: 'Daxil Ol',
-                cancelButtonText: 'Bağla',
-                confirmButtonColor: '#198754'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '/Account/Login';
-                }
-            });
-        } else {
-            if (confirm('Əməliyyat etmək üçün zəhmət olmasa sistemə daxil olun.')) {
-                window.location.href = '/Account/Login';
-            }
-        }
-    } else {
-        var targetElement = document.querySelector(modalId);
-        if (targetElement && typeof bootstrap !== 'undefined') {
-            var myModal = new bootstrap.Modal(targetElement);
-            myModal.show();
-        }
+    var targetElement = document.querySelector(modalId);
+    if (targetElement && typeof bootstrap !== 'undefined') {
+        var myModal = new bootstrap.Modal(targetElement);
+        myModal.show();
     }
 }
 
@@ -290,13 +268,13 @@ document.addEventListener("DOMContentLoaded", function () {
 // ==========================================
 // DATEPICKER (FLATPICKR) İNİSİALİZASİYASI
 // ==========================================
-    document.addEventListener("DOMContentLoaded", function () {
-        // Təqvimin işə salınması
-        flatpickr(".datepicker", {
-            locale: "az",               // Azərbaycan dili
-            dateFormat: "Y-m-d",        // Arxa planda serverə gedən gizli format (C# üçün ideal)
-            altInput: true,             // İstifadəçiyə fərqli format göstərməyə icazə ver
-            altFormat: "d.m.Y",         // Ekranda görünən format (26.07.2026)
-            allowInput: true            // Əllə yazmağa icazə ver
-        });
+document.addEventListener("DOMContentLoaded", function () {
+    // Təqvimin işə salınması
+    flatpickr(".datepicker", {
+        locale: "az",               // Azərbaycan dili
+        dateFormat: "Y-m-d",        // Arxa planda serverə gedən gizli format (C# üçün ideal)
+        altInput: true,             // İstifadəçiyə fərqli format göstərməyə icazə ver
+        altFormat: "d.m.Y",         // Ekranda görünən format (26.07.2026)
+        allowInput: true            // Əllə yazmağa icazə ver
     });
+});

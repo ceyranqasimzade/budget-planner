@@ -1,5 +1,6 @@
 ﻿using budget_planner.Models;
 using budget_planner.ViewModels;
+using budget_planner.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,13 +10,18 @@ namespace budget_planner.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailService _emailService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
+        // ==========================================
+        // QEYDİYYAT (REGISTER)
+        // ==========================================
         [HttpGet]
         public IActionResult Register()
         {
@@ -23,13 +29,14 @@ namespace budget_planner.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken] // Təhlükəsizlik üçün əlavə edildi
         public async Task<IActionResult> Register(RegisterVM model)
         {
             if (!ModelState.IsValid) return View(model);
 
             var user = new ApplicationUser
             {
-                UserName = model.Email,
+                UserName = model.Username,
                 Email = model.Email,
                 FullName = model.FullName
             };
@@ -50,6 +57,9 @@ namespace budget_planner.Controllers
             return View(model);
         }
 
+        // ==========================================
+        // GİRİŞ (LOGIN)
+        // ==========================================
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
@@ -58,30 +68,126 @@ namespace budget_planner.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken] // Təhlükəsizlik üçün əlavə edildi
         public async Task<IActionResult> Login(LoginVM model, string? returnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+                return View(model);
+            }
+
+            ApplicationUser? user = null;
+
+            if (model.UsernameOrEmail.Contains("@"))
+            {
+                user = await _userManager.FindByEmailAsync(model.UsernameOrEmail);
+            }
+            else
+            {
+                user = await _userManager.FindByNameAsync(model.UsernameOrEmail);
+            }
+
+            if (user != null)
+            {
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
+
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            ModelState.AddModelError("", "İstifadəçi adı/E-poçt və ya şifrə yanlışdır!");
+            ViewData["ReturnUrl"] = returnUrl;
+            return View(model);
+        }
+
+        // ==========================================
+        // ÇIXIŞ (LOGOUT)
+        // ==========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        // ==========================================
+        // ŞİFRƏNİ UNUTMUSAN
+        // ==========================================
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Məsləhətdir ki, bura da əlavə olunsun
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
         {
             if (!ModelState.IsValid) return View(model);
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-
-            if (result.Succeeded)
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
             {
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                {
-                    return Redirect(returnUrl);
-                }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("ForgotPasswordConfirmation");
             }
 
-            ModelState.AddModelError("", "E-poçt və ya şifrə yanlışdır!");
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
+
+            string emailBody = $"<h3>Şifrəni Sıfırlama</h3><p>Şifrənizi sıfırlamaq üçün <a href='{callbackUrl}'>BURAYA KLİKLƏYİN</a>.</p>";
+            await _emailService.SendEmailAsync(model.Email, "Şifrənin Sıfırlanması", emailBody);
+
+            return RedirectToAction("ForgotPasswordConfirmation");
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        // ==========================================
+        // YENİ ŞİFRƏ TƏYİN ET
+        // ==========================================
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            if (email == null || token == null) return BadRequest("Keçərsiz sorğu.");
+
+            var model = new ResetPasswordVM { Email = email, Token = token };
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Logout()
+        [ValidateAntiForgeryToken] // Məsləhətdir ki, bura da əlavə olunsun
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
         {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account");
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null) return RedirectToAction("Login");
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
         }
     }
 }

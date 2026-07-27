@@ -6,6 +6,8 @@ namespace budget_planner.ViewModels
     {
         [Required(ErrorMessage = "Ad və Soyad vacibdir")]
         public string FullName { get; set; } = null!;
+        [Required(ErrorMessage = "İstifadəçi adı vacibdir")]
+        public string Username { get; set; } = null!;
 
         [Required(ErrorMessage = "E-poçt vacibdir")]
         [EmailAddress(ErrorMessage = "Düzgün e-poçt daxil edin")]

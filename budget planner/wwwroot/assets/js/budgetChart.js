@@ -10,7 +10,14 @@ async function renderPolarBudgetChart() {
     const currencySelector = document.getElementById('chartCurrencySelector') || document.getElementById('globalCurrency');
     const targetCurrency = currencySelector ? currencySelector.value : 'AZN';
 
-    const rawData = JSON.parse(ctx.getAttribute('data-totals') || '[]');
+    // JSON parse xətalarının qarşısını almaq üçün təhlükəsiz oxunma
+    let rawData = [];
+    try {
+        rawData = JSON.parse(ctx.getAttribute('data-totals') || '[]');
+    } catch (e) {
+        console.error("data-totals daxilindəki JSON formatı yanlışdır:", e);
+    }
+
     let rates = {};
 
     try {

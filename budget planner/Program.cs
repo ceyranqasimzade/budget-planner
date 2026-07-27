@@ -23,6 +23,11 @@ builder.Services
 builder.Services.AddControllersWithViews();
 
 // ==========================================
+// YENİ: E-poçt servisi qeydiyyatdan keçirilir
+// ==========================================
+builder.Services.AddTransient<IEmailService, EmailService>();
+
+// ==========================================
 // YENİ: MemoryCache servisi qeydiyyatdan keçirilir
 // ==========================================
 builder.Services.AddMemoryCache();

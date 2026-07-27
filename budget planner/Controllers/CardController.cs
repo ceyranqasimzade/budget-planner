@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace budget_planner.Controllers
 {
-    [Authorize]
     public class CardController : Controller
     {
         private readonly BudgetDbContext _context;
@@ -39,6 +38,14 @@ namespace budget_planner.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
+
+            // 1. HƏLL: Qonaq istifadəçi üçün səssiz imtinanın qarşısı alındı
+            if (user == null)
+            {
+                TempData["SuccessMessage"] = "Kart sınaq rejimində əlavə olundu! Saytdan çıxdıqda məlumatlar sıfırlanacaq.";
+                return RedirectToAction("Index", "Home");
+            }
+
             if (user != null)
             {
                 var newCard = new Card
@@ -73,6 +80,14 @@ namespace budget_planner.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
+
+            // 2. HƏLL: NullReferenceException xətasının qarşısı alındı
+            if (user == null)
+            {
+                TempData["SuccessMessage"] = "Köçürmə sınaq rejimində icra olundu! Saytdan çıxdıqda məlumatlar sıfırlanacaq.";
+                return RedirectToAction("Index", "Home");
+            }
+
             var fromCard = await _context.Cards.FindAsync(model.FromCardId);
             var toCard = await _context.Cards.FindAsync(model.ToCardId);
 
@@ -141,12 +156,18 @@ namespace budget_planner.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        // [Authorize] <-- 3. HƏLL (1-ci hissə): Atribut silindi ki, login səhifəsinə məcbur etməsin
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+
+            // 3. HƏLL (2-ci hissə): Login-ə yönləndirmək əvəzinə sınaq rejimi bildirişi verilir
+            if (user == null)
+            {
+                TempData["SuccessMessage"] = "Kart sınaq rejimində silindi!";
+                return RedirectToAction("Index", "Home");
+            }
 
             var card = await _context.Cards
                 .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Id && !c.IsDeleted);
