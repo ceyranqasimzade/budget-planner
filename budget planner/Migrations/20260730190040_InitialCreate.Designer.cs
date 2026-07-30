@@ -12,7 +12,7 @@ using budget_planner.DAL;
 namespace budget_planner.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20260727153546_InitialCreate")]
+    [Migration("20260730190040_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -351,12 +351,19 @@ namespace budget_planner.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Name", "Type")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Categories");
                 });
@@ -676,6 +683,16 @@ namespace budget_planner.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("budget_planner.Models.Category", b =>
+                {
+                    b.HasOne("budget_planner.Models.ApplicationUser", "User")
+                        .WithMany("Categories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("budget_planner.Models.Goal", b =>
                 {
                     b.HasOne("budget_planner.Models.ApplicationUser", "User")
@@ -740,6 +757,8 @@ namespace budget_planner.Migrations
                     b.Navigation("BudgetRule");
 
                     b.Navigation("Cards");
+
+                    b.Navigation("Categories");
 
                     b.Navigation("Goals");
 

@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using budget_planner.ViewModels;
-using Microsoft.Extensions.Caching.Memory; // 🟢 Keş üçün əlavə edildi
 
 namespace budget_planner.Services
 {
-    public class CurrencyService
+    public class CurrencyService : ICurrencyService
     {
         private readonly HttpClient _httpClient;
-        private readonly IMemoryCache _cache; // 🟢 Keş interfeysi əlavə olundu
-        private const string RatesCacheKey = "CBAR_ExchangeRates"; // Keş üçün unikal açar söz
+        private readonly IMemoryCache _cache;
+        private const string CacheKey = "CBAR_ExchangeRates";
 
-        // Constructor-a IMemoryCache dəstəyi əlavə edildi
         public CurrencyService(HttpClient httpClient, IMemoryCache cache)
         {
             _httpClient = httpClient;
@@ -25,96 +24,57 @@ namespace budget_planner.Services
 
         public async Task<List<CurrencyRateVM>> GetExchangeRatesAsync()
         {
-            // 🟢 1. YADDAŞ YOXLANIŞI: Məzənnələr artıq yaddaşda varsa, CBAR-a getmədən anında qaytar
-            if (_cache.TryGetValue(RatesCacheKey, out List<CurrencyRateVM>? cachedRates) && cachedRates != null)
+            if (_cache.TryGetValue(CacheKey, out List<CurrencyRateVM>? cachedRates) && cachedRates != null)
             {
                 return cachedRates;
             }
 
-            // 🔴 2. Yaddaşda yoxdursa, CBAR-dan məlumatları çəkmək üçün orijinal koda davam et
             var rates = new List<CurrencyRateVM>();
-
-            string todayUrl = "https://www.cbar.az/currencies/today.xml";
-
-            DateTime prevDate = DateTime.Now;
-            if (prevDate.DayOfWeek == DayOfWeek.Monday)
-                prevDate = prevDate.AddDays(-3);
-            else if (prevDate.DayOfWeek == DayOfWeek.Sunday)
-                prevDate = prevDate.AddDays(-2);
-            else
-                prevDate = prevDate.AddDays(-1);
-
-            string prevUrl = $"https://www.cbar.az/currencies/{prevDate:dd.MM.yyyy}.xml";
-
             try
             {
-                string todayXml = await FetchXmlAsync(todayUrl);
-                string prevXml = await FetchXmlAsync(prevUrl);
+                string todayStr = DateTime.Now.ToString("dd.MM.yyyy");
+                string url = $"https://www.cbar.az/currencies/{todayStr}.xml";
 
-                if (string.IsNullOrEmpty(todayXml))
+                string xmlContent = await FetchXmlAsync(url);
+                if (!string.IsNullOrEmpty(xmlContent))
                 {
-                    throw new Exception("Bugünkü məzənnə XML-i CBAR-dan çəkilə bilmədi.");
-                }
+                    XDocument doc = XDocument.Parse(xmlContent);
+                    var valTypes = doc.Descendants("ValType");
 
-                XDocument todayDoc = XDocument.Parse(todayXml);
-                XDocument? prevDoc = !string.IsNullOrEmpty(prevXml) ? XDocument.Parse(prevXml) : null;
-
-                string[] targetCurrencies = { "USD", "EUR", "RUB", "GBP", "TRY", "GEL", "AED", "CHF", "CNY", "CAD" };
-
-                var valutesToday = todayDoc.Descendants("Valute")
-                                           .Where(x => targetCurrencies.Contains(x.Attribute("Code")?.Value))
-                                           .ToList();
-
-                foreach (var val in valutesToday)
-                {
-                    string code = val.Attribute("Code")!.Value;
-                    string rawValue = val.Element("Value")?.Value?.Replace(',', '.') ?? "1";
-
-                    decimal rate = Convert.ToDecimal(rawValue, CultureInfo.InvariantCulture);
-
-                    decimal prevRate = rate;
-                    if (prevDoc != null)
+                    foreach (var valType in valTypes)
                     {
-                        var prevVal = prevDoc.Descendants("Valute").FirstOrDefault(x => x.Attribute("Code")?.Value == code);
-                        if (prevVal != null)
+                        var valutes = valType.Elements("Valute");
+                        foreach (var valute in valutes)
                         {
-                            string rawPrevValue = prevVal.Element("Value")?.Value?.Replace(',', '.') ?? rawValue;
-                            prevRate = Convert.ToDecimal(rawPrevValue, CultureInfo.InvariantCulture);
+                            string code = valute.Attribute("Code")?.Value ?? "";
+                            string name = valute.Element("Name")?.Value ?? "";
+                            string valueStr = valute.Element("Value")?.Value ?? "0";
+                            string nominalStr = valute.Element("Nominal")?.Value ?? "1";
+
+                            if (decimal.TryParse(valueStr, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal value) &&
+                                decimal.TryParse(nominalStr, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal nominal))
+                            {
+                                decimal rate = nominal > 0 ? value / nominal : value;
+                                rates.Add(new CurrencyRateVM
+                                {
+                                    Code = code,
+                                    Name = name,
+                                    Rate = rate
+                                });
+                            }
                         }
                     }
-
-                    rates.Add(new CurrencyRateVM
-                    {
-                        Code = code,
-                        Rate = rate,
-                        PreviousRate = prevRate,
-                        Symbol = GetCurrencySymbol(code)
-                    });
                 }
 
-                // 🟢 3. YADDAŞA YAZILMA: CBAR-dan uğurla çəkilən məlumatları 1 saatlıq cache-ə atırıq
-                var cacheOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
-
-                _cache.Set(RatesCacheKey, rates, cacheOptions);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Valyuta çəkilərkən xəta: {ex.Message}");
-
-                rates = new List<CurrencyRateVM>
+                if (rates.Any())
                 {
-                    new CurrencyRateVM { Code = "USD", Symbol = "$", Rate = 1.70M, PreviousRate = 1.70M },
-                    new CurrencyRateVM { Code = "EUR", Symbol = "€", Rate = 1.85M, PreviousRate = 1.84M },
-                    new CurrencyRateVM { Code = "TRY", Symbol = "₺", Rate = 0.051M, PreviousRate = 0.052M },
-                    new CurrencyRateVM { Code = "RUB", Symbol = "₽", Rate = 0.018M, PreviousRate = 0.018M },
-                    new CurrencyRateVM { Code = "GBP", Symbol = "£", Rate = 2.15M, PreviousRate = 2.14M },
-                    new CurrencyRateVM { Code = "GEL", Symbol = "₾", Rate = 0.63M, PreviousRate = 0.63M },
-                    new CurrencyRateVM { Code = "AED", Symbol = "د.إ", Rate = 0.46M, PreviousRate = 0.46M },
-                    new CurrencyRateVM { Code = "CHF", Symbol = "CHF", Rate = 1.92M, PreviousRate = 1.91M },
-                    new CurrencyRateVM { Code = "CNY", Symbol = "¥", Rate = 0.23M, PreviousRate = 0.23M },
-                    new CurrencyRateVM { Code = "CAD", Symbol = "CA$", Rate = 1.25M, PreviousRate = 1.25M }
-                };
+                    // 1 saatlıq cache-ə atırıq
+                    _cache.Set(CacheKey, rates, TimeSpan.FromHours(1));
+                }
+            }
+            catch
+            {
+                // Xəta baş verərsə boş siyahı əvəzinə mövcud siyahını qaytarır
             }
 
             return rates;
@@ -130,27 +90,72 @@ namespace budget_planner.Services
                     return await response.Content.ReadAsStringAsync();
                 }
             }
-            catch { }
+            catch
+            {
+                // HTTP xətası halında təmiz idarəetmə
+            }
             return string.Empty;
         }
 
-        // 🟢 STATIC öz yerində qaldı
-        public static string GetCurrencySymbol(string code)
+        public async Task<decimal> ConvertAsync(decimal amount, string fromCurrency, string toCurrency)
         {
-            return code switch
+            if (string.IsNullOrWhiteSpace(fromCurrency) || string.IsNullOrWhiteSpace(toCurrency))
+                return amount;
+
+            fromCurrency = fromCurrency.ToUpper();
+            toCurrency = toCurrency.ToUpper();
+
+            if (fromCurrency == toCurrency)
+                return amount;
+
+            var rates = await GetExchangeRatesAsync();
+
+            decimal GetRate(string code)
             {
+                if (code == "AZN")
+                    return 1m;
+
+                var rate = rates.FirstOrDefault(x => x.Code == code);
+
+                if (rate == null)
+                    throw new Exception($"Currency '{code}' tapılmadı.");
+
+                return rate.Rate;
+            }
+
+            decimal fromRate = GetRate(fromCurrency);
+            decimal toRate = GetRate(toCurrency);
+
+            decimal amountInAzn = fromCurrency == "AZN"
+                ? amount
+                : amount * fromRate;
+
+            decimal result = toCurrency == "AZN"
+                ? amountInAzn
+                : amountInAzn / toRate;
+
+            return Math.Round(result, 2);
+        }
+
+        public string GetCurrencySymbol(string currencyCode)
+        {
+            if (string.IsNullOrWhiteSpace(currencyCode))
+                return "₼";
+
+            return currencyCode.ToUpper() switch
+            {
+                "AZN" => "₼",
                 "USD" => "$",
                 "EUR" => "€",
+                "TRY" => "₺",
                 "RUB" => "₽",
                 "GBP" => "£",
-                "TRY" => "₺",
-                "GEL" => "₾",
-                "AED" => "د.إ",
                 "CHF" => "CHF",
-                "CNY" => "¥",
+                "AED" => "د.إ",
                 "CAD" => "CA$",
-                "AZN" => "₼",
-                _ => code
+                "CNY" => "¥",
+                "GEL" => "⾾",
+                _ => currencyCode
             };
         }
     }

@@ -278,3 +278,47 @@ document.addEventListener("DOMContentLoaded", function () {
         allowInput: true            // Əllə yazmağa icazə ver
     });
 });
+
+// ==========================================
+// SWEETALERT2 İLƏ SİLMƏNİ TƏSDİQLƏMƏ
+// ==========================================
+function confirmDelete(e, deleteUrl, itemName) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Silmək istədiyinizə əminsiniz?',
+        text: `"${itemName}" əməliyyatı kalıcı olaraq silinəcək!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Bəli, sil!',
+        cancelButtonText: 'Ləğv et'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = deleteUrl;
+        }
+    });
+    return false;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const deleteButtons = document.querySelectorAll('button[data-bs-target^="#deleteModal-"]');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const row = button.closest("tr");
+            const titleElement = row ? row.querySelector("td:first-child span.fw-semibold") : null;
+            const itemName = titleElement ? titleElement.innerText.trim() : "Bu ödəniş";
+
+            const modalId = button.getAttribute("data-bs-target");
+            const form = document.querySelector(`${modalId} form`);
+
+            if (form && form.action) {
+                confirmDelete(e, form.action, itemName);
+            }
+        });
+    });
+});

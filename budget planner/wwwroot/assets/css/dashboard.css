@@ -287,3 +287,35 @@ small.text-muted {
     font-size: 1.35rem;
     font-weight: 800;
 }
+
+/* ================= QARŞIDAN GƏLƏN ÖDƏNİŞLƏR ================= */
+.upcoming-payment-card {
+    background-color: #ffffff;
+    transition: all 0.2s ease-in-out;
+}
+
+    .upcoming-payment-card:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+.payment-icon-box {
+    width: 48px;
+    height: 48px;
+    background-color: rgba(13, 110, 253, 0.08);
+}
+
+/* Dark rejim üçün əlavə dəstək (toxunulmadan inteqrasiya edilib) */
+[data-theme="dark"] .upcoming-payment-card {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+    [data-theme="dark"] .upcoming-payment-card:hover {
+        background-color: rgba(255, 255, 255, 0.07);
+    }
+
+[data-theme="dark"] .payment-icon-box {
+    background-color: rgba(13, 110, 253, 0.15);
+}

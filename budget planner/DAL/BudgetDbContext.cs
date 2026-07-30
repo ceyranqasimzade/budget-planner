@@ -29,7 +29,7 @@ namespace budget_planner.DAL
         // YENİ ƏLAVƏ EDİLDİ
         public DbSet<Subscription> Subscriptions { get; set; } = null!;
 
-        public DbSet<UpcomingPayment> UpcomingPayments { get; set; }
+        public DbSet<UpcomingPayment> UpcomingPayments { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -127,6 +127,24 @@ namespace budget_planner.DAL
                 .WithOne(x => x.BudgetRule)
                 .HasForeignKey<BudgetRule>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+
+            // ==========================
+            // USER - CATEGORY
+            // One User -> Many Categories
+            // Unique Index: UserId + Name + Type
+            // ==========================
+
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Categories)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Category>()
+                .HasIndex(c => new { c.UserId, c.Name, c.Type })
+                .IsUnique();
 
 
 

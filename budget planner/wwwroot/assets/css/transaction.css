@@ -1,71 +1,421 @@
-﻿.page-card {
-    background: #ffffff;
+﻿/* ==========================================================================
+   1. ƏSAS DƏYİŞƏNLƏR VƏ KEÇİDLƏR
+   ========================================================================== */
+:root {
+    --primary-green: #0b3d2e;
+    --primary-green-hover: #07271d;
+    --header-green: #0b3d2e;
+    --gold-color: #d4af37;
+    --gold-hover: #b89528;
+    --bg-hover-light: #f4fbf8;
+    --border-light: #edf2f7;
+    --input-border: #dfe5ec;
+    --purple-accent: #6f42c1;
+    --purple-bg-light: rgba(111, 66, 193, 0.12);
+    --purple-border-light: #dbadeb;
+}
+
+/* ==========================================================================
+   2. BİLDİRİŞ (ALERT) BÖLMƏSİ
+   ========================================================================== */
+.alert-custom {
+    background-color: #fff8e6;
+    border: 1px solid #ffeeba;
+    border-left: 5px solid var(--gold-color);
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    border: 1px solid #eef2f5;
-    padding: 20px;
+    padding: 14px 18px;
+    color: #856404;
 }
-.filter-section {
-    background: #f8f9fa;
+
+    .alert-custom .alert-icon {
+        color: var(--gold-color);
+    }
+
+    .alert-custom .alert-title {
+        color: #533f03;
+        font-size: 1.05rem;
+    }
+
+    .alert-custom .alert-text {
+        font-size: 0.95rem;
+        color: #493907;
+    }
+
+    .alert-custom .alert-link {
+        color: #0b3d2e;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+        .alert-custom .alert-link:hover {
+            color: var(--gold-color);
+        }
+
+/* ==========================================================================
+   3. KARTLAR VƏ PANELLƏR
+   ========================================================================== */
+.card,
+.page-card {
+    border: none !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07) !important;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
-.premium-thead {
-    background: #212529;
-    color: white;
+
+    .card:hover,
+    .page-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+
+/* ==========================================================================
+   4. CƏDVƏL (TABLE)
+   ========================================================================== */
+#transactionTable,
+.table {
+    border-radius: 18px !important;
+    overflow: hidden;
+    border: none !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
 }
-.sortable-header:hover {
-    background-color: #2c3034;
+
+.custom-rounded-table {
+    border-radius: 8px !important;
 }
-.budget-badge {
-    background-color: #e9ecef;
-    color: #495057;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
+
+/* Column Widths & Cursor Rules */
+.col-select {
+    width: 5%;
 }
-.btn-action {
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-weight: 500;
-}
-.pagination-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-.page-btn {
-    border: 1px solid #dee2e6;
-    background: white;
-    padding: 6px 12px;
-    border-radius: 6px;
+
+.col-date {
+    width: 15%;
     cursor: pointer;
 }
-    .page-btn.active {
-        background: #0d6efd;
-        color: white;
-        border-color: #0d6efd;
-    }
-    .page-btn.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-#transactionTable {
-    table-layout: fixed;
-    width: 100%;
+
+.col-desc {
+    width: 25%;
+    cursor: pointer;
 }
-.premium-thead th {
-    background-color: #1b5e20; 
-    color: #ffffff; 
-    font-weight: 700;
+
+.col-cat {
+    width: 15%;
+    cursor: pointer;
+}
+
+.col-amount {
+    width: 15%;
+    cursor: pointer;
+}
+
+.col-status {
+    width: 10%;
+    cursor: pointer;
+}
+
+.col-action {
+    width: 15%;
+}
+
+/* Cədvəl başlığı */
+#transactionTable thead th,
+.table thead th {
+    background: var(--header-green) !important;
+    color: var(--gold-color) !important;
+    font-size: 14px;
+    font-weight: 600;
+    border: none !important;
+    padding: 16px;
     vertical-align: middle;
-    padding: 15px 10px; 
 }
-    .premium-thead th i.fa-sort {
-        color: #d4af37; 
-        transition: transform 0.2s;
+
+#transactionTable tbody tr,
+.table tbody tr {
+    background: #ffffff;
+    transition: background-color 0.25s ease;
+}
+
+#transactionTable tbody td,
+.table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    border-color: var(--border-light);
+}
+
+#transactionTable tbody tr:hover,
+.table tbody tr:hover {
+    background: var(--bg-hover-light);
+}
+
+/* Status Badge */
+.badge-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.85em;
+}
+
+/* Boş cədvəl xətası (Empty State) */
+.empty-icon {
+    color: var(--gold-color) !important;
+}
+
+.empty-title {
+    color: #2c3e50;
+}
+
+.empty-desc {
+    color: #5a6578;
+}
+
+/* ==========================================================================
+   5. İNPUTLAR, SELEKTLƏR VƏ СHARTS
+   ========================================================================== */
+.form-control,
+.form-select {
+    border-radius: 14px !important;
+    border: 1px solid var(--input-border);
+    height: 48px;
+    box-shadow: none !important;
+    transition: all 0.2s ease;
+}
+
+/* "Əməliyyat növü" selektinin düyməyə dəyməməsi üçün padding tənzimlənməsi */
+.custom-select-compact {
+    padding-right: 32px !important;
+    font-size: 0.9rem;
+}
+
+/* Nisbət Analizi valyuta seçimi üçün daha yığcam görünüş */
+.chart-currency-compact {
+    width: auto !important;
+    min-width: 80px;
+    height: 34px !important;
+    padding: 2px 24px 2px 8px !important;
+    font-size: 0.85rem;
+    color: #0d6efd;
+    border-color: #0d6efd !important;
+    border-radius: 8px !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-green) !important;
+    box-shadow: 0 0 0 0.2rem rgba(11, 61, 46, .15) !important;
+}
+
+.search-box input {
+    border-radius: 30px !important;
+    height: 48px;
+}
+
+.input-group-text {
+    border-radius: 14px 0 0 14px !important;
+    border-color: var(--input-border);
+    background-color: transparent;
+}
+
+.chart-canvas-wrapper {
+    min-height: 220px;
+}
+
+.fiskal-input {
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+}
+
+.receipt-drop-zone {
+    border: 2px dashed var(--purple-border-light);
+    border-radius: 12px;
+    cursor: pointer;
+    min-height: 110px;
+    transition: all 0.2s ease;
+}
+
+.drop-zone-text {
+    font-size: 0.8rem;
+}
+
+.rows-select {
+    border-radius: 6px;
+    cursor: pointer;
+    width: auto;
+    display: inline-block;
+}
+
+/* ==========================================================================
+   6. DÜYMƏLƏR VƏ VURĞULAR
+   ========================================================================== */
+.btn-success,
+.btn-add-transaction {
+    background: var(--primary-green) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 14px !important;
+    padding: 11px 22px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+    .btn-success:hover,
+    .btn-add-transaction:hover {
+        background: var(--primary-green-hover) !important;
+        transform: translateY(-1px);
     }
-    .premium-thead th:hover i.fa-sort {
-        transform: scale(1.2);
+
+.icon-purple {
+    color: var(--purple-accent);
+}
+
+.badge-purple {
+    color: var(--purple-accent);
+    background-color: var(--purple-bg-light);
+    border-color: var(--purple-border-light);
+}
+
+.btn-purple {
+    background-color: var(--purple-accent);
+}
+
+    .btn-purple:hover {
+        background-color: #5a32a3;
     }
+
+.btn-outline-purple {
+    color: var(--purple-accent);
+    border-color: var(--purple-accent);
+    background: transparent;
+}
+
+    .btn-outline-purple:hover {
+        background-color: var(--purple-accent);
+        color: #ffffff;
+    }
+
+/* ==========================================================================
+   7. FLATPICKR KALENDAR
+   ========================================================================== */
+.flatpickr-calendar {
+    border: none !important;
+    border-radius: 18px !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .15) !important;
+    overflow: hidden;
+}
+
+.flatpickr-months,
+.flatpickr-weekdays {
+    background: var(--primary-green) !important;
+}
+
+span.flatpickr-weekday,
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    color: var(--gold-color) !important;
+    font-weight: 600;
+}
+
+.flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-months .flatpickr-next-month svg {
+    fill: var(--gold-color) !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: var(--gold-color) !important;
+    border-color: var(--gold-color) !important;
+    color: #1a1a1a !important;
+    font-weight: bold;
+}
+
+/* ==========================================================
+   8. DARK MODE OVERRIDE (Aydın və seçilən vizualilər)
+   ========================================================== */
+body.dark-mode {
+    color: #f1f5f9;
+}
+
+    body.dark-mode .card,
+    body.dark-mode .page-card,
+    body.dark-mode .widget-card,
+    body.dark-mode .transaction-card {
+        background: #1e1e1e !important;
+        color: #f1f5f9 !important;
+    }
+
+    body.dark-mode .alert-custom {
+        background-color: #2d2613 !important;
+        border-color: #594611 !important;
+        color: #ffe89e !important;
+    }
+
+        body.dark-mode .alert-custom .alert-title {
+            color: #ffd700 !important;
+        }
+
+        body.dark-mode .alert-custom .alert-text {
+            color: #f1e3be !important;
+        }
+
+        body.dark-mode .alert-custom .alert-link {
+            color: #62d6a9 !important;
+        }
+
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+    body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode table,
+    body.dark-mode .table,
+    body.dark-mode #transactionTable {
+        color: #ffffff !important;
+        background: #1e1e1e !important;
+    }
+
+        body.dark-mode table thead th,
+        body.dark-mode .table thead th,
+        body.dark-mode #transactionTable thead th {
+            background: #07271d !important;
+            color: var(--gold-color) !important;
+        }
+
+        body.dark-mode table tbody tr,
+        body.dark-mode .table tbody tr,
+        body.dark-mode #transactionTable tbody tr {
+            background: #1e1e1e !important;
+        }
+
+            body.dark-mode table tbody tr:hover,
+            body.dark-mode .table tbody tr:hover,
+            body.dark-mode #transactionTable tbody tr:hover {
+                background: #282828 !important;
+            }
+
+    /* Dark Mode üçün boş cədvəl xətası (Aydınlaşdırıldı) */
+    body.dark-mode .empty-title {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .empty-desc {
+        color: #cbd5e1 !important;
+    }
+
+    body.dark-mode .empty-icon {
+        color: var(--gold-color) !important;
+    }
+
+    body.dark-mode input,
+    body.dark-mode select,
+    body.dark-mode textarea,
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+        background: #252525 !important;
+        color: #ffffff !important;
+        border: 1px solid #3d3d3d !important;
+    }
+
+        body.dark-mode input::placeholder,
+        body.dark-mode .form-control::placeholder {
+            color: #94a3b8 !important;
+        }

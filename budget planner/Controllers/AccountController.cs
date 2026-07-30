@@ -79,16 +79,18 @@ namespace budget_planner.Controllers
 
             ApplicationUser? user = null;
 
-            if (model.UsernameOrEmail.Contains("@"))
+            // Null reference xəbərdarlığının qarşısını almaq üçün yoxlama
+            if (!string.IsNullOrEmpty(model.UsernameOrEmail) && model.UsernameOrEmail.Contains("@"))
             {
                 user = await _userManager.FindByEmailAsync(model.UsernameOrEmail);
             }
-            else
+            else if (!string.IsNullOrEmpty(model.UsernameOrEmail))
             {
                 user = await _userManager.FindByNameAsync(model.UsernameOrEmail);
             }
 
-            if (user != null)
+            // user və user.UserName üçün null yoxlamaları əlavə edildi
+            if (user != null && !string.IsNullOrEmpty(user.UserName))
             {
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, false);
 
@@ -158,9 +160,10 @@ namespace budget_planner.Controllers
         // YENİ ŞİFRƏ TƏYİN ET
         // ==========================================
         [HttpGet]
-        public IActionResult ResetPassword(string email, string token)
+        public IActionResult ResetPassword(string? email, string? token)
         {
-            if (email == null || token == null) return BadRequest("Keçərsiz sorğu.");
+            // string.IsNullOrEmpty istifadə olunaraq nullable dəyərlər təhlükəsiz idarə olunur
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token)) return BadRequest("Keçərsiz sorğu.");
 
             var model = new ResetPasswordVM { Email = email, Token = token };
             return View(model);

@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
 
     <!-- Sənin öz CSS faylın -->
     <link rel="stylesheet" href="~/assets/css/goals.css" />
@@ -86,10 +88,26 @@
 
                     <div class="col-md-6 col-lg-4">
                         <div class="goal-card">
-                            <div class="goal-card-header">
+                            <div class="goal-card-header d-flex justify-content-between align-items-start">
                                 <div class="goal-avatar bg-primary-subtle text-primary">
                                     <i class="bi @(string.IsNullOrEmpty(goal.IconClass) ? "bi-flag-fill" : goal.IconClass)"></i>
                                 </div>
+
+                                <!-- ƏLAVƏ EDİLƏN HİSSƏ: SİLMƏ FORMU VƏ DÜYMƏSİ -->
+                                <form id="delete-form-@goal.Id"
+                                      asp-controller="Goal"
+                                      asp-action="Delete"
+                                      asp-route-id="@goal.Id"
+                                      method="post"
+                                      class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="button"
+                                            class="btn btn-sm text-danger border-0 bg-transparent p-1"
+                                            onclick="confirmDelete('delete-form-@goal.Id', '@goal.Name')"
+                                            title="Hədəfi Sil">
+                                        <i class="bi bi-trash-fill fs-5"></i>
+                                    </button>
+                                </form>
                             </div>
 
                             <h5 class="fw-bold text-dark mt-3 mb-1">@goal.Name</h5>
@@ -127,5 +145,11 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Öz JS faylınızı bura bağlayın (məsələn: goals.js) -->
+    <script src="~/assets/js/goals.js"></script>
+   
 </body>
 </html>

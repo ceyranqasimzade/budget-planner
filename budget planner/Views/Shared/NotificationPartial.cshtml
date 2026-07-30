@@ -1,0 +1,78 @@
+﻿<script>
+    // 1. Toastr Konfiqurasiyası
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+    });
+
+    // 2. Uğurlu Əməliyyatlar (Success Toast)
+    @if (TempData["Success"] != null)
+    {
+            <text>
+            Toast.fire({
+                icon: 'success',
+                title: '(TempData["Success"])'
+            });
+            </text>
+    }
+
+    // 3. Xətalar (Error Popup)
+    @if (TempData["Error"] != null)
+    {
+            <text>
+            Swal.fire({
+                icon: 'error',
+                title: 'Əməliyyat Uğursuz Oldu',
+                text: '(TempData["Error"])',
+                confirmButtonColor: '#ef4444'
+            });
+            </text>
+    }
+
+       @if (!(User.Identity?.IsAuthenticated ?? false))
+    {
+            <text>
+            document.addEventListener("DOMContentLoaded", function () {
+                if (!sessionStorage.getItem("guestWarningShown")) {
+                    Swal.fire({
+                        title: 'Daxil Olmadan İstifadə Edirsiniz',
+                        text: 'Məlumatlarınız müvəqqəti yadda saxlanılır. Səhifədən çıxsanız daxil etdiyiniz bütün məlumatlar silinəcək.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#10b981',
+                        cancelButtonColor: '#6b7280',
+                        confirmButtonText: 'Daxil Ol / Qeydiyyat',
+                        cancelButtonText: 'Qonaq kimi davam et'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/Account/Login';
+                        } else {
+                            sessionStorage.setItem("guestWarningShown", "true");
+                        }
+                    });
+                }
+            });
+            </text>
+    }
+
+    // 5. Global Silmə Təsdiqi ([HttpPost] və Form Submit ilə)
+    function confirmDelete(formId, itemName = "bu məlumatı") {
+        Swal.fire({
+            title: 'Silmək istədiyinizə əminsiniz?',
+            text: `${itemName} silindikdən sonra bərpa etmək mümkün olmayacaq.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Bəli, Sil',
+            cancelButtonText: 'Ləğv et'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
+    }
+</script>

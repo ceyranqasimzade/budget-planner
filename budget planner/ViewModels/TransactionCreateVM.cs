@@ -5,35 +5,30 @@ namespace budget_planner.ViewModels
 {
     public class TransactionCreateVM
     {
-        // Nağd ödəniş seçildikdə boş (null) ola biləcəyi üçün [Required] silindi
-        public int? CardId { get; set; }
-
-        // Siyahıdan seçilən kateqoriya ID-si
-        public int? CategoryId { get; set; }
-
-        // Formadan daxil edilən və ya seçilən kateqoriya adı (köhnə sahəniz)
-        public string? CategoryName { get; set; }
-
-        // İstifadəçinin özünün yazdığı yeni kateqoriya adı
-        public string? NewCategoryName { get; set; }
-
-        [Required(ErrorMessage = "Məbləğ daxil edilməlidir")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Məbləğ 0-dan böyük olmalıdır")]
+        [Required(ErrorMessage = "Məbləğ daxil edilməlidir.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Məbləğ 0-dan böyük olmalıdır.")]
         public decimal Amount { get; set; }
 
-        // Formadan seçilən valyuta (Məsələn: USD, EUR, AZN). Boş qalarsa default AZN götürüləcək.
-        public string? Currency { get; set; } = "AZN";
-
-        [Required(ErrorMessage = "Təsvir daxil edilməlidir")]
-        [StringLength(200, ErrorMessage = "Təsvir maksimum 200 simvol ola bilər")]
-        public string Description { get; set; } = null!;
+        public string? Description { get; set; }
 
         public bool IsIncome { get; set; }
 
-        // Tarix sahəsi (ilkin dəyər cari vaxtı götürür)
+        [DataType(DataType.Date)]
         public DateTime Date { get; set; } = DateTime.Now;
 
-        // Əlavə qeydlər
-        public string? Note { get; set; }
+        public string? Currency { get; set; } = "AZN";
+
+        // Kart seçimi üçün
+        public int? CardId { get; set; }
+
+        // Mövcud kateqoriya seçimi üçün
+        public int? CategoryId { get; set; }
+
+        // Birbaşa ad yazmaq və ya yeni kateqoriya əlavə etmək üçün
+        public string? CategoryName { get; set; }
+        public string? NewCategoryName { get; set; }
+
+        // Status seçimi (Varsayılan: Tamamlandı)
+        public string Status { get; set; } = "Tamamlandı";
     }
 }

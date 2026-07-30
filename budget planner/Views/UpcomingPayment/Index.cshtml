@@ -150,32 +150,13 @@
                                                 </div>
                                             }
 
-                                            <!-- Silmə Düyməsi (Yeni Modal Çağırır) -->
-                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id" title="Sil">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-
-                                            <!-- SİLMƏNİ TƏSDİQLƏMƏ MODALI (Tam Azərbaycan dilində) -->
-                                            <div class="modal fade text-start" id="deleteModal-@item.Id" tabindex="-1" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-sm">
-                                                    <div class="modal-content border-0 shadow">
-                                                        <div class="modal-header bg-danger bg-opacity-10 border-0">
-                                                            <h6 class="modal-title text-danger fw-bold">Silməni Təsdiqlə</h6>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body p-3">
-                                                            <p class="small mb-0">Bu ödənişi silmək istədiyinizdən əminsiniz?</p>
-                                                        </div>
-                                                        <div class="modal-footer border-0 p-2">
-                                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Xeyr</button>
-                                                            <form asp-controller="UpcomingPayment" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
-                                                                @Html.AntiForgeryToken()
-                                                                <button type="submit" class="btn btn-sm btn-danger">Bəli, sil</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <!-- SİLMƏ FORM-U (POST SORĞUSU İLƏ) -->
+                                            <form asp-controller="UpcomingPayment" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bu ödənişi silməyə əminsiniz?');">
+                                                    <i class="bi bi-trash"></i> Sil
+                                                </button>
+                                            </form>
 
                                         </div>
                                     </td>

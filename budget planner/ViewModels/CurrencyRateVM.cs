@@ -3,6 +3,7 @@
     public class CurrencyRateVM
     {
         public string Code { get; set; } = string.Empty;     // Məsələn: "USD", "EUR"
+        public string Name { get; set; } = string.Empty;
         public string Symbol { get; set; } = string.Empty;   // Məsələn: "$", "€"
         public decimal Rate { get; set; }                    // Bu günün kursu (Məsələn: 1.7000)
 

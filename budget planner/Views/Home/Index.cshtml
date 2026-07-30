@@ -331,17 +331,19 @@
 
     </div> <!-- row sonu -->
 </div>
-<!-- ================= 5. MAIN DASHBOARD CONTENT ================= -->
+<!-- MAIN ROW BAŞLANĞICI -->
 <div class="row g-4">
 
+    <!-- ========================================== -->
     <!-- SOL TƏRƏF (Son Əməliyyatlar + Qarşıdan Gələn Ödənişlər) -->
+    <!-- ========================================== -->
     <div class="col-xl-8 col-lg-7 d-flex flex-column gap-4">
 
         <!-- 1. Son Əməliyyatlar -->
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
             <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold mb-0">Son Əməliyyatlar</h5>
-                <a asp-controller="Transaction" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <a asp-controller="Transaction" asp-action="Index" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1 text-decoration-none">
                     Hamısına bax <i class="fa-solid fa-arrow-right ms-1"></i>
                 </a>
             </div>
@@ -411,65 +413,72 @@
             </div>
         </div>
 
-        <!-- 2. Qarşıdan Gələn Ödənişlər (Upcoming Payments) -->
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-            <div class="card-body p-4">
-                <!-- Başlıq və Keçid Düyməsi -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0">Qarşıdan Gələn Ödənişlər</h5>
-                    <a asp-controller="UpcomingPayment" asp-action="Index" class="btn btn-outline-secondary btn-sm">
-                        Hamısına bax <i class="fa-solid fa-arrow-right ms-1"></i>
-                    </a>
-                </div>
+        <!-- 2. Qarşıdan Gələn Ödənişlər (Yeni Modern Dizayn) -->
+        <div class="card border-0 shadow-sm p-4" style="border-radius: 16px;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="fa-regular fa-calendar-check text-primary me-2"></i>Qarşıdan Gələn Ödənişlər
+                </h5>
+                <a asp-controller="UpcomingPayment" asp-action="Index" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1 text-decoration-none">
+                    Hamısına bax <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
 
-                @{
-                    var upcomingPayments = ViewBag.UpcomingPayments as List<budget_planner.Models.UpcomingPayment>;
-                }
+            @{
+                var upcomingList = ViewBag.UpcomingPayments as List<budget_planner.Models.UpcomingPayment>;
+            }
 
-                @if (upcomingPayments != null && upcomingPayments.Any())
-                {
-                    <div class="d-flex flex-column gap-3">
-                        @foreach (var item in upcomingPayments)
-                        {
-                            var daysLeft = (item.DueDate.Date - DateTime.Now.Date).Days;
-                            string dateColor = daysLeft < 0 ? "text-danger" : (daysLeft <= 3 ? "text-warning" : "text-secondary");
-                            string daysText = daysLeft < 0 ? $"{Math.Abs(daysLeft)} gün gecikib" : (daysLeft == 0 ? "Bu gün!" : $"{daysLeft} gün qalıb");
-
-                            <div class="d-flex justify-content-between align-items-center p-3 rounded bg-body-tertiary">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-secondary bg-opacity-25 p-2 rounded text-body">
-                                        <i class="fa-regular fa-calendar-check"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-0 fw-semibold">@item.Title</h6>
-                                        <small class="@dateColor">@item.DueDate.ToString("dd MMM yyyy") (@daysText)</small>
-                                    </div>
+            @if (upcomingList != null && upcomingList.Any())
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var item in upcomingList)
+                    {
+                        <div class="upcoming-payment-card d-flex justify-content-between align-items-center p-3 rounded-3 border" style="border-color: #e5e7eb !important; border-radius: 12px !important;">
+                            <!-- Sol tərəf: İkon və Ad -->
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="payment-icon-box d-flex align-items-center justify-content-center rounded-3">
+                                    <i class="fa-solid fa-receipt text-primary fs-5"></i>
                                 </div>
-                                <div class="text-end">
-                                    <h6 class="mb-0 fw-bold text-danger">-@item.Amount.ToString("N2") <span style="font-size: 0.8em;">@item.Currency</span></h6>
+                                <div>
+                                    <h6 class="fw-semibold mb-1 text-dark">@item.Title</h6>
+                                    <span class="text-muted small d-flex align-items-center gap-1">
+                                        <i class="fa-regular fa-clock"></i>
+                                        Son tarix: <strong>@item.DueDate.ToString("dd.MM.yyyy")</strong>
+                                    </span>
                                 </div>
                             </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="text-center text-muted my-4">
-                        <div class="bg-secondary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                            <i class="fa-solid fa-calendar-xmark fs-4 text-secondary"></i>
-                        </div>
-                        <p class="mb-0">Yaxınlaşan heç bir ödəniş yoxdur.</p>
-                    </div>
-                }
-            </div>
-        </div>
 
-    </div> <!-- Sol Tərəf Sonu -->
+                            <!-- Sağ tərəf: Məbləğ və Status -->
+                            <div class="text-end">
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 fs-6 fw-bold">
+                                    @item.Amount.ToString("N2") @item.Currency
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <!-- Boş olduqda göstəriləcək empty-state -->
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fa-regular fa-calendar-xmark text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                    <p class="text-muted mb-0">Hələ heç bir qarşıdan gələn ödəniş yoxdur.</p>
+                </div>
+            }
+        </div>
+        <!-- /Qarşıdan Gələn Ödənişlər -->
+
+    </div> <!-- /SOL TƏRƏF SONU -->
+    <!-- ========================================== -->
     <!-- SAĞ TƏRƏF (Xərclərin Bölgüsü + Hədəflərim) -->
+    <!-- ========================================== -->
     <div class="col-xl-4 col-lg-5 d-flex flex-column gap-4">
 
         <!-- 3. Xərclərin Bölgüsü -->
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
             <div class="card-body p-4 d-flex flex-column">
                 <h5 class="fw-bold mb-3">Xərclərin bölgüsü</h5>
 
@@ -488,15 +497,15 @@
                 </div>
             </div>
         </div>
-
+        <!-- (Əvvəlki kodunuzda buradakı artıq </div> teqi silindi) -->
         <!-- 4. Hədəflərim Vidceti -->
-        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
             <div class="card-body p-4">
 
                 <!-- Başlıq -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="fw-bold mb-0">Hədəflərim</h5>
-                    <a asp-controller="Goal" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    <a asp-controller="Goal" asp-action="Index" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1 text-decoration-none">
                         Hamısına bax
                     </a>
                 </div>
@@ -530,9 +539,9 @@
             </div>
         </div>
 
-    </div> <!-- Sağ Tərəf Sonu -->
+    </div> <!-- /SAĞ TƏRƏF SONU -->
 
-</div> <!-- Main Row Sonu -->
+</div> <!-- /MAIN ROW SONU -->
 <!-- ================= MODALS (PƏNCƏRƏLƏR) ================= -->
 <!-- 1. ADD CARD MODAL -->
 <div class="modal fade" id="addCardModal" tabindex="-1" aria-hidden="true">
@@ -602,7 +611,7 @@
 <div class="modal fade" id="quickIncomeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-controller="Home" asp-action="CreateTransaction" method="post">
+            <form asp-controller="Transaction" asp-action="Create" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="IsIncome" value="true" />
 
@@ -725,7 +734,7 @@
 <div class="modal fade" id="quickExpenseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-controller="Home" asp-action="CreateTransaction" method="post">
+            <form asp-controller="Transaction" asp-action="Create" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="IsIncome" value="false" />
 
@@ -973,20 +982,24 @@
         </div>
     </div>
 </div>
-@section Scripts {
-    <!-- Model məlumatlarının JS qrafiki və valyuta hesablama üçün dinamik ötürülməsi -->
+@section Scripts
+{
     <script>
         // Qrafik məlumatları
         window.dashboardChartData = {
-            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryExpenses?.Select(x => x.CategoryName) ?? new List<string>())),
-            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryExpenses?.Select(x => x.Amount) ?? new List<decimal>()))
-        };
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                            Model.CategoryExpenses?.Select(x => x.CategoryName) ?? new List<string>()
+                    )),
+        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        Model.CategoryExpenses?.Select(x => x.Amount) ?? new List<decimal>()
+                ))
+    };
 
-        // VALYUTA MƏZƏNNƏLƏRİ (Düzəliş edilmiş hissə)
-        // Model.ExchangeRates listini Code və Rate-ə görə Dictionary-yə çeviririk
+        // Valyuta məzənnələri
         window.exchangeRates = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-                    Model.ExchangeRates?.ToDictionary(x => x.Code, x => x.Rate) ?? new Dictionary<string, decimal>()
-            ));
+                Model.ExchangeRates?.ToDictionary(x => x.Code, x => x.Rate)
+                ?? new Dictionary<string, decimal>()
+        ));
 </script>
 
     <script src="~/assets/js/dashboard.js" asp-append-version="true"></script>
