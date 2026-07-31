@@ -1,34 +1,31 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace budget_planner.ViewModels
 {
     public class TransactionCreateVM
     {
-        [Required(ErrorMessage = "Məbləğ daxil edilməlidir.")]
+        [Required(ErrorMessage = "Məbləğ qeyd edilməlidir.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Məbləğ 0-dan böyük olmalıdır.")]
         public decimal Amount { get; set; }
 
         public string? Description { get; set; }
 
-        public bool IsIncome { get; set; }
-
-        [DataType(DataType.Date)]
         public DateTime Date { get; set; } = DateTime.Now;
 
-        public string? Currency { get; set; } = "AZN";
+        public bool IsIncome { get; set; }
 
-        // Kart seçimi üçün
-        public int? CardId { get; set; }
-
-        // Mövcud kateqoriya seçimi üçün
         public int? CategoryId { get; set; }
-
-        // Birbaşa ad yazmaq və ya yeni kateqoriya əlavə etmək üçün
-        public string? CategoryName { get; set; }
         public string? NewCategoryName { get; set; }
 
-        // Status seçimi (Varsayılan: Tamamlandı)
-        public string Status { get; set; } = "Tamamlandı";
+        public string? Currency { get; set; }
+        public int? CardId { get; set; }
+        public string? Status { get; set; }
+
+        // YENİ ƏLAVƏ EDİLƏNLƏR:
+        public IFormFile? ReceiptFile { get; set; } // Faylı formdan qəbul etmək üçün
+        public bool IsRecurring { get; set; }
+        public string? RecurringFrequency { get; set; } // Məsələn: "Daily", "Weekly", "Monthly"
     }
 }

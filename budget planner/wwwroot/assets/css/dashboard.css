@@ -20,39 +20,36 @@ body, html, .stat-amount, span, strong {
 
 /* ================= STATİSTİKA KARTLARI (Xülasə) ================= */
 .stat-card {
-    padding: 1rem 1.25rem !important; /* Daxili boşluqları optimallaşdırdıq */
+    padding: 1rem 1.25rem !important;
     display: flex !important;
     flex-direction: row !important;
     align-items: center;
-    gap: 0.85rem; /* İkonla mətn arasındakı məsafəni sıxdıq ki, yazıya yer qalsın */
-    overflow: hidden; /* Kartdan çölə heç nə çıxa bilməz */
+    gap: 0.85rem;
+    overflow: hidden;
 }
 
 /* İkon Qutusu */
 .stat-icon {
-    width: 50px; /* İkonu 65px-dən 50px-ə endirdik ki, mətnə daha çox yer açılsın */
+    width: 50px;
     height: 50px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.4rem;
-    flex-shrink: 0; /* İkonun sıxılıb formadan düşməsinin qarşısını alır */
+    flex-shrink: 0;
 }
 
-    /* Balans İkonu */
     .stat-icon.balance {
         background-color: rgba(11, 70, 53, 0.1);
         color: var(--primary-color);
     }
 
-    /* Gəlir İkonu */
     .stat-icon.income {
         background-color: rgba(16, 185, 129, 0.15);
         color: var(--color-income);
     }
 
-    /* Xərc İkonu */
     .stat-icon.expense {
         background-color: rgba(239, 68, 68, 0.15);
         color: var(--color-expense);
@@ -66,41 +63,32 @@ body, html, .stat-amount, span, strong {
 
 .stat-details {
     flex: 1;
-    min-width: 0; /* Flexbox-da yazının daşmasının qarşısını alan ƏSAS QIZIL QAYDA */
+    min-width: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.stat-title {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-bottom: 0.2rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 /* Məbləğ və Manat işarəsi */
 .stat-amount {
-    font-size: 1.35rem; /* Şrifti mütənasibləşdirdik (1.8rem çox böyük idi) */
+    font-size: 1.35rem;
     font-weight: 700;
     color: var(--text-main);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Hətta çox böyük millyonluq rəqəm olsa belə kartı sındırmayacaq */
+    text-overflow: ellipsis;
 }
 
 /* ================= QRAFİK QUTUSU ================= */
 .chart-container {
     position: relative;
-    height: 320px;
+    height: 300px !important;
     width: 100%;
     padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Boş vəziyyət (Data olmayanda göstəriləcək ikon) */
@@ -117,24 +105,20 @@ body, html, .stat-amount, span, strong {
     }
 
 /* ================= KONTRAST VƏ OXUNURLUQ DÜZƏLİŞLƏRİ ================= */
-
-/* 1. Ümumi Açıq Boz Yazıların Kontrastını Artırırıq */
 .text-muted,
 .page-subtitle,
 small.text-muted {
-    color: #555e68 !important; /* Açıq rejimdə daha tünd və oxunan boz */
+    color: #555e68 !important;
     font-weight: 500;
 }
 
-/* 2. Dark Rejimdə Boz Yazıların Avtomatik Aydınlaşması */
 [data-theme="dark"] .text-muted,
 [data-theme="dark"] .page-subtitle,
 [data-theme="dark"] small.text-muted,
 [data-theme="dark"] .stat-title {
-    color: #a1a5b7 !important; /* Qaranlıq fonda aydın seçilən boz */
+    color: #a1a5b7 !important;
 }
 
-/* 3. "Kart Əlavə Et" Qutusunun Görünüşünü Bərpa Etmək */
 .add-card-box {
     border: 2px dashed #8a92a6 !important;
     background-color: rgba(255, 255, 255, 0.4) !important;
@@ -155,7 +139,6 @@ small.text-muted {
         color: var(--text-main, #212529) !important;
     }
 
-/* Dark Rejimdə "Kart Əlavə Et" Qutusu */
 [data-theme="dark"] .add-card-box {
     border-color: #474d56 !important;
     background-color: rgba(255, 255, 255, 0.03) !important;
@@ -170,25 +153,17 @@ small.text-muted {
         background-color: rgba(13, 110, 253, 0.15) !important;
     }
 
-/* 4. Stat Kart Başlıqları (Ümumi Balans, Gəlir, Xərc) */
 .stat-title {
-    color: #495057 !important;
+    color: var(--bs-body-color, #495057);
+    opacity: 0.75;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
-/* Stat kartlarının başlıqlarının hər iki rejimdə aydın görünməsi üçün */
-.stat-title {
-    color: var(--bs-body-color);
-    opacity: 0.75;
-    font-weight: 600;
-}
 
-/* Valyuta ticker zolağı */
 .currency-ticker {
     color: var(--bs-body-color);
 }
 
-/* Modal daxilindəki select qutusu genişliyi */
 .modal-body select.form-select {
     width: 100%;
     text-overflow: ellipsis;
@@ -196,14 +171,6 @@ small.text-muted {
     overflow: hidden;
 }
 
-.chart-container {
-    position: relative;
-    height: 300px !important; /* 220px əvəzinə 300px edirik */
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 /* ================= BANK KARTLARI (BANK CARDS) ================= */
 .bank-cards-grid {
     display: grid;
@@ -224,7 +191,6 @@ small.text-muted {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-    /* Şəffaf dekorativ dairə effekti */
     .bank-card-item::after {
         content: '';
         position: absolute;
@@ -301,12 +267,16 @@ small.text-muted {
     }
 
 .payment-icon-box {
-    width: 48px;
-    height: 48px;
+    width: 42px !important;
+    height: 42px !important;
+    flex-shrink: 0;
     background-color: rgba(13, 110, 253, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
 }
 
-/* Dark rejim üçün əlavə dəstək (toxunulmadan inteqrasiya edilib) */
 [data-theme="dark"] .upcoming-payment-card {
     background-color: rgba(255, 255, 255, 0.03);
     border-color: rgba(255, 255, 255, 0.1) !important;
@@ -318,4 +288,67 @@ small.text-muted {
 
 [data-theme="dark"] .payment-icon-box {
     background-color: rgba(13, 110, 253, 0.15);
+}
+
+/* ================= DİQQƏT BANNENİ (XƏBƏRDARLIQ) ================= */
+.alert-warning-custom {
+    background-color: rgba(6, 182, 212, 0.1) !important;
+    border: 1px solid #06b6d4 !important;
+    border-radius: 12px !important;
+    padding: 1rem 1.25rem !important;
+    color: #06b6d4 !important;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+    .alert-warning-custom .alert-title,
+    .alert-warning-custom i {
+        color: #06b6d4 !important;
+        font-weight: 700;
+    }
+
+    .alert-warning-custom .alert-text {
+        color: #38bdf8 !important;
+    }
+
+    .alert-warning-custom a {
+        color: #0d9488 !important;
+        text-decoration: underline;
+        font-weight: 600;
+    }
+
+        .alert-warning-custom a:hover {
+            color: #14b8a6 !important;
+        }
+
+    .alert-warning-custom .btn-close {
+        filter: invert(56%) sepia(88%) saturate(1812%) hue-rotate(152deg) brightness(98%) contrast(97%);
+        opacity: 0.8;
+    }
+
+        .alert-warning-custom .btn-close:hover {
+            opacity: 1;
+        }
+
+/* ================= QARŞIDAN GƏLƏN ÖDƏNİŞLƏR BAŞLIQ VƏ İKON ================= */
+.upcoming-payments-header,
+.upcoming-payment-card h5,
+.upcoming-payment-card h6,
+.upcoming-payments-title,
+.upcoming-payments-title i,
+[data-theme="dark"] .upcoming-payment-card h5,
+[data-theme="dark"] .upcoming-payment-card h6,
+[data-theme="dark"] .upcoming-payments-title,
+[data-theme="dark"] .upcoming-payments-title i {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* ================= CƏDVƏL VƏ NİŞANLAR (BADGES) DƏSTƏYİ ================= */
+.table td .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
 }

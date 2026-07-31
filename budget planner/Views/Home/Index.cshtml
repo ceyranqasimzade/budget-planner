@@ -1,4 +1,7 @@
-﻿@using budget_planner.Services
+﻿@using Microsoft.AspNetCore.Identity
+@using budget_planner.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@using budget_planner.Services
 @model budget_planner.ViewModels.DashboardVM
 @{
     ViewData["Title"] = "İcmal";
@@ -27,6 +30,25 @@
             overflow: hidden;
         }
     </style>
+}
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <div class="alert-warning-custom alert-dismissible fade show mb-4 shadow-sm d-flex align-items-center justify-content-between" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill alert-icon me-3 fs-4"></i>
+            <div>
+                <h6 class="alert-title mb-1 fw-bold">Diqqət!</h6>
+                <p class="alert-text mb-0">
+                    Siz sistemə daxil olmamısınız. Daxil etdiyiniz gəlir və xərclər brauzeri bağladıqda silinəcək.
+                    <a asp-controller="Account" asp-action="Login" class="alert-link">Daxil olun</a>
+                    və ya
+                    <a asp-controller="Account" asp-action="Register" class="alert-link">Qeydiyyatdan keçin</a>.
+                </p>
+            </div>
+        </div>
+        <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 <!-- ================= 1. LIVE CURRENCY TICKER (VALYUTA KURLARI) ================= -->
 <div class="card mb-4 border-0 shadow-sm bg-body-tertiary">
@@ -372,13 +394,13 @@
                                         <td>
                                             @if (item.CardId.HasValue && item.CardId > 0)
                                             {
-                                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 px-2 py-1">
+                                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 px-2 py-1 d-inline-flex align-items-center">
                                                     <i class="fa-solid fa-credit-card me-1"></i> @(item.CardName ?? "Kart")
                                                 </span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-secondary bg-opacity-25 text-body border border-secondary border-opacity-25 px-2 py-1">
+                                                <span class="badge bg-secondary bg-opacity-25 text-body border border-secondary border-opacity-25 px-2 py-1 d-inline-flex align-items-center">
                                                     <i class="fa-solid fa-wallet me-1"></i> Nağd
                                                 </span>
                                             }
@@ -413,7 +435,7 @@
             </div>
         </div>
 
-        <!-- 2. Qarşıdan Gələn Ödənişlər (Yeni Modern Dizayn) -->
+        <!-- 2. Qarşıdan Gələn Ödənişlər -->
         <div class="card border-0 shadow-sm p-4" style="border-radius: 16px;">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h5 class="fw-bold mb-0 text-dark">
@@ -436,7 +458,7 @@
                         <div class="upcoming-payment-card d-flex justify-content-between align-items-center p-3 rounded-3 border" style="border-color: #e5e7eb !important; border-radius: 12px !important;">
                             <!-- Sol tərəf: İkon və Ad -->
                             <div class="d-flex align-items-center gap-3">
-                                <div class="payment-icon-box d-flex align-items-center justify-content-center rounded-3">
+                                <div class="payment-icon-box bg-primary bg-opacity-10 d-flex align-items-center justify-content-center rounded-3" style="width: 42px; height: 42px; flex-shrink: 0;">
                                     <i class="fa-solid fa-receipt text-primary fs-5"></i>
                                 </div>
                                 <div>
@@ -497,7 +519,7 @@
                 </div>
             </div>
         </div>
-        <!-- (Əvvəlki kodunuzda buradakı artıq </div> teqi silindi) -->
+
         <!-- 4. Hədəflərim Vidceti -->
         <div class="card border-0 shadow-sm" style="border-radius: 16px;">
             <div class="card-body p-4">

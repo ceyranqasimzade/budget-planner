@@ -607,5 +607,178 @@ namespace budget_planner.Controllers
                 return RedirectToReferrerOrIndex();
             }
         }
+        // ==========================================
+        // GET: /Transaction/Edit/5
+        // ==========================================
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction(nameof(Index));
+
+            var transaction = await _context.Transactions
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == user.Id && !t.IsDeleted);
+
+            if (transaction == null)
+            {
+                TempData["Error"] = "Əməliyyat tapılmadı.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var updateVm = new TransactionUpdateVM
+            {
+                Id = transaction.Id,
+                Amount = transaction.Amount,
+                Currency = transaction.Currency,
+                Description = transaction.Description,
+                Date = transaction.Date,
+                IsIncome = transaction.IsIncome,
+                Status = transaction.Status,
+                CategoryId = transaction.CategoryId,
+                CardId = transaction.CardId
+            };
+
+            return View(updateVm);
+        }
+
+        // ==========================================
+        // POST: /Transaction/Edit
+        // ==========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(TransactionUpdateVM model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction(nameof(Index));
+
+            var transaction = await _context.Transactions
+                .Include(t => t.Card)
+                .FirstOrDefaultAsync(t => t.Id == model.Id && t.UserId == user.Id && !t.IsDeleted);
+
+            if (transaction == null)
+            {
+                TempData["Error"] = "Əməliyyat tapılmadı.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            using var databaseTransaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // 1. ƏVVƏLKİ ƏMƏLİYYATIN TƏSİRİNİ BALANSDAN GERİ QAYTARIRIQ (ROLLBACK EFFECT)
+                var oldCurrency = NormalizeCurrency(transaction.Currency);
+                var oldAmountAzn = await _currencyService.ConvertAsync(transaction.Amount, oldCurrency, "AZN");
+
+                if (transaction.CardId.HasValue && transaction.Card != null)
+                {
+                    var cardCurrency = NormalizeCurrency(transaction.Card.Currency);
+                    var oldCardAmount = await _currencyService.ConvertAsync(transaction.Amount, oldCurrency, cardCurrency);
+
+                    if (transaction.IsIncome)
+                    {
+                        transaction.Card.Balance -= oldCardAmount;
+                        user.TotalBalance -= oldAmountAzn;
+                    }
+                    else
+                    {
+                        transaction.Card.Balance += oldCardAmount;
+                        user.TotalBalance += oldAmountAzn;
+                    }
+                }
+                else
+                {
+                    if (transaction.IsIncome)
+                    {
+                        user.CashBalance -= oldAmountAzn;
+                        user.TotalBalance -= oldAmountAzn;
+                    }
+                    else
+                    {
+                        user.CashBalance += oldAmountAzn;
+                        user.TotalBalance += oldAmountAzn;
+                    }
+                }
+
+                // 2. YENİ MƏLUMATLARA ƏSASƏN YENİ BALANSI HESABLAYIB TƏTBİQ EDİRİK
+                var newCurrency = NormalizeCurrency(model.Currency);
+                var newAmountAzn = await _currencyService.ConvertAsync(model.Amount, newCurrency, "AZN");
+
+                Card? newCard = null;
+                if (model.CardId.HasValue && model.CardId.Value > 0)
+                {
+                    newCard = await _context.Cards.FirstOrDefaultAsync(c => c.Id == model.CardId && c.UserId == user.Id && !c.IsDeleted);
+                    if (newCard != null)
+                    {
+                        var newCardCurrency = NormalizeCurrency(newCard.Currency);
+                        var newCardAmount = await _currencyService.ConvertAsync(model.Amount, newCurrency, newCardCurrency);
+
+                        if (!model.IsIncome && newCard.Balance < newCardAmount)
+                        {
+                            await databaseTransaction.RollbackAsync();
+                            TempData["Error"] = $"Seçilmiş kartda kifayət qədər vəsait yoxdur!";
+                            return RedirectToReferrerOrIndex();
+                        }
+
+                        if (model.IsIncome)
+                        {
+                            newCard.Balance += newCardAmount;
+                            user.TotalBalance += newAmountAzn;
+                        }
+                        else
+                        {
+                            newCard.Balance -= newCardAmount;
+                            user.TotalBalance -= newAmountAzn;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!model.IsIncome && user.CashBalance < newAmountAzn)
+                    {
+                        await databaseTransaction.RollbackAsync();
+                        TempData["Error"] = $"Nağd balansınızda kifayət qədər vəsait yoxdur!";
+                        return RedirectToReferrerOrIndex();
+                    }
+
+                    if (model.IsIncome)
+                    {
+                        user.CashBalance += newAmountAzn;
+                        user.TotalBalance += newAmountAzn;
+                    }
+                    else
+                    {
+                        user.CashBalance -= newAmountAzn;
+                        user.TotalBalance -= newAmountAzn;
+                    }
+                }
+
+                // 3. ƏMƏLİYYAT SAHƏLƏRİNİ YENİLƏYİRİK
+                transaction.Amount = model.Amount;
+                transaction.Currency = newCurrency;
+                transaction.Description = model.Description;
+                transaction.Date = model.Date;
+                transaction.IsIncome = model.IsIncome;
+                transaction.CategoryId = model.CategoryId;
+                transaction.CardId = model.CardId;
+                transaction.Status = model.Status;
+
+                _context.Transactions.Update(transaction);
+                _context.Users.Update(user);
+
+                await _context.SaveChangesAsync();
+                await databaseTransaction.CommitAsync();
+
+                TempData["SuccessMessage"] = "Əməliyyat və balanslar uğurla yeniləndi!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                await databaseTransaction.RollbackAsync();
+                _logger.LogError(ex, "Transaction Edit zamanı xəta baş verdi. Transaction ID: {Id}", model.Id);
+                TempData["Error"] = "Əməliyyat yenilənərkən xəta baş verdi.";
+                return RedirectToReferrerOrIndex();
+            }
+        }
     }
 }

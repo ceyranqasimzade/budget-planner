@@ -267,26 +267,12 @@
 
             <!-- ================= MAIN CONTENT ================= -->
 
-            <main class="main-content">
+<main class="main-content">
 
-                @if (!SignInManager.IsSignedIn(User))
-                {
-                    <div class="alert alert-warning alert-dismissible fade show mb-3 shadow-sm d-flex align-items-center justify-content-between" role="alert">
-                        <div>
-                            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
-                            <strong>Diqqət:</strong> Siz sistemə daxil olmamısınız! Qeydiyyatdan keçməsəniz, daxil etdiyiniz gəlir və xərclər brauzeri bağladıqda silinəcək.
-                        </div>
-                        <div class="d-flex gap-2">
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-dark">Daxil ol</a>
-                            <a asp-controller="Account" asp-action="Register" class="btn btn-sm btn-outline-dark">Qeydiyyat</a>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
 
-                @RenderBody()
+    @RenderBody()
 
-            </main>
+</main>
 
             <!-- ================= FOOTER ================= -->
 
@@ -329,7 +315,6 @@
 
     <!-- ================= Global Theme ================= -->
     <script src="~/assets/js/theme.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

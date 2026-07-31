@@ -35,7 +35,7 @@ namespace budget_planner.Models
         // Category relation
         // =====================
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         public Category Category { get; set; } = null!;
 

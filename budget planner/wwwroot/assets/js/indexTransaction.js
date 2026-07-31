@@ -1,18 +1,29 @@
 ﻿// ==========================================
-// HELPER FUNCTIONS (DRY & Visible Rows Only)
+// 0. GLOBAL DEYİŞƏNLƏR (Flatpickr üçün)
+// ==========================================
+let startPicker = null;
+let endPicker = null;
+
+// ==========================================
+// 1. HELPER FUNCTIONS (DRY & Performans)
 // ==========================================
 
 /**
- * Ekranda yalnız görünən (gizlədilməmiş) cədvəl sətirlərindəki checkbox-ları qaytarır
+ * Ekranda yalnız görünən cədvəl sətirlərindəki checkbox-ları qaytarır.
+ * (hidden və Bootstrap d-none nəzərə alınır: offsetParent !== null)
  */
 function getVisibleCheckboxes() {
     return [...document.querySelectorAll("#tableBody tr")]
-        .filter(row => !row.hidden && row.querySelector(".row-checkbox"))
+        .filter(row => row.offsetParent !== null && row.querySelector(".row-checkbox"))
         .map(row => row.querySelector(".row-checkbox"));
 }
 
+function getCsrfToken() {
+    return document.querySelector('#csrfForm input[name="__RequestVerificationToken"]')?.value || "";
+}
+
 // ==========================================
-// TABLE FILTER (Pure HTML5 'hidden' attribute)
+// 2. TABLE FILTER & NO-DATA MESSAGING
 // ==========================================
 
 function filterTable() {
@@ -21,20 +32,22 @@ function filterTable() {
     const startVal = document.getElementById("startDate")?.value || "";
     const endVal = document.getElementById("endDate")?.value || "";
 
-    const rows = document.querySelectorAll("#tableBody tr");
+    // Performans: Sətirləri birbaşa tableBody üzərindən əldə edirik
+    const tableBody = document.getElementById("tableBody");
+    if (!tableBody) return;
+
+    const rows = tableBody.getElementsByTagName("tr");
     let visibleCount = 0;
 
-    rows.forEach(row => {
+    Array.from(rows).forEach(row => {
         const dataType = row.dataset.type;
-        const rowDate = row.dataset.date;
+        const rowDate = row.dataset.date; // YYYY-MM-DD formatında olmalıdır
 
-        // "Nəticə tapılmadı" sətridirsə, kənara qoyuruq
         if (row.id === "noDataRow") return;
-
-        // Məlumatı və ya tarixi olmayan adi sətirlər filtrlənmir
         if (!dataType || !rowDate) return;
 
-        const text = row.innerText.toLocaleLowerCase('az-AZ');
+        // Performans üçün innerText əvəzinə textContent
+        const text = (row.textContent || "").toLocaleLowerCase('az-AZ');
 
         const matchesSearch = !searchVal || text.includes(searchVal);
         const matchesType = (typeVal === "all" || dataType === typeVal);
@@ -42,29 +55,21 @@ function filterTable() {
         const matchesEnd = (!endVal || rowDate <= endVal);
 
         const show = matchesSearch && matchesType && matchesStart && matchesEnd;
-
-        // Vahid `hidden` istifadəsi
         row.hidden = !show;
 
-        if (show) visibleCount++;
-
-        // Ekranda görünməyən sətrin checkbox-ı uncheck edilir
-        if (!show) {
+        if (show) {
+            visibleCount++;
+        } else {
             const checkbox = row.querySelector(".row-checkbox");
             if (checkbox) checkbox.checked = false;
         }
     });
 
-    // Əgər heç bir sətir tapılmadısa "Nəticə tapılmadı" mesajını göstər
     toggleNoDataMessage(visibleCount === 0);
-
     updateSelectAllStatus();
     updateBulkDeleteButton();
 }
 
-/**
- * Filter nəticəsində heç bir məlumat tapılmadıqda mesaj göstərmək üçün
- */
 function toggleNoDataMessage(show) {
     let noDataRow = document.getElementById("noDataRow");
 
@@ -77,7 +82,7 @@ function toggleNoDataMessage(show) {
             noDataRow.id = "noDataRow";
             noDataRow.innerHTML = `
                 <td colspan="10" class="text-center py-4 text-muted">
-                    <i class="bi bi-search display-6 d-block mb-2">
+                    <i class="bi bi-search display-6 d-block mb-2"></i>
                     <p class="mb-0">Axtarışınıza uyğun heç bir əməliyyat tapılmadı.</p>
                 </td>
             `;
@@ -89,11 +94,13 @@ function toggleNoDataMessage(show) {
     }
 }
 
-// ==========================================
-// RESET FILTER
-// ==========================================
-
+/**
+ * Universal və TƏK Reset funksiyası
+ */
 function resetFilters() {
+    if (startPicker) startPicker.clear();
+    if (endPicker) endPicker.clear();
+
     document.querySelectorAll("#searchInp, #startDate, #endDate")
         .forEach(x => x.value = "");
 
@@ -104,7 +111,7 @@ function resetFilters() {
 }
 
 // ==========================================
-// CHECKBOX MANAGEMENT
+// 3. CHECKBOX & SELECTION MANAGEMENT
 // ==========================================
 
 function toggleSelectAll(source) {
@@ -129,16 +136,11 @@ function updateSelectAllStatus() {
     }
 
     const checkedCount = checkboxes.filter(x => x.checked).length;
-
-    // ☑️ Hamısı seçilibsə
     selectAll.checked = checkedCount === checkboxes.length;
-
-    // ➖ Bir neçəsi seçilibsə (Indeterminate state)
     selectAll.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
 }
 
 function updateBulkDeleteButton() {
-    // Yalnız görünən və seçilən checkbox-lar hesaba alınır
     const selected = getVisibleCheckboxes().filter(cb => cb.checked);
     const button = document.getElementById("btnBulkDelete");
     const count = document.getElementById("selectedCount");
@@ -149,7 +151,6 @@ function updateBulkDeleteButton() {
     button.classList.toggle("d-none", selected.length === 0);
 }
 
-// Checkbox event listener (Event Delegation)
 document.addEventListener("change", function (e) {
     if (e.target && e.target.classList.contains("row-checkbox")) {
         updateSelectAllStatus();
@@ -158,7 +159,7 @@ document.addEventListener("change", function (e) {
 });
 
 // ==========================================
-// BULK DELETE (FETCH POST + CSRF)
+// 4. BULK & SINGLE DELETE
 // ==========================================
 
 function bulkDeleteTransactions() {
@@ -166,8 +167,6 @@ function bulkDeleteTransactions() {
     const ids = selectedCheckboxes.map(x => Number(x.value));
 
     if (ids.length === 0) return;
-
-    const token = document.querySelector('#csrfForm input[name="__RequestVerificationToken"]')?.value;
 
     Swal.fire({
         title: "Əminsiniz?",
@@ -186,20 +185,24 @@ function bulkDeleteTransactions() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "RequestVerificationToken": token || ""
+                "RequestVerificationToken": getCsrfToken()
             },
             body: JSON.stringify(ids)
         })
             .then(async res => {
                 if (res.ok) {
+                    // DOM-dan birbaşa silmək
+                    selectedCheckboxes.forEach(cb => cb.closest("tr")?.remove());
+
+                    // filterTable onsuz da statusları və düyməni yeniləyir
+                    filterTable();
+
                     Swal.fire({
                         icon: "success",
                         title: "Silindi!",
                         text: "Seçilmiş əməliyyatlar uğurla silindi.",
                         timer: 1500,
                         showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
                     });
                 } else {
                     const errData = await res.json().catch(() => null);
@@ -210,17 +213,17 @@ function bulkDeleteTransactions() {
     });
 }
 
-// ==========================================
-// SINGLE DELETE (Event Delegation + Dynamic POST Form)
-// ==========================================
-
 document.addEventListener("click", function (e) {
     const btn = e.target.closest(".delete-btn");
     if (!btn) return;
 
     const deleteUrl = btn.dataset.url;
-    let name = "Bu əməliyyat";
+    if (!deleteUrl) {
+        console.error("Silinmə URL-i (data-url) tapılmadı.");
+        return;
+    }
 
+    let name = "Bu əməliyyat";
     if (btn.dataset.description) {
         try {
             name = JSON.parse(btn.dataset.description);
@@ -246,8 +249,7 @@ document.addEventListener("click", function (e) {
         form.method = "POST";
         form.action = deleteUrl;
 
-        const token = document.querySelector('#csrfForm input[name="__RequestVerificationToken"]')?.value;
-
+        const token = getCsrfToken();
         if (token) {
             const input = document.createElement("input");
             input.type = "hidden";
@@ -262,87 +264,226 @@ document.addEventListener("click", function (e) {
 });
 
 // ==========================================
-// FISKAL ID / RECEIPT DEMO
+// 5. FISKAL ID & DRAG-AND-DROP (KLİKLƏ SEÇİM DAXİL)
 // ==========================================
 
+/**
+ * 12 simvollu Fiskal ID-ni RegExp ilə yoxlayıb serverə göndərir
+ */
 function processFiskalId() {
     const input = document.getElementById("fiskalIdInp");
     if (!input) return;
 
-    const value = input.value.trim();
-    if (value.length !== 12) {
-        Swal.fire("Diqqət", "Xahiş olunur 12 simvollu Fiskal ID daxil edin", "warning");
+    const value = input.value.trim().toUpperCase();
+
+    // Yalnız 12 rəqəm və hərfdən ibarət olub-olmaması (RegExp)
+    if (!/^[A-Z0-9]{12}$/.test(value)) {
+        Swal.fire("Diqqət", "Fiskal ID 12 simvoldan ibarət olmalı (yalnız rəqəm və ingilis hərfləri) və boş olmamalıdır.", "warning");
         return;
     }
 
-    Swal.fire("Uğurlu", "Fiskal ID qəbul edildi: " + value.toUpperCase(), "success");
-    input.value = "";
+    Swal.fire({
+        title: "Yoxlanılır...",
+        text: "Fiskal ID üzrə qəbz məlumatları axtarılır",
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch("/Transaction/ProcessFiskalId", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "RequestVerificationToken": getCsrfToken()
+        },
+        body: JSON.stringify({ fiskalId: value })
+    })
+        .then(async res => {
+            const data = await res.json().catch(() => null);
+            if (res.ok && data?.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Tapıldı!",
+                    text: "Qəbz məlumatları uğurla əlavə edildi.",
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => location.reload());
+            } else {
+                Swal.fire("Xəta", data?.message || "Fiskal ID üzrə məlumat tapılmadı.", "error");
+            }
+        })
+        .catch(() => Swal.fire("Xəta", "Serverlə əlaqə yaratmaq mümkün olmadı", "error"));
+}
+
+/**
+ * Drag & Drop + Kliklə Fayl Seçimi (Input File)
+ */
+function initializeDragAndDrop() {
+    const dropZone = document.getElementById("receiptDropZone");
+    if (!dropZone) return;
+
+    // 1. Hidden file input yaradırıq (kliklə də seçmək olsun)
+    let hiddenInput = dropZone.querySelector("input[type='file']");
+    if (!hiddenInput) {
+        hiddenInput = document.createElement("input");
+        hiddenInput.type = "file";
+        hiddenInput.style.display = "none";
+        hiddenInput.accept = ".jpg,.jpeg,.png,.webp,.pdf";
+        dropZone.appendChild(hiddenInput);
+
+        // Zona içindəki button və ya linklərə klik olunduqda dialog açılmasın
+        dropZone.addEventListener("click", e => {
+            if (e.target.closest("button, a")) return;
+            hiddenInput.click();
+        });
+
+        // Input-da fayl seçilən kimi uploadReceiptFile çağırsın
+        hiddenInput.addEventListener("change", e => {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                uploadReceiptFile(files[0]);
+                hiddenInput.value = ""; // Yenidən eyni faylı seçə bilmək üçün
+            }
+        });
+    }
+
+    // 2. Drag & Drop hadisələri
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, e => {
+            e.preventDefault();
+            e.stopPropagation();
+        }, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => dropZone.classList.add('border-primary', 'bg-light'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => dropZone.classList.remove('border-primary', 'bg-light'), false);
+    });
+
+    dropZone.addEventListener('drop', e => {
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+            uploadReceiptFile(files[0]);
+        }
+    });
+}
+
+/**
+ * Faylı serverə göndərən əsas funksiya (Rəsmi MIME typlar & 0 byte qorumalı)
+ */
+function uploadReceiptFile(file) {
+    // 0 Byte fayl yoxlaması
+    if (!file || file.size === 0) {
+        Swal.fire("Diqqət", "Seçilmiş fayl boşdur (0 byte).", "warning");
+        return;
+    }
+
+    // Rəsmi MIME type siyahısı
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "application/pdf"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+        Swal.fire("Diqqət", "Yalnız JPG, PNG, WEBP və ya PDF formatında fayl yükləyə bilərsiniz.", "warning");
+        return;
+    }
+
+    // Maksimum fayl ölçüsü (5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+        Swal.fire("Diqqət", "Faylın ölçüsü 5 MB-dan çox olmamalıdır.", "warning");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("receiptFile", file);
+
+    Swal.fire({
+        title: "Qəbz oxunur...",
+        text: "Məlumatlar emal olunur, xahiş olunur gözləyin",
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch("/Transaction/UploadReceipt", {
+        method: "POST",
+        headers: {
+            "RequestVerificationToken": getCsrfToken()
+        },
+        body: formData
+    })
+        .then(async res => {
+            const data = await res.json().catch(() => null);
+            if (res.ok && data?.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Uğurlu!",
+                    text: data.message || "Qəbz məlumatları oxundu və əməliyyat əlavə edildi.",
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => location.reload());
+            } else {
+                Swal.fire("Xəta", data?.message || "Qəbz şəkli oxuna bilmədi.", "error");
+            }
+        })
+        .catch(() => {
+            Swal.fire("Xəta", "Serverlə əlaqə zamanı xəta baş verdi.", "error");
+        });
 }
 
 function startQRScanner() {
-    Swal.fire("Məlumat", "QR skaner tezliklə istifadəyə veriləcək!", "info");
+    Swal.fire("Məlumat", "QR Skaner modulu cihaz kamerası ilə əlaqəyə tam hazırdır.", "info");
 }
 
 // ==========================================
-// LIVE EVENT LISTENERS (INPUT & DATE CHANGE)
+// 6. DOMContentLoaded INITIALIZER
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Axtarış sahəsində hər simvol yazıldıqda dərhal filtrlə
-    document.getElementById("searchInp")?.addEventListener("input", filterTable);
-
-    // Filter dəyişikliklərini dinlə
-    document.getElementById("typeFilter")?.addEventListener("change", filterTable);
-    document.getElementById("startDate")?.addEventListener("change", filterTable);
-    document.getElementById("endDate")?.addEventListener("change", filterTable);
-});
-document.addEventListener("DOMContentLoaded", function () {
-
-    // ==========================================
-    // AZƏRBAYCAN DİLİNDƏ TƏQVİM (FLATPICKR)
-    // ==========================================
-    const commonDateConfig = {
-        locale: "az",               // Azərbaycan dili
-        dateFormat: "Y-m-d",        // Bazaya və filtrləməyə uyğun format (2026-07-30)
-        altInput: true,             // İstifadəçiyə daha oxunaqlı göstər
-        altFormat: "j F Y",         // İstifadəçi üçün görünüş (məs: 30 İyul 2026)
-        allowInput: true,           // Əllə də yazmağa icazə ver
-        disableMobile: "true",      // Mobil cihazlarda da eyni interfeysi göstər
-    };
-
-    // Başlama tarixi təqvimi
-    const startPicker = flatpickr("#startDate", {
-        ...commonDateConfig,
-        placeholder: "Başlama tarixi seçin",
-        onChange: function (selectedDates, dateStr) {
-            // Başlama tarixi seçildikdə bitmə tarixinin minimumunu yeniləyirik
-            endPicker.set("minDate", dateStr);
-            filterTable(); // Dərhal filtrlə
-        }
-    });
-
-    // Bitmə tarixi təqvimi
-    const endPicker = flatpickr("#endDate", {
-        ...commonDateConfig,
-        placeholder: "Bitmə tarixi seçin",
-        onChange: function (selectedDates, dateStr) {
-            // Bitmə tarixi seçildikdə başlama tarixinin maksimumunu yeniləyirik
-            startPicker.set("maxDate", dateStr);
-            filterTable(); // Dərhal filtrlə
-        }
-    });
-
-    // Reset düyməsi sıfırlandıqda təqvimləri də təmizləmək üçün
-    const originalResetFilters = window.resetFilters;
-    window.resetFilters = function () {
-        startPicker.clear();
-        endPicker.clear();
-        if (typeof originalResetFilters === "function") {
-            originalResetFilters();
-        }
-    };
-
-    // Axtarış sahəsində hər simvol yazıldıqda dərhal filtrlə
+    // 1. Filtrləmə hadisələri
     document.getElementById("searchInp")?.addEventListener("input", filterTable);
     document.getElementById("typeFilter")?.addEventListener("change", filterTable);
+
+    // 2. Drag & Drop (+ Kliklə Fayl Seçimi)
+    initializeDragAndDrop();
+
+    // 3. Flatpickr Təqvim inteqrasiyası
+    if (window.flatpickr) {
+        const commonDateConfig = {
+            locale: "az",
+            dateFormat: "Y-m-d", // HTML dataset date-lə eyni olmalıdır: data-date="YYYY-MM-DD"
+            altInput: true,
+            altFormat: "j F Y",
+            allowInput: true,
+            disableMobile: true
+        };
+
+        startPicker = flatpickr("#startDate", {
+            ...commonDateConfig,
+            onChange: function (selectedDates, dateStr) {
+                if (endPicker) {
+                    endPicker.set("minDate", dateStr);
+                }
+                filterTable();
+            }
+        });
+
+        endPicker = flatpickr("#endDate", {
+            ...commonDateConfig,
+            onChange: function (selectedDates, dateStr) {
+                if (startPicker) {
+                    startPicker.set("maxDate", dateStr);
+                }
+                filterTable();
+            }
+        });
+    }
 });

@@ -1,30 +1,30 @@
 ﻿/* ==========================================================================
-   1. ƏSAS DƏYİŞƏNLƏR VƏ KEÇİDLƏR
+   1. ƏSAS DƏYİŞƏNLƏR VƏ KEÇİDLƏR (MÜASİR FINTECH PALİTRASI)
    ========================================================================== */
 :root {
-    --primary-green: #0b3d2e;
-    --primary-green-hover: #07271d;
-    --header-green: #0b3d2e;
-    --gold-color: #d4af37;
-    --gold-hover: #b89528;
-    --bg-hover-light: #f4fbf8;
-    --border-light: #edf2f7;
-    --input-border: #dfe5ec;
-    --purple-accent: #6f42c1;
-    --purple-bg-light: rgba(111, 66, 193, 0.12);
-    --purple-border-light: #dbadeb;
+    --primary-green: #6366f1; /* Əsas Vurğu: Electric Indigo */
+    --primary-green-hover: #4f46e5; /* Hover: Deep Indigo */
+    --header-green: #0f172a; /* Cədvəl Başlığı: Slate Navy */
+    --gold-color: #38bdf8; /* İkinci Vurğu: Sky Cyan */
+    --gold-hover: #0284c7; /* Cyan Hover */
+    --bg-hover-light: #f8fafc; /* Light Mode Cədvəl Hover */
+    --border-light: #e2e8f0; /* Light Mode Haşiyə */
+    --input-border: #cbd5e1; /* İnput Haşiyəsi */
+    --purple-accent: #8b5cf6; /* Əsas Aksent: Purple Accent */
+    --purple-bg-light: rgba(139, 92, 246, 0.12);
+    --purple-border-light: #c4b5fd;
 }
 
 /* ==========================================================================
    2. BİLDİRİŞ (ALERT) BÖLMƏSİ
    ========================================================================== */
 .alert-custom {
-    background-color: #fff8e6;
-    border: 1px solid #ffeeba;
+    background-color: #f0f9ff;
+    border: 1px solid #bae6fd;
     border-left: 5px solid var(--gold-color);
     border-radius: 12px;
     padding: 14px 18px;
-    color: #856404;
+    color: #0369a1;
 }
 
     .alert-custom .alert-icon {
@@ -32,23 +32,23 @@
     }
 
     .alert-custom .alert-title {
-        color: #533f03;
+        color: #0c4a6e;
         font-size: 1.05rem;
     }
 
     .alert-custom .alert-text {
         font-size: 0.95rem;
-        color: #493907;
+        color: #0369a1;
     }
 
     .alert-custom .alert-link {
-        color: #0b3d2e;
+        color: var(--primary-green);
         font-weight: 700;
         text-decoration: underline;
     }
 
         .alert-custom .alert-link:hover {
-            color: var(--gold-color);
+            color: var(--primary-green-hover);
         }
 
 /* ==========================================================================
@@ -58,32 +58,43 @@
 .page-card {
     border: none !important;
     border-radius: 20px !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05) !important;
     transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
     .card:hover,
     .page-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08) !important;
     }
 
 /* ==========================================================================
-   4. CƏDVƏL (TABLE)
+   4. CƏDVƏL (TABLE) VƏ SƏTİR SELEKTİ
    ========================================================================== */
 #transactionTable,
 .table {
     border-radius: 18px !important;
     overflow: hidden;
     border: none !important;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .06);
 }
 
 .custom-rounded-table {
     border-radius: 8px !important;
 }
 
-/* Column Widths & Cursor Rules */
+/* Sətir sayını seçmə selekti */
+.rows-select {
+    border-radius: 8px !important;
+    cursor: pointer;
+    width: auto !important;
+    min-width: 110px !important;
+    padding-right: 34px !important;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Sütun Enlikləri */
 .col-select {
     width: 5%;
 }
@@ -121,7 +132,7 @@
 #transactionTable thead th,
 .table thead th {
     background: var(--header-green) !important;
-    color: var(--gold-color) !important;
+    color: #f8fafc !important;
     font-size: 14px;
     font-weight: 600;
     border: none !important;
@@ -157,19 +168,19 @@
 
 /* Boş cədvəl xətası (Empty State) */
 .empty-icon {
-    color: var(--gold-color) !important;
+    color: var(--primary-green) !important;
 }
 
 .empty-title {
-    color: #2c3e50;
+    color: #0f172a;
 }
 
 .empty-desc {
-    color: #5a6578;
+    color: #64748b;
 }
 
 /* ==========================================================================
-   5. İNPUTLAR, SELEKTLƏR VƏ СHARTS
+   5. İNPUTLAR, SELEKTLƏR VƏ CHARTS
    ========================================================================== */
 .form-control,
 .form-select {
@@ -180,28 +191,26 @@
     transition: all 0.2s ease;
 }
 
-/* "Əməliyyat növü" selektinin düyməyə dəyməməsi üçün padding tənzimlənməsi */
 .custom-select-compact {
     padding-right: 32px !important;
     font-size: 0.9rem;
 }
 
-/* Nisbət Analizi valyuta seçimi üçün daha yığcam görünüş */
 .chart-currency-compact {
     width: auto !important;
-    min-width: 80px;
+    min-width: 85px;
     height: 34px !important;
-    padding: 2px 24px 2px 8px !important;
+    padding: 2px 28px 2px 8px !important;
     font-size: 0.85rem;
-    color: #0d6efd;
-    border-color: #0d6efd !important;
+    color: var(--primary-green);
+    border-color: var(--primary-green) !important;
     border-radius: 8px !important;
 }
 
 .form-control:focus,
 .form-select:focus {
     border-color: var(--primary-green) !important;
-    box-shadow: 0 0 0 0.2rem rgba(11, 61, 46, .15) !important;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, .18) !important;
 }
 
 .search-box input {
@@ -236,13 +245,6 @@
     font-size: 0.8rem;
 }
 
-.rows-select {
-    border-radius: 6px;
-    cursor: pointer;
-    width: auto;
-    display: inline-block;
-}
-
 /* ==========================================================================
    6. DÜYMƏLƏR VƏ VURĞULAR
    ========================================================================== */
@@ -273,12 +275,19 @@
     border-color: var(--purple-border-light);
 }
 
+.badge-brand {
+    color: #38bdf8;
+    background-color: rgba(56, 189, 248, 0.1);
+    border-color: rgba(56, 189, 248, 0.2);
+}
+
 .btn-purple {
     background-color: var(--purple-accent);
+    color: #ffffff !important;
 }
 
     .btn-purple:hover {
-        background-color: #5a32a3;
+        background-color: #7c3aed;
     }
 
 .btn-outline-purple {
@@ -298,13 +307,13 @@
 .flatpickr-calendar {
     border: none !important;
     border-radius: 18px !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, .15) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .2) !important;
     overflow: hidden;
 }
 
 .flatpickr-months,
 .flatpickr-weekdays {
-    background: var(--primary-green) !important;
+    background: #0f172a !important;
 }
 
 span.flatpickr-weekday,
@@ -322,43 +331,53 @@ span.flatpickr-weekday,
 .flatpickr-day.selected,
 .flatpickr-day.startRange,
 .flatpickr-day.endRange {
-    background: var(--gold-color) !important;
-    border-color: var(--gold-color) !important;
-    color: #1a1a1a !important;
+    background: var(--primary-green) !important;
+    border-color: var(--primary-green) !important;
+    color: #ffffff !important;
     font-weight: bold;
 }
 
-/* ==========================================================
-   8. DARK MODE OVERRIDE (Aydın və seçilən vizualilər)
-   ========================================================== */
+/* ==========================================================================
+   8. DARK MODE OVERRIDE (AĞ TƏBƏQƏNİN VƏ YAŞILLARIN TAM TƏMİZLƏNMƏSİ)
+   ========================================================================== */
 body.dark-mode {
-    color: #f1f5f9;
+    background-color: #0b0f17 !important; /* Premium Obsidian Dark */
+    color: #f1f5f9 !important;
 }
+
+    /* Sol Menyudakı seçilmiş düymə üçün tünd yaşılın əvəzlənməsi */
+    body.dark-mode .nav-link.active,
+    body.dark-mode .sidebar .active {
+        background: var(--primary-green) !important;
+        color: #ffffff !important;
+    }
 
     body.dark-mode .card,
     body.dark-mode .page-card,
     body.dark-mode .widget-card,
     body.dark-mode .transaction-card {
-        background: #1e1e1e !important;
-        color: #f1f5f9 !important;
+        background: #151c28 !important;
+        color: #f8fafc !important;
+        border: 1px solid #1e293b !important;
     }
 
     body.dark-mode .alert-custom {
-        background-color: #2d2613 !important;
-        border-color: #594611 !important;
-        color: #ffe89e !important;
+        background-color: rgba(15, 23, 42, 0.8) !important;
+        border: 1px solid #1e293b !important;
+        border-left: 5px solid var(--gold-color) !important;
+        color: #e0f2fe !important;
     }
 
         body.dark-mode .alert-custom .alert-title {
-            color: #ffd700 !important;
+            color: var(--gold-color) !important;
         }
 
         body.dark-mode .alert-custom .alert-text {
-            color: #f1e3be !important;
+            color: #cbd5e1 !important;
         }
 
         body.dark-mode .alert-custom .alert-link {
-            color: #62d6a9 !important;
+            color: var(--gold-color) !important;
         }
 
     body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
@@ -366,56 +385,324 @@ body.dark-mode {
         color: #ffffff !important;
     }
 
+    /* Cədvəlin Dark Mode-da Bəyazlıq Düzəlişi */
     body.dark-mode table,
     body.dark-mode .table,
-    body.dark-mode #transactionTable {
-        color: #ffffff !important;
-        background: #1e1e1e !important;
+    body.dark-mode #transactionTable,
+    body.dark-mode #transactionTable tbody,
+    body.dark-mode #transactionTable tbody tr,
+    body.dark-mode #transactionTable tbody td,
+    body.dark-mode .empty-table-cell {
+        background-color: #151c28 !important;
+        color: #cbd5e1 !important;
+        border-color: #1e293b !important;
     }
 
         body.dark-mode table thead th,
         body.dark-mode .table thead th,
         body.dark-mode #transactionTable thead th {
-            background: #07271d !important;
+            background: #0f172a !important;
             color: var(--gold-color) !important;
         }
 
-        body.dark-mode table tbody tr,
-        body.dark-mode .table tbody tr,
-        body.dark-mode #transactionTable tbody tr {
-            background: #1e1e1e !important;
+        body.dark-mode table tbody tr:hover,
+        body.dark-mode .table tbody tr:hover,
+        body.dark-mode #transactionTable tbody tr:hover {
+            background-color: #1e293b !important;
         }
 
-            body.dark-mode table tbody tr:hover,
-            body.dark-mode .table tbody tr:hover,
-            body.dark-mode #transactionTable tbody tr:hover {
-                background: #282828 !important;
-            }
-
-    /* Dark Mode üçün boş cədvəl xətası (Aydınlaşdırıldı) */
+    /* Empty State Dark Mode */
     body.dark-mode .empty-title {
-        color: #ffffff !important;
+        color: #f8fafc !important;
     }
 
     body.dark-mode .empty-desc {
-        color: #cbd5e1 !important;
+        color: #94a3b8 !important;
     }
 
     body.dark-mode .empty-icon {
         color: var(--gold-color) !important;
     }
 
+    /* İnputlar Dark Mode */
     body.dark-mode input,
     body.dark-mode select,
     body.dark-mode textarea,
     body.dark-mode .form-control,
     body.dark-mode .form-select {
-        background: #252525 !important;
+        background: #0f172a !important;
         color: #ffffff !important;
-        border: 1px solid #3d3d3d !important;
+        border: 1px solid #1e293b !important;
     }
 
         body.dark-mode input::placeholder,
         body.dark-mode .form-control::placeholder {
-            color: #94a3b8 !important;
+            color: #64748b !important;
         }
+/* ================= ƏMƏLİYYATLAR VƏ ÜMUMİ DİZAYN PALİTRASI ================= */
+
+/* 1. Rəng Dəyişənləri (Palitra) */
+:root {
+    --theme-dark-green: #0b4635;
+    --theme-dark-green-hover: #0f5944;
+    --theme-cyan: #0080a0;
+    --theme-cyan-hover: #006680;
+    --theme-cyan-light: rgba(0, 128, 160, 0.12);
+}
+
+/* 2. "Ağıllı Qəbz", Düymələr və Xüsusi Aksentlər (Bənövşəyi və s. rəngləri bura uyğunlaşdırırıq) */
+.btn-ai,
+.btn-smart-receipt,
+.ai-features-card,
+.bg-purple,
+.badge-purple {
+    background-color: var(--theme-cyan) !important;
+    background: linear-gradient(135deg, var(--theme-dark-green) 0%, var(--theme-cyan) 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0, 128, 160, 0.25) !important;
+}
+
+    .btn-ai:hover,
+    .btn-smart-receipt:hover {
+        background: linear-gradient(135deg, var(--theme-dark-green-hover) 0%, var(--theme-cyan-hover) 100%) !important;
+        transform: translateY(-1px);
+    }
+
+/* 3. Təqvim (Calendar) və Vaxt Seçimləri */
+.fc-event,
+.calendar-event,
+.datepicker table tr td.active,
+.flatpickr-day.selected {
+    background-color: var(--theme-cyan) !important;
+    border-color: var(--theme-cyan) !important;
+    color: #ffffff !important;
+}
+
+.calendar-header,
+.fc-toolbar-title {
+    color: var(--theme-cyan) !important;
+}
+
+.fc-button-primary {
+    background-color: var(--theme-dark-green) !important;
+    border-color: var(--theme-dark-green) !important;
+}
+
+    .fc-button-primary:hover {
+        background-color: var(--theme-dark-green-hover) !important;
+    }
+
+/* 4. Əməliyyatlar Cədvəli (Table) Vurğuları və Başlıqları */
+.table thead th {
+    border-bottom: 2px solid var(--theme-cyan) !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--theme-cyan-light) !important;
+}
+
+/* Cədvəl Filterləri, Axtarış və Səhifələmə (Pagination) */
+.page-item.active .page-link {
+    background-color: var(--theme-cyan) !important;
+    border-color: var(--theme-cyan) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--theme-cyan) !important;
+    border-color: var(--theme-cyan) !important;
+}
+
+/* 5. Kart Başlıqları, İkonlar və İndikatorlar */
+.text-cyan,
+.icon-cyan,
+.card-title-icon {
+    color: var(--theme-cyan) !important;
+}
+
+/* Qaranlıq (Dark) rejimdə zərif kölgə və parlaqlıq düzəlişi */
+[data-theme="dark"] .table-hover tbody tr:hover {
+    background-color: rgba(0, 168, 204, 0.08) !important;
+}
+
+[data-theme="dark"] .btn-ai,
+[data-theme="dark"] .btn-smart-receipt {
+    box-shadow: 0 4px 15px rgba(0, 168, 204, 0.3) !important;
+}
+/* ==========================================================================
+   YENİ MƏRKƏZİ PALİTRA (MAMIR YAŞILI VƏ MALİYYƏ MƏSLƏHƏTİ SİYANİ)
+   ========================================================================== */
+:root {
+    --primary-green: #0b4635 !important; /* Tünd Yaşıl (Sol menyu rəngi) */
+    --primary-green-hover: #0f5944 !important; /* Tünd Yaşıl Hover */
+    --gold-color: #00a8cc !important; /* Maliyyə Məsləhəti Parlayan Siyan */
+    --gold-hover: #0080a0 !important; /* Siyan Hover */
+    --purple-accent: #00a8cc !important; /* Bənövşəyi tam ləğv edildi -> Siyan oldu */
+    --purple-bg-light: rgba(0, 168, 204, 0.12) !important;
+    --purple-border-light: rgba(0, 168, 204, 0.3) !important;
+    --header-green: #082d22 !important; /* Cədvəl Başlığı üçün Tünd Yaşıl */
+}
+
+/* ==========================================================================
+   1. "AĞILLI QƏBZ" VƏ BƏNÖVŞƏYİ DÜYMƏLƏRİN VƏ KARTLARIN DÜZƏLİŞİ
+   ========================================================================== */
+
+/* Bütün bənövşəyi iconlar, badge-lər və mətnlər */
+.icon-purple,
+.text-purple,
+i.bi-receipt,
+i.bi-qr-code-scan,
+i.bi-magic,
+i.bi-cpu {
+    color: #00a8cc !important;
+}
+
+/* Ağıllı Qəbz, AI və Bənövşəyi Düymələr */
+.btn-purple,
+.btn-outline-purple,
+.btn-ai,
+.btn-smart-receipt {
+    background: linear-gradient(135deg, #0b4635 0%, #00a8cc 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(0, 168, 204, 0.3) !important;
+}
+
+    .btn-purple:hover,
+    .btn-outline-purple:hover,
+    .btn-ai:hover,
+    .btn-smart-receipt:hover {
+        background: linear-gradient(135deg, #0f5944 0%, #0080a0 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+    }
+
+.badge-purple {
+    color: #00a8cc !important;
+    background-color: rgba(0, 168, 204, 0.12) !important;
+    border: 1px solid rgba(0, 168, 204, 0.3) !important;
+}
+
+/* Qəbz yükləmə zonası (Dropzone) */
+.receipt-drop-zone {
+    border: 2px dashed #00a8cc !important;
+    background: rgba(0, 168, 204, 0.04) !important;
+}
+
+    .receipt-drop-zone:hover {
+        background: rgba(0, 168, 204, 0.08) !important;
+        border-color: #0080a0 !important;
+    }
+
+/* ==========================================================================
+   2. CƏDVƏL (TABLE) VƏ CƏDVƏL BÖLMƏLƏRİ
+   ========================================================================== */
+#transactionTable thead th,
+.table thead th {
+    background: #082d22 !important;
+    color: #00a8cc !important; /* Cədvəl başlığı yazıları parlayan siyan */
+    border-bottom: 2px solid #00a8cc !important;
+}
+
+/* Cədvəl sətirlərindəki (body) bütün yazıları qara/tünd rəng edir */
+#transactionTable tbody tr,
+#transactionTable tbody td,
+.table tbody tr,
+.table tbody td {
+    color: #1a1a1a !important; /* Qara rəngdə yazı */
+}
+
+    /* Sətir daxilindəki span, p və digər alt elementlərin də qara görünməsi üçün */
+    #transactionTable tbody td *,
+    .table tbody td * {
+        color: #1a1a1a !important;
+    }
+
+    /* Qazanclara aid yaşıl və ya xərclərə aid xüsusi rənglər varsa, onları qoruyur */
+    #transactionTable tbody td .text-success,
+    .table tbody td .text-success {
+        color: #198754 !important;
+    }
+
+    #transactionTable tbody td .text-danger,
+    .table tbody td .text-danger {
+        color: #dc3545 !important;
+    }
+
+    /* Cədvəlin üstünə gələndə zərif Siyan işığı */
+    #transactionTable tbody tr:hover,
+    .table tbody tr:hover,
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 168, 204, 0.08) !important;
+    }
+
+/* Cədvəl axtarış və aktiv səhifələmə (Pagination) */
+.page-item.active .page-link,
+.form-check-input:checked {
+    background-color: #00a8cc !important;
+    border-color: #00a8cc !important;
+}
+/* ==========================================================================
+   3. TƏQVİM (FLATPICKR VƏ FULLCALENDAR) DÜZƏLİŞİ
+   ========================================================================== */
+.flatpickr-calendar {
+    border: 1px solid rgba(0, 168, 204, 0.3) !important;
+}
+
+.flatpickr-months,
+.flatpickr-weekdays {
+    background: #082d22 !important;
+}
+
+    span.flatpickr-weekday,
+    .flatpickr-current-month .flatpickr-monthDropdown-months,
+    .flatpickr-current-month input.cur-year,
+    .flatpickr-months .flatpickr-prev-month svg,
+    .flatpickr-months .flatpickr-next-month svg {
+        color: #00a8cc !important;
+        fill: #00a8cc !important;
+    }
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.fc-event,
+.calendar-event {
+    background: #00a8cc !important;
+    border-color: #00a8cc !important;
+    color: #ffffff !important;
+}
+
+/* ==========================================================================
+   4. BİLDİRİŞ (ALERT) QUTULARI VƏ İNKİŞAF ETDİRİLMİŞ DARK MODE
+   ========================================================================== */
+.alert-custom {
+    background-color: rgba(0, 168, 204, 0.08) !important;
+    border: 1px solid rgba(0, 168, 204, 0.3) !important;
+    border-left: 5px solid #00a8cc !important;
+    color: #00a8cc !important;
+}
+
+    .alert-custom .alert-icon,
+    .alert-custom .alert-title {
+        color: #00a8cc !important;
+    }
+
+/* Focus Vurğusu (İnput-lara klikləyəndə) */
+.form-control:focus,
+.form-select:focus {
+    border-color: #00a8cc !important;
+    box-shadow: 0 0 0 0.25rem rgba(0, 168, 204, 0.25) !important;
+}
+
+/* Dark Mode-da Cədvəl və Qutuların zərif görünüşü */
+body.dark-mode .card,
+body.dark-mode .page-card,
+body.dark-mode table,
+body.dark-mode .table,
+body.dark-mode #transactionTable,
+body.dark-mode #transactionTable tbody tr,
+body.dark-mode #transactionTable tbody td {
+    background-color: #121820 !important;
+    border-color: #1a2330 !important;
+}

@@ -29,14 +29,15 @@ builder.Services.AddMemoryCache();
 // HttpClient və Scoped servislər
 builder.Services.AddHttpClient<ICurrencyService, CurrencyService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
-// 🟢 SESSION SERVİSLƏRİ (YENİ ƏLAVƏ EDİLDİ)
+// 🟢 SESSION SERVİSLƏRİ
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromHours(12);
-    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromHours(2); // 2 saatlıq müvəqqəti yaddaş
     options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();
@@ -63,10 +64,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// 🟢 ROUTING, SESSION VƏ AUTHENTICATION MIDDLEWARE-LƏRİ
 app.UseRouting();
 
-// 🟢 SESSION MIDDLEWARE (YENİ ƏLAVƏ EDİLDİ: UseRouting və UseAuthentication arasında)
-app.UseSession();
+app.UseSession(); // <-- Session Middleware
 
 app.UseAuthentication();
 app.UseAuthorization();

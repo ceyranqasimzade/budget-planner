@@ -1,2 +1,148 @@
-﻿body {
+﻿/* =========================================================
+   1. REPORT CARD & GENERAL STYLES (Light & Dark Compatible)
+========================================================= */
+
+.report-card {
+    background-color: var(--bs-card-bg, #ffffff);
+    border: 1px solid var(--bs-border-color, #e5e7eb);
+    border-radius: 12px; /* Diger sehifelerle harmonik olmasi ucun 12px */
+    padding: 16px; /* Ekrandan dasmamasi ve ideal bosluq ucun 16px */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+    .report-card:hover {
+        border-color: #10b981;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.08); /* Hover etdikdə yumşaq rəngli kölgə effekti */
+    }
+
+.kpi-title {
+    color: var(--bs-secondary-color, #6b7280);
+    font-size: 0.75rem; /* Çox böyük olmasın və kompakt görünsün deyə ideal ölçüdə */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+    font-size: 1.5rem; /* KPI kartlarına tam yerləşən optimal rəqəm ölçüsü */
+    font-weight: 700;
+    color: var(--bs-body-color, #111827);
+    margin-top: 4px;
+}
+
+.chart-title {
+    color: var(--bs-body-color, #111827);
+    font-weight: 700;
+    font-size: 0.95rem; /* Sərlövhələr qrafiklərin fonunda kobud görünməsin */
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 230px; /* Qrafiklərin nəhəng görünməsinin qarşısını alan ən ideal dashboard hündürlüyü */
+}
+
+.health-gauge-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 110px; /* Top KPI kartlarının hündürlüyü ilə eyni bərabərliyə gətirildi */
+}
+
+.health-score-text {
+    position: absolute;
+    bottom: 5px;
+    text-align: center;
+}
+
+    .health-score-text .score {
+        font-size: 1.5rem; /* Qrafikin içindən daşmayan ən balanslı ölçü */
+        font-weight: 800;
+        line-height: 1;
+    }
+
+/* Light / Dark rejimlərə uyğunlaşdırılmış Input-lar */
+.report-card .form-control,
+.report-card .form-select {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+    border-color: var(--bs-border-color) !important;
+    font-size: 0.875rem; /* Inputların hündür və kobud olmaması üçün form-control-sm ölçüsü */
+    border-radius: 8px;
+}
+
+    /* Inputlar fokuslananda mövcud mövzunun (Light/Dark) rəngləri ilə harmonik olması üçün */
+    .report-card .form-control:focus,
+    .report-card .form-select:focus {
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15) !important;
+    }
+
+/* =========================================================
+   2. DARK MODE UYĞUNLAŞDIRMASI (Reports səhifəsi üçün)
+========================================================= */
+
+/* Layihədə dark mode data-theme="dark" və ya .dark-mode / body.dark class-ı ilə işləyirsə */
+[data-theme="dark"] .report-card,
+.dark-mode .report-card,
+body.dark .report-card {
+    background-color: #1e2229 !important; /* Sol menyudakı tünd tonla uyğun rəng */
+    border: 1px solid #2d333f !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Başlıq və Mətn Rəngləri */
+[data-theme="dark"] .kpi-title,
+[data-theme="dark"] .chart-title,
+[data-theme="dark"] .form-label {
+    color: #94a3b8 !important; /* Oxunaqlı, yumşaq gümüşü rəng */
+}
+
+[data-theme="dark"] .kpi-value {
+    color: #ffffff !important;
+}
+
+/* Form inputları və Select-lər üçün dark mode */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+    background-color: #15181e !important;
+    border-color: #2d333f !important;
+    color: #f8fafc !important;
+}
+
+    [data-theme="dark"] .form-control:focus,
+    [data-theme="dark"] .form-select:focus {
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25) !important;
+    }
+
+/* Bootstrap-ın .text-muted class-ını dark modda oxunan rənglə əvəzləyirik */
+[data-theme="dark"] .text-muted {
+    color: #64748b !important;
+}
+/* Inputlar ikinci şəkildəki kimi rahat və yumşaq kənarlı olsun */
+.date-picker-input {
+    cursor: pointer;
+    background-color: var(--bs-body-bg) !important;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+}
+
+/* Flatpickr təqviminin ikinci şəkildəki rəng tonlarına (teal/tünd yaşıl) uyğunlaşması */
+.flatpickr-calendar {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid var(--bs-border-color, #e5e7eb) !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: #0f766e !important; /* 2ci şəkildəki tünd teal-yaşıl rəng */
+    border-color: #0f766e !important;
 }
