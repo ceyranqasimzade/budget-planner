@@ -1,21 +1,24 @@
-﻿using System;
-
-namespace budget_planner.ViewModels
+﻿namespace budget_planner.ViewModels
 {
     public class GoalVM
     {
-        public int Id { get; set; }   // <-- Bunu əlavə et
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string CategoryName { get; set; } = string.Empty;
+        public string IconClass { get; set; } = "fas fa-bullseye";
 
-        public string Name { get; set; } = null!;
-        public decimal TargetAmount { get; set; }
+        // Eksik olan ColorClass əlavə edildi
+        public string ColorClass { get; set; } = "primary";
+
         public decimal CurrentAmount { get; set; }
-        public DateTime Deadline { get; set; } // 👈 Goal modelinizdəki Deadline üçün əlavə olundu
-        public string IconClass { get; set; } = null!;
-        public string ColorClass { get; set; } = null!;
+        public decimal TargetAmount { get; set; }
+        public string CurrencySymbol { get; set; } = "₼";
+        public DateTime TargetDate { get; set; }
 
-        // Faiz hesablayan köməkçi xassə
-        public double Percentage => TargetAmount > 0
-            ? (double)(CurrentAmount / TargetAmount) * 100
-            : 0;
+        public int Percentage => TargetAmount <= 0
+            ? 0
+            : (int)Math.Round((CurrentAmount / TargetAmount) * 100);
+
+        public int MonthsRemaining => Math.Max(0, ((TargetDate.Year - DateTime.Now.Year) * 12) + TargetDate.Month - DateTime.Now.Month);
     }
 }

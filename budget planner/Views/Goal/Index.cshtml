@@ -1,155 +1,48 @@
-﻿@model IEnumerable<budget_planner.ViewModels.GoalVM>
+﻿@model budget_planner.ViewModels.GoalsVM
 @{
-    Layout = null;
-
-    // Statistik hesablama dinamik məntiqləri
-    var totalTarget = Model?.Sum(g => g.TargetAmount) ?? 0;
-    var totalCurrent = Model?.Sum(g => g.CurrentAmount) ?? 0;
-    var activeCount = Model?.Count() ?? 0;
+    ViewData["Title"] = "Mənim Hədəflərim";
+    ViewData["PageCss"] = "pages/goals.css"; // _Layout.cshtml-də dynamic yükdəmə üçün
 }
 
-<!DOCTYPE html>
-<html lang="az">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maliyyə Hədəflərim</title>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-    <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
-
-    <!-- Sənin öz CSS faylın -->
-    <link rel="stylesheet" href="~/assets/css/goals.css" />
-</head>
-<body class="bg-light">
-
-    <div class="container py-4">
-        <!-- Yuxarı Başlıq və Düymə -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h3 class="fw-bold text-dark m-0">Maliyyə Hədəfləri</h3>
-                <p class="text-muted m-0 small">Gələcək planlarınız üçün qənaət edin və irəliləyişinizi izləyin</p>
-            </div>
-            <button class="btn btn-primary d-flex align-items-center gap-2 px-3 py-2 style-btn">
-                <i class="bi bi-plus-circle-fill"></i>
-                <span>Yeni Hədəf Yarat</span>
-            </button>
-        </div>
-
-        <!-- Statistik İcmal Kartları (DİNAMİK) -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="goal-stat-card">
-                    <div class="stat-icon bg-primary-subtle text-primary">
-                        <i class="bi bi-bullseye"></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small d-block">Ümumi Hədəf Məbləği</span>
-                        <h4 class="fw-bold text-dark m-0">₼@totalTarget.ToString("N2")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="goal-stat-card">
-                    <div class="stat-icon bg-success-subtle text-success">
-                        <i class="bi bi-piggy-bank-fill"></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small d-block">Toplanan Məbləğ</span>
-                        <h4 class="fw-bold text-dark m-0">₼@totalCurrent.ToString("N2")</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="goal-stat-card">
-                    <div class="stat-icon bg-warning-subtle text-warning">
-                        <i class="bi bi-trophy-fill"></i>
-                    </div>
-                    <div>
-                        <span class="text-muted small d-block">Aktiv Hədəflər</span>
-                        <h4 class="fw-bold text-dark m-0">@activeCount Adət</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Hədəf Kartları (DİNAMİK) -->
-        <div class="row g-4">
-            @if (Model != null && Model.Any())
-            {
-                foreach (var goal in Model)
-                {
-                    // GoalVM daxilindəki Percentage istifadə olunur
-                    var percentage = goal.Percentage;
-
-                    <div class="col-md-6 col-lg-4">
-                        <div class="goal-card">
-                            <div class="goal-card-header d-flex justify-content-between align-items-start">
-                                <div class="goal-avatar bg-primary-subtle text-primary">
-                                    <i class="bi @(string.IsNullOrEmpty(goal.IconClass) ? "bi-flag-fill" : goal.IconClass)"></i>
-                                </div>
-
-                                <!-- ƏLAVƏ EDİLƏN HİSSƏ: SİLMƏ FORMU VƏ DÜYMƏSİ -->
-                                <form id="delete-form-@goal.Id"
-                                      asp-controller="Goal"
-                                      asp-action="Delete"
-                                      asp-route-id="@goal.Id"
-                                      method="post"
-                                      class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <button type="button"
-                                            class="btn btn-sm text-danger border-0 bg-transparent p-1"
-                                            onclick="confirmDelete('delete-form-@goal.Id', '@goal.Name')"
-                                            title="Hədəfi Sil">
-                                        <i class="bi bi-trash-fill fs-5"></i>
-                                    </button>
-                                </form>
-                            </div>
-
-                            <h5 class="fw-bold text-dark mt-3 mb-1">@goal.Name</h5>
-
-                            <div class="d-flex justify-content-between mb-1 mt-3">
-                                <span class="small text-muted">Yığılan: <strong class="text-dark">₼@goal.CurrentAmount.ToString("N0")</strong></span>
-                                <span class="small fw-bold text-primary">@percentage.ToString("0.#")%</span>
-                            </div>
-
-                            <div class="progress custom-goal-progress mb-3">
-                                <div class="progress-bar @(string.IsNullOrEmpty(goal.ColorClass) ? "bg-primary" : goal.ColorClass)" role="progressbar" style="width: @Math.Min(100, percentage).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                <span class="small text-muted">Hədəf: <strong>₼@goal.TargetAmount.ToString("N0")</strong></span>
-                                <button class="btn btn-sm btn-outline-primary rounded-pill px-3">+ Pul Əlavə Et</button>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
-            else
-            {
-                <!-- Baza boş olduqda göstəriləcək təmiz bildiriş -->
-                <div class="col-12">
-                    <div class="text-center py-5 bg-white rounded-3 shadow-sm border">
-                        <i class="bi bi-flag opacity-25 text-muted display-4 d-block mb-3"></i>
-                        <h5 class="fw-bold text-dark">Hələ ki heç bir hədəfiniz yoxdur</h5>
-                        <p class="text-muted small mb-3">Maliyyə planlarınızı idarə etmək üçün ilk hədəfinizi əlavə edin.</p>
-                    </div>
-                </div>
-            }
-        </div>
+<!-- BAŞLIQ HİSSƏSİ -->
+<header class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title">Xəyallarınıza Doğru</h1>
+        <p class="text-muted">Maliyyə hədəflərinizi planlaşdırın və izləyin</p>
     </div>
+    <button class="btn btn-primary custom-btn" data-bs-toggle="modal" data-bs-target="#newGoalModal">
+        <i class="fas fa-plus me-2"></i> Yeni Hədəf Yarat
+    </button>
+</header>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- MOTİVASİYA BLOKU (SSR - Server Side Rendered) -->
+<section class="motivation-banner mb-5">
+    <div class="motivation-content">
+        <i class="fas fa-quote-left quote-icon-large"></i>
+        <h2 class="quote-text">@Model.Quote</h2>
+        <p class="quote-author">@Model.Author</p>
+    </div>
+</section>
 
-    <!-- Öz JS faylınızı bura bağlayın (məsələn: goals.js) -->
-    <script src="~/assets/js/goals.js"></script>
-   
-</body>
-</html>
+<!-- DİNAMİK HİSSƏ (Sadələşdirilmiş if yoxlaması) -->
+@if (Model.Goals.Any())
+{
+    <section id="active-goals-section" class="row g-4 mb-4">
+        <div class="col-12 mb-2">
+            <h4 class="section-title">Aktiv Hədəflərim</h4>
+        </div>
+
+        @foreach (var goal in Model.Goals)
+        {
+            <partial name="_GoalCard" model="goal" />
+        }
+    </section>
+}
+else
+{
+    <partial name="_EmptyGoals" />
+}
+
+@section Scripts {
+    <script src="~/js/pages/goals.js" asp-append-version="true"></script>
+}

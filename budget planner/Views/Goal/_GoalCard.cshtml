@@ -1,0 +1,51 @@
+﻿@model budget_planner.ViewModels.GoalVM
+
+@{
+    // Maximum %100 limiti (ProgressBar dizaynının pozulmaması üçün)
+    var clampedPercentage = Math.Min(Model.Percentage, 100);
+}
+
+<div class="col-md-6 col-lg-4">
+    <div class="goal-card" data-id="@Model.Id">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="goal-icon"><i class="@Model.IconClass"></i></div>
+            <span class="badge bg-primary-subtle text-primary">@Model.CategoryName</span>
+        </div>
+
+        <h5 class="goal-title">@Model.Name</h5>
+
+        <!-- Dinamik Valyuta və N2 Formatlanması -->
+        <div class="goal-amounts d-flex justify-content-between mb-2">
+            <span class="saved">@Model.CurrencySymbol @Model.CurrentAmount.ToString("N2")</span>
+            <span class="target text-muted">/ @Model.CurrencySymbol @Model.TargetAmount.ToString("N2")</span>
+        </div>
+
+        <!-- Accessibility və Clamped Width -->
+        <div class="progress custom-progress">
+            <div class="progress-bar bg-primary"
+                 role="progressbar"
+                 style="width: @clampedPercentage%"
+                 aria-valuenow="@clampedPercentage"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+            </div>
+        </div>
+
+        <p class="goal-remaining mt-3 mb-0 text-muted">
+            <i class="far fa-clock"></i> @Model.MonthsRemaining ay qaldı
+        </p>
+
+        <!-- Dynamic CRUD Class-ları və Data Attribute-ları -->
+        <div class="goal-actions mt-3 d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm edit-goal" data-id="@Model.Id" title="Redaktə et">
+                <i class="fa fa-pen"></i>
+            </button>
+            <button class="btn btn-outline-success btn-sm add-funds-goal" data-id="@Model.Id" title="Pul əlavə et">
+                <i class="fa fa-coins"></i>
+            </button>
+            <button class="btn btn-outline-danger btn-sm delete-goal" data-id="@Model.Id" title="Sil">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
+    </div>
+</div>

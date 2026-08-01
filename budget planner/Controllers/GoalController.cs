@@ -32,18 +32,25 @@ namespace budget_planner.Controllers
             _logger = logger;
         }
 
-        // Bütün məqsədlərin siyahısı
+        // --- 1. BÜTÜN HƏDƏFLƏRİN SİYAHISI (TAM TƏMİZLƏNMİŞ) ---
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
 
+            // 1. QONAQ İSTİFADƏÇİ (Daxil olmayanlar)
             if (user == null)
             {
                 ViewBag.Cards = new List<Card>();
-                return View(new List<GoalVM>());
+
+                // Cümlələri JS idarə edəcək deyə, bura sadəcə boş siyahı göndəririk ki, səhifə 500 xətası verməsin
+                return View(new GoalsVM
+                {
+                    Goals = new List<GoalVM>()
+                });
             }
 
-            var goalsVM = await _context.Goals
+            // 2. DAXİL OLAN İSTİFADƏÇİ
+            var goalsList = await _context.Goals
                 .Where(g => g.UserId == user.Id && !g.IsDeleted)
                 .OrderByDescending(g => g.Id)
                 .Select(g => new GoalVM
@@ -61,15 +68,19 @@ namespace budget_planner.Controllers
                 .Where(c => c.UserId == user.Id && !c.IsDeleted)
                 .ToListAsync();
 
-            return View(goalsVM);
+            var viewModel = new GoalsVM
+            {
+                Goals = goalsList
+            };
+
+            return View(viewModel);
         }
 
-        // Yeni Məqsəd Yaradılması
+        // --- 2. YENİ HƏDƏF YARADILMASI ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GoalVM model)
         {
-            // 🟢 Early Exit - ModelState yoxlanışı ən əvvələ çəkildi
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Məlumatları düzgün daxil etdiyinizdən əmin olun.";
@@ -102,7 +113,7 @@ namespace budget_planner.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Məqsədə Pul Əlavə Edilməsi
+        // --- 3. HƏDƏFƏ PUL ƏLAVƏ EDİLMƏSİ ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddMoney(int goalId, decimal amount, string paymentMethod)
@@ -130,11 +141,10 @@ namespace budget_planner.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            Card? selectedCard = null;
+            Card selectedCard = null;
             decimal amountDeductedFromSource = amount; // AZN ilə
             string sourceCurrency = "AZN";
 
-            // --- 1. BALANS YOXLANIŞI VƏ VALYUTA KONVERTASİYASI ---
             if (paymentMethod != "cash" && int.TryParse(paymentMethod, out int selectedCardId))
             {
                 selectedCard = await _context.Cards
@@ -167,7 +177,6 @@ namespace budget_planner.Controllers
                 }
             }
 
-            // --- 2. ATOMIC TRANSACTION ---
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
@@ -185,7 +194,6 @@ namespace budget_planner.Controllers
 
                 user.TotalBalance -= amount;
 
-                // 🟢 Bütün dəyişikliklər tək bir SaveChangesAsync() ilə vahid DbContext üzərindən bazaya yazılır
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -202,7 +210,7 @@ namespace budget_planner.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // Məqsədin Silinməsi (Soft Delete)
+        // --- 4. HƏDƏFİN SİLİNMƏSİ ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
