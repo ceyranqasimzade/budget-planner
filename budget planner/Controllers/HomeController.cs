@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace budget_planner.Controllers
@@ -21,6 +22,7 @@ namespace budget_planner.Controllers
 
         private const string GuestCardsKey = "Guest_Cards";
         private const string GuestTransactionsKey = "Guest_Transactions";
+        private const string GuestGoalsKey = "Guest_Goals"; // 🟢 ƏLAVƏ OLUNDU: Qonaq Hədəfləri üçün Key
 
         private static readonly HashSet<string> VisibleCurrencies = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -61,6 +63,26 @@ namespace budget_planner.Controllers
                 return amount * rate;
 
             return amount;
+        }
+
+        // 🟢 ƏLAVƏ OLUNAN HELPER: İki fərqli valyuta arasında (məs: USD -> AZN, EUR -> USD) Çarpaz Çevrilmə
+        private static decimal ConvertCurrency(decimal amount, string? fromCurrency, string? toCurrency, Dictionary<string, decimal> rates)
+        {
+            if (string.IsNullOrWhiteSpace(fromCurrency) || string.Equals(fromCurrency, toCurrency, StringComparison.OrdinalIgnoreCase))
+                return amount;
+
+            // 1-ci Addım: Mənbə valyutanı AZN-ə çeviririk
+            decimal amountInAzn = ConvertToAzn(amount, fromCurrency, rates);
+
+            // Əgər hədəf valyuta da AZN-dirsə birbaşa qaytarırıq
+            if (string.IsNullOrWhiteSpace(toCurrency) || string.Equals(toCurrency, "AZN", StringComparison.OrdinalIgnoreCase))
+                return amountInAzn;
+
+            // 2-ci Addım: AZN məbləğini Hədəf Valyutanın kursuna bölürük
+            if (rates.TryGetValue(toCurrency, out var toRate) && toRate > 0)
+                return amountInAzn / toRate;
+
+            return amountInAzn;
         }
 
         private static decimal CalculateTrend(decimal current, decimal previous)
@@ -248,6 +270,22 @@ namespace budget_planner.Controllers
             vm.TotalExpense = guestTransactions
                 .Where(t => !t.IsIncome && !t.IsDeleted && t.Date.Month == currentMonth && t.Date.Year == currentYear)
                 .Sum(t => ConvertToAzn(t.Amount, t.Currency, ratesDict));
+
+            // 🟢 7. QONAQ HƏDƏFLƏRİNİN İCMALA YÜKLƏNMƏSİ
+            var guestGoals = HttpContext.Session.GetObject<List<GoalVM>>(GuestGoalsKey) ?? new List<GoalVM>();
+
+            vm.ActiveGoals = guestGoals
+                .Take(3)
+                .Select(g => new GoalVM
+                {
+                    Id = g.Id,
+                    Name = g.Name,
+                    TargetAmount = g.TargetAmount,
+                    CurrentAmount = g.CurrentAmount,
+                    Currency = g.Currency,
+                    IconClass = string.IsNullOrEmpty(g.IconClass) ? "bi-star-fill" : g.IconClass,
+                    ColorClass = string.IsNullOrEmpty(g.ColorClass) ? "bg-info" : g.ColorClass
+                }).ToList();
         }
 
         // =========================================================================
@@ -470,7 +508,7 @@ namespace budget_planner.Controllers
                 .Take(3)
                 .Select(g => new GoalVM
                 {
-                    Name = g.Title,
+                    Name = g.Name,
                     TargetAmount = g.TargetAmount,
                     CurrentAmount = g.CurrentAmount,
                     IconClass = "bi-star-fill",
@@ -519,6 +557,99 @@ namespace budget_planner.Controllers
             var labels = categoryExpenses.Select(x => x.CategoryName).ToArray();
             var values = categoryExpenses.Select(x => x.Amount).ToArray();
             return Json(new { labels, values });
+        }
+
+        // =========================================================================
+        // 🟢 ƏLAVƏ OLUNAN NÖVBƏTİ MƏNTİQ: HƏDƏFƏ PUL ƏLAVƏ ETMƏ VƏ BALANSDAN ÇIXILMASI
+        // =========================================================================
+        [HttpPost]
+        public async Task<IActionResult> DepositToGoal(int goalId, decimal amount, int? cardId)
+        {
+            if (amount <= 0) return BadRequest("Məbləğ düzgün daxil edilməlidir.");
+
+            var rates = await _currencyService.GetExchangeRatesAsync();
+            var ratesDict = CreateRateDictionary(rates);
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                // DB Rejimi
+                var goal = await _context.Goals.FirstOrDefaultAsync(g => g.Id == goalId && g.UserId == user.Id);
+                if (goal == null) return NotFound("Hədəf tapılmadı.");
+
+                string sourceCurrency = "AZN";
+
+                if (cardId.HasValue)
+                {
+                    var card = await _context.Cards.FirstOrDefaultAsync(c => c.Id == cardId.Value && c.UserId == user.Id);
+                    if (card == null) return NotFound("Bank kartı tapılmadı.");
+
+                    if (card.Balance < amount) return BadRequest("Kartda kifayət qədər balans yoxdur.");
+
+                    card.Balance -= amount; // Kart balansından çıxılır
+                    sourceCurrency = card.Currency ?? "AZN";
+                }
+                else
+                {
+                    // Nağd puldan ödənilir -> Transaksiya çıxış kimi yazılır
+                    _context.Transactions.Add(new Transaction
+                    {
+                        UserId = user.Id,
+                        Amount = amount,
+                        IsIncome = false,
+                        Currency = "AZN",
+                        Description = $"Hədəfə köçürmə: {goal.Title}",
+                        Date = DateTime.Now
+                    });
+                }
+
+                // Canlı Məzənnə ilə Çarpaz Valyuta Çevrilməsi (Məs: Kart USD, Hədəf AZN)
+                decimal convertedAmount = ConvertCurrency(amount, sourceCurrency, goal.Currency ?? "AZN", ratesDict);
+                goal.CurrentAmount += convertedAmount;
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                // Qonaq (Session) Rejimi
+                var guestGoals = HttpContext.Session.GetObject<List<Goal>>(GuestGoalsKey) ?? new List<Goal>();
+                var goal = guestGoals.FirstOrDefault(g => g.Id == goalId);
+                if (goal == null) return NotFound("Hədəf tapılmadı.");
+
+                string sourceCurrency = "AZN";
+
+                if (cardId.HasValue)
+                {
+                    var guestCards = HttpContext.Session.GetObject<List<Card>>(GuestCardsKey) ?? new List<Card>();
+                    var card = guestCards.FirstOrDefault(c => c.Id == cardId.Value);
+                    if (card == null || card.Balance < amount) return BadRequest("Balans kifayət etmir.");
+
+                    card.Balance -= amount;
+                    sourceCurrency = card.Currency ?? "AZN";
+                    HttpContext.Session.SetObject(GuestCardsKey, guestCards);
+                }
+                else
+                {
+                    var guestTransactions = HttpContext.Session.GetObject<List<Transaction>>(GuestTransactionsKey) ?? new List<Transaction>();
+                    guestTransactions.Add(new Transaction
+                    {
+                        Id = guestTransactions.Count + 1,
+                        Amount = amount,
+                        IsIncome = false,
+                        Currency = "AZN",
+                        Description = $"Hədəfə köçürmə: {goal.Title}",
+                        Date = DateTime.Now
+                    });
+                    HttpContext.Session.SetObject(GuestTransactionsKey, guestTransactions);
+                }
+
+                decimal convertedAmount = ConvertCurrency(amount, sourceCurrency, goal.Currency ?? "AZN", ratesDict);
+                goal.CurrentAmount += convertedAmount;
+                HttpContext.Session.SetObject(GuestGoalsKey, guestGoals);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

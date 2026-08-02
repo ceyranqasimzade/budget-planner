@@ -1,242 +1,312 @@
-﻿/* --- 1. DƏYİŞƏNLƏR (RƏNGLƏR) --- */
+﻿/* ====================================================== */
+/* 🟢 1. EMERALD THEME & BASE UTILITIES                   */
+/* ====================================================== */
 :root {
-    --bg-body: #f8fafc;
-    --bg-card: #ffffff;
-    --text-main: #111827;
-    --text-muted: #6b7280;
-    --border-color: #e5e7eb;
-    --brand-primary: #00a8cc;
-    --brand-primary-hover: #0080a0;
-    --brand-success: #10b981;
-    --gradient-banner: linear-gradient(135deg, #0b4635, #00a8cc);
+    --emerald-primary: #10b981;
+    --emerald-hover: #059669;
+    --emerald-subtle: rgba(16, 185, 129, 0.12);
 }
 
-[data-theme="dark"], body.dark-mode {
-    --bg-body: #151c28;
-    --bg-card: #1e293b;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: #334155;
-    --gradient-banner: linear-gradient(135deg, #0f172a, #1e293b);
+.btn-emerald,
+.bg-emerald {
+    background-color: var(--emerald-primary) !important;
+    border-color: var(--emerald-primary) !important;
 }
 
-/* --- 2. ÜMUMİ STİLLƏR --- */
-body {
-    background-color: var(--bg-body);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-.page-title {
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: var(--text-main);
-    margin-bottom: 5px;
-}
-
-.section-title {
-    font-weight: 700;
-    color: var(--text-main);
-    margin-top: 10px;
-    margin-bottom: 15px;
-}
-
-.custom-btn {
-    background-color: var(--brand-primary);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-weight: 600;
-    color: #fff;
-    transition: background-color 0.2s ease;
-}
-
-    .custom-btn:hover {
-        background-color: var(--brand-primary-hover);
-        color: #fff;
+    .btn-emerald:hover {
+        background-color: var(--emerald-hover) !important;
+        border-color: var(--emerald-hover) !important;
     }
 
-/* --- 3. MOTİVASİYA BANNERİ --- */
-.motivation-banner {
-    background: var(--gradient-banner);
-    border-radius: 20px;
-    padding: 40px 20px;
-    color: white;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0, 168, 204, 0.15);
-    text-align: center;
+.text-emerald {
+    color: var(--emerald-primary) !important;
 }
 
-.quote-icon-large {
-    font-size: 2.5rem;
-    color: rgba(255, 255, 255, 0.2);
-    margin-bottom: 15px;
+.bg-emerald-subtle {
+    background-color: var(--emerald-subtle) !important;
 }
 
-.quote-text {
-    font-size: 1.4rem;
-    font-weight: 500;
-    font-style: italic;
-    line-height: 1.5;
-    margin-bottom: 15px;
-    color: #ffffff;
+.hover-emerald:hover {
+    color: var(--emerald-primary) !important;
+    transition: color 0.2s ease;
 }
 
-.quote-author {
-    font-size: 0.95rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #a5f3fc;
-    margin: 0;
-}
-
-/* --- 4. HƏDƏF KARTLARI --- */
-.goal-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 24px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-}
-
-    .goal-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
-        border-color: var(--brand-primary);
-    }
-
-.goal-icon {
-    width: 48px;
-    height: 48px;
-    background: rgba(0, 168, 204, 0.1);
-    color: var(--brand-primary);
+/* ====================================================== */
+/* 📊 2. STAT ICONS & CARD COMPONENTS                     */
+/* ====================================================== */
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
 }
 
-.goal-title {
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    color: var(--text-main);
+.icon-blue {
+    background-color: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
 }
 
-.goal-amounts .saved {
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: var(--text-main);
+.icon-green {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #10b981;
 }
 
-.goal-amounts .target {
-    font-size: 1rem;
+.icon-purple {
+    background-color: rgba(139, 92, 246, 0.12);
+    color: #8b5cf6;
 }
 
+/* Card Hover Animations */
+.stat-card,
+.goal-card,
+.goal-item-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+    .stat-card:hover,
+    .goal-card:hover,
+    .goal-item-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.08) !important;
+    }
+
+/* Completed Goal Glow Effect */
+.completed-goal {
+    border-left: 5px solid #10b981 !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ====================================================== */
+/* ⚡ 3. ANIMATED PROGRESS BAR                             */
+/* ====================================================== */
 .custom-progress {
-    height: 8px;
-    border-radius: 5px;
-    background-color: var(--border-color);
+    background-color: rgba(226, 232, 240, 0.6);
     overflow: hidden;
-    margin-top: 10px;
 }
 
-.goal-remaining {
-    font-size: 0.85rem;
+.animated-bar {
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- 5. BOŞ EKRAN (EMPTY STATE) DİZAYNI --- */
-.empty-dashboard-wrapper {
-    position: relative;
-    padding: 60px 20px;
-    background: var(--bg-card);
-    border: 2px dashed var(--border-color);
-    border-radius: 20px;
+/* ====================================================== */
+/* 🎯 4. ICON SELECTION GRID (SEÇİM BÖLMƏSİ)             */
+/* ====================================================== */
+.icon-grid-container {
+    max-height: 230px;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 12px;
+    gap: 10px !important;
+}
+
+    /* Scrollbar Customization */
+    .icon-grid-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .icon-grid-container::-webkit-scrollbar-thumb {
+        background-color: rgba(148, 163, 184, 0.4);
+        border-radius: 10px;
+    }
+
+        .icon-grid-container::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(148, 163, 184, 0.7);
+        }
+
+/* Icon Select Button */
+.icon-select-btn {
+    transition: all 0.2s ease-in-out;
+    width: 80px;
+    height: 72px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    min-height: 400px;
+    justify-content: space-between;
+    border-radius: 12px;
+    padding: 8px 4px !important;
 }
 
-/* Arxadakı solğun elementlər (Mock) */
-.mock-dashboard {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    gap: 20px;
-    padding: 30px;
-    opacity: 0.05; /* Çox solğun arxa fon */
-    pointer-events: none; /* Kliklənməsin deyə */
-}
-
-.mock-card {
-    background: #000;
-    border-radius: 15px;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.mock-pie {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    border: 20px solid #000;
-}
-
-.mock-bars {
-    width: 100%;
-    height: 80px;
-    background: repeating-linear-gradient(90deg, transparent, transparent 10px, #000 10px, #000 30px);
-}
-
-.mock-progress {
-    width: 100%;
-    height: 20px;
-    border-radius: 10px;
-    background: #000;
-}
-
-/* Öndəki əsas mesaj bloku */
-.empty-state-content {
-    position: relative;
-    z-index: 2;
-    max-width: 450px;
-}
-
-    .empty-state-content .icon-circle {
-        width: 80px;
-        height: 80px;
-        background: rgba(0, 168, 204, 0.1);
-        color: var(--brand-primary);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        margin: 0 auto 20px auto;
+    .icon-select-btn i {
+        font-size: 1.4rem;
+        margin-top: 2px;
+        transition: transform 0.2s ease;
     }
 
-    .empty-state-content h2 {
-        font-weight: 700;
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-        color: var(--text-main);
+    .icon-select-btn span {
+        font-size: 11px;
+        line-height: 1.1;
+        font-weight: 500;
+        margin-bottom: 2px;
+        text-align: center;
     }
 
-    .empty-state-content p {
-        color: var(--text-muted);
-        margin-bottom: 25px;
-        line-height: 1.6;
+    .icon-select-btn:hover {
+        transform: translateY(-2px);
     }
+
+        .icon-select-btn:hover i {
+            transform: scale(1.15);
+        }
+
+/* Dynamic Specific Icon Colors */
+.icon-btn-bullseye i {
+    color: #ef4444 !important;
+}
+
+.icon-btn-piggy i {
+    color: #ec4899 !important;
+}
+
+.icon-btn-house i {
+    color: #f59e0b !important;
+}
+
+.icon-btn-car i {
+    color: #3b82f6 !important;
+}
+
+.icon-btn-airplane i {
+    color: #06b6d4 !important;
+}
+
+.icon-btn-mortarboard i {
+    color: #8b5cf6 !important;
+}
+
+.icon-btn-laptop i {
+    color: #14b8a6 !important;
+}
+
+.icon-btn-phone i {
+    color: #6366f1 !important;
+}
+
+.icon-btn-briefcase i {
+    color: #b45309 !important;
+}
+
+.icon-btn-graph i {
+    color: #10b981 !important;
+}
+
+.icon-btn-credit i {
+    color: #f43f5e !important;
+}
+
+.icon-btn-gem i {
+    color: #0891b2 !important;
+}
+
+.icon-btn-gift i {
+    color: #e11d48 !important;
+}
+
+.icon-btn-bag i {
+    color: #a855f7 !important;
+}
+
+.icon-btn-heart i {
+    color: #dc2626 !important;
+}
+
+.icon-btn-trophy i {
+    color: #eab308 !important;
+}
+
+.icon-btn-controller i {
+    color: #84cc16 !important;
+}
+
+.icon-btn-shield i {
+    color: #64748b !important;
+}
+
+/* Active Icon State */
+.icon-select-btn.active-icon {
+    background-color: var(--emerald-primary) !important;
+    border-color: var(--emerald-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
+}
+
+    .icon-select-btn.active-icon i {
+        color: #ffffff !important;
+    }
+
+/* ====================================================== */
+/* 📦 5. EMPTY STATE & SPECIAL COMPONENTS                 */
+/* ====================================================== */
+.empty-glass-card {
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease;
+}
+
+.empty-icon-circle {
+    transition: transform 0.3s ease;
+}
+
+.empty-glass-card:hover .empty-icon-circle {
+    transform: scale(1.08) rotate(5deg);
+}
+
+/* ====================================================== */
+/* 🌓 6. DARK / LIGHT MODE AUTOMATIC ADAPTATIONS          */
+/* ====================================================== */
+/* Light Mode Adaptations */
+[data-bs-theme="light"] .stat-card,
+[data-bs-theme="light"] .empty-state-card,
+[data-bs-theme="light"] .goal-card,
+[data-bs-theme="light"] .goal-item-card,
+[data-bs-theme="light"] .quote-card {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+[data-bs-theme="light"] .icon-grid-container {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+[data-bs-theme="light"] .icon-select-btn {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+}
+
+    [data-bs-theme="light"] .icon-select-btn:hover {
+        background: #f1f5f9 !important;
+        border-color: var(--emerald-primary) !important;
+    }
+
+/* Dark Mode Adaptations */
+[data-bs-theme="dark"] .stat-card,
+[data-bs-theme="dark"] .empty-state-card,
+[data-bs-theme="dark"] .goal-card,
+[data-bs-theme="dark"] .goal-item-card,
+[data-bs-theme="dark"] .quote-card {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+}
+
+[data-bs-theme="dark"] .icon-grid-container {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+}
+
+[data-bs-theme="dark"] .icon-select-btn {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #cbd5e1 !important;
+}
+
+    [data-bs-theme="dark"] .icon-select-btn:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: var(--emerald-primary) !important;
+    }
+
+[data-bs-theme="dark"] .custom-progress {
+    background-color: rgba(51, 65, 85, 0.6);
+}

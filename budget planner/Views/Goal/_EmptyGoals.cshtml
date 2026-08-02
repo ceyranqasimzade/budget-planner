@@ -1,15 +1,27 @@
-﻿<section id="empty-state-section" class="empty-dashboard-wrapper">
-    <div class="mock-dashboard">
-        <div class="mock-card"><div class="mock-pie"></div></div>
-        <div class="mock-card"><div class="mock-bars"></div></div>
-        <div class="mock-card"><div class="mock-progress"></div></div>
-    </div>
-    <div class="empty-state-content text-center">
-        <div class="icon-circle"><i class="fas fa-bullseye"></i></div>
-        <h2>Hələ heç bir hədəfiniz yoxdur</h2>
-        <p>Maliyyə planlarınızı idarə etmək üçün ilk addımı atın və xəyallarınızı rəqəmlərə çevirin.</p>
-        <button class="btn btn-primary custom-btn" data-bs-toggle="modal" data-bs-target="#newGoalModal">
-            İlk Hədəfini Yarat
+﻿<section class="empty-state-wrapper text-center my-5">
+    <div class="card border-0 shadow-sm rounded-4 p-5 mx-auto empty-glass-card" style="max-width: 550px;">
+        <!-- İkon Dairəsi -->
+        <div class="empty-icon-circle mb-4 mx-auto d-flex align-items-center justify-content-center bg-emerald-subtle rounded-circle" style="width: 80px; height: 80px;">
+            <i class="bi bi-bullseye fs-1 text-emerald"></i>
+        </div>
+
+        <!-- Mətn Bölməsi -->
+        <h4 class="fw-bold mb-2 text-dark">Hələ heç bir maliyyə hədəfi yoxdur</h4>
+        <p class="text-muted mb-4 small">
+            İlk hədəfinizi yaradın, qənaət etməyə başlayın və xəyallarınıza addım-addım yaxınlaşın.
+        </p>
+
+        <!-- Keçid Düyməsi (Ayrıca Səhifəyə Yönləndirmə) -->
+        <div class="d-inline-block">
+            <a asp-controller="Goal" asp-action="Create" class="btn btn-emerald text-white rounded-3 px-4 py-2-5 fw-semibold shadow-sm">
+                <i class="bi bi-plus-lg me-2"></i>İlk Hədəfinizi Yaradın
+            </a>
+        </div>
+
+        <!-- VƏ YA Modal İstifadə Edirsinizsə (Aşağıdakı düyməni aktiv edə bilərsiniz):
+        <button type="button" class="btn btn-emerald text-white rounded-3 px-4 py-2-5 fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#newGoalModal">
+            <i class="bi bi-plus-lg me-2"></i>İlk Hədəfinizi Yaradın
         </button>
+        -->
     </div>
 </section>

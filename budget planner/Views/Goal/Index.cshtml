@@ -1,48 +1,185 @@
 ﻿@model budget_planner.ViewModels.GoalsVM
+
 @{
-    ViewData["Title"] = "Mənim Hədəflərim";
-    ViewData["PageCss"] = "pages/goals.css"; // _Layout.cshtml-də dynamic yükdəmə üçün
+    ViewData["Title"] = "Maliyyə Hədəflərim";
 }
 
-<!-- BAŞLIQ HİSSƏSİ -->
-<header class="page-header d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="page-title">Xəyallarınıza Doğru</h1>
-        <p class="text-muted">Maliyyə hədəflərinizi planlaşdırın və izləyin</p>
-    </div>
-    <button class="btn btn-primary custom-btn" data-bs-toggle="modal" data-bs-target="#newGoalModal">
-        <i class="fas fa-plus me-2"></i> Yeni Hədəf Yarat
-    </button>
-</header>
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/goal.css" asp-append-version="true" />
+}
 
-<!-- MOTİVASİYA BLOKU (SSR - Server Side Rendered) -->
-<section class="motivation-banner mb-5">
-    <div class="motivation-content">
-        <i class="fas fa-quote-left quote-icon-large"></i>
-        <h2 class="quote-text">@Model.Quote</h2>
-        <p class="quote-author">@Model.Author</p>
+<div class="container-fluid px-4 py-3">
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-bullseye text-emerald me-2"></i>Maliyyə Hədəflərim
+            </h2>
+            <p class="text-muted mb-0">Xəyallarınıza çatmaq üçün gələcəyinizi addım-addım planlayın.</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-emerald px-4 py-2 fw-semibold rounded-3 shadow-sm text-white">
+                <i class="bi bi-plus-lg me-1"></i> Yeni Hədəf Yarat
+            </a>
+        </div>
     </div>
-</section>
 
-<!-- DİNAMİK HİSSƏ (Sadələşdirilmiş if yoxlaması) -->
-@if (Model.Goals.Any())
-{
-    <section id="active-goals-section" class="row g-4 mb-4">
-        <div class="col-12 mb-2">
-            <h4 class="section-title">Aktiv Hədəflərim</h4>
+    <!-- Dynamic Motivational Quote Banner -->
+    <div class="quote-card p-3 rounded-4 mb-4 border-0 shadow-sm text-center position-relative overflow-hidden">
+        <p class="mb-0 fs-6 fw-medium text-secondary">
+            <i class="bi bi-quote fs-4 align-middle me-1 text-emerald"></i>
+            <em id="quoteText">Maliyyə hikməti yüklənir...</em>
+            <span id="quoteAuthor" class="ms-2 badge bg-emerald-subtle text-emerald rounded-pill px-3 py-1">- Maliyyə Hikməti</span>
+        </p>
+    </div>
+
+    <!-- Stats Cards Grid (JS CountUp Animasiyası İnteqrasiya Edildi) -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="stat-card card h-100 border-0 rounded-4 p-3 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon icon-blue rounded-3 p-3 me-3">
+                        <i class="bi bi-arrow-repeat fs-3"></i>
+                    </div>
+                    <div>
+                        <span class="text-muted fw-medium small d-block mb-1">Aktiv Hədəflər</span>
+                        <h3 class="fw-bold mb-0 counter" data-target="@Model.Goals.Count(g => g.CurrentAmount < g.TargetAmount)">0</h3>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        @foreach (var goal in Model.Goals)
-        {
-            <partial name="_GoalCard" model="goal" />
-        }
-    </section>
-}
-else
-{
-    <partial name="_EmptyGoals" />
-}
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="stat-card card h-100 border-0 rounded-4 p-3 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon icon-green rounded-3 p-3 me-3">
+                        <i class="bi bi-check-circle-fill fs-3"></i>
+                    </div>
+                    <div>
+                        <span class="text-muted fw-medium small d-block mb-1">Tamamlanan</span>
+                        <h3 class="fw-bold mb-0 counter" data-target="@Model.Goals.Count(g => g.CurrentAmount >= g.TargetAmount)">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="stat-card card h-100 border-0 rounded-4 p-3 shadow-sm">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon icon-purple rounded-3 p-3 me-3">
+                        <i class="bi bi-wallet2 fs-3"></i>
+                    </div>
+                    <div>
+                        <span class="text-muted fw-medium small d-block mb-1">Toplanan Ümumi Məbləğ</span>
+                        <h3 class="fw-bold mb-0">₼@Model.Goals.Sum(g => g.CurrentAmount).ToString("N2")</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goals List or Empty State -->
+    @if (!Model.Goals.Any())
+    {
+        <div class="empty-state-card card border-0 rounded-4 shadow-sm p-5 text-center my-4">
+            <div class="empty-icon-wrap mb-3 mx-auto rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-trophy fs-1 text-emerald"></i>
+            </div>
+            <h4 class="fw-bold mb-2">Hələ heç bir maliyyə hədəfi yoxdur</h4>
+            <p class="text-muted mx-auto mb-4" style="max-width: 450px;">
+                İlk hədəfinizi yaradın, qənaət etməyə başlayın və xəyallarınıza addım-addım yaxınlaşın.
+            </p>
+            <div>
+                <a asp-action="Create" class="btn btn-emerald px-4 py-2.5 rounded-3 fw-semibold shadow-sm text-white">
+                    <i class="bi bi-plus-circle me-2"></i> İlk Hədəfinizi Yaradın
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var goal in Model.Goals)
+            {
+                var percent = goal.TargetAmount > 0 ? (goal.CurrentAmount / goal.TargetAmount) * 100 : 0;
+                var isCompleted = goal.CurrentAmount >= goal.TargetAmount;
+                percent = percent > 100 ? 100 : percent;
+
+                <div class="col-12 col-md-6 col-xl-4">
+                    <!-- Tamamlanmış hədəflərə 'completed-goal' klassı əlavə edilir (JS Confetti animasiyası üçün) -->
+                    <div class="goal-item-card card border-0 rounded-4 shadow-sm h-100 p-4 @(isCompleted ? "completed-goal" : "")">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="fw-bold mb-1">
+                                    <i class="bi @(string.IsNullOrEmpty(goal.IconClass) ? "bi-bullseye" : goal.IconClass) text-emerald me-2"></i>@goal.Name
+                                </h5>
+                                <span class="badge bg-light text-dark border me-1">@goal.Currency</span>
+                                @if (isCompleted)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Tamamlandı</span>
+                                }
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm rounded-circle" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                                    <li>
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@goal.Id">
+                                            <i class="bi bi-pencil me-2 text-warning"></i>Düzəliş et
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-action="Details" asp-route-id="@goal.Id">
+                                            <i class="bi bi-eye me-2 text-info"></i>Ətraflı
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-action="Delete" asp-route-id="@goal.Id" method="post" onsubmit="return confirm('Bu hədəfi silmək istədiyinizə əminsiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger border-0 bg-transparent">
+                                                <i class="bi bi-trash me-2"></i>Sil
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="my-3">
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">Proqres</span>
+                                <span class="text-emerald">@percent.ToString("F0")%</span>
+                            </div>
+                            <div class="progress rounded-pill" style="height: 10px;">
+                                <!-- JS Progress Bar Animasiyası üçün 'animated-bar' və 'data-width' inteqrasiya olundu -->
+                                <div class="progress-bar bg-emerald rounded-pill animated-bar"
+                                     role="progressbar"
+                                     style="width: 0%;"
+                                     data-width="@percent.ToString("F0")%"
+                                     aria-valuenow="@percent"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <div>
+                                <small class="text-muted d-block">Toplanan</small>
+                                <span class="fw-bold text-dark">₼@goal.CurrentAmount.ToString("N2")</span>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted d-block">Hədəf</small>
+                                <span class="fw-bold text-dark">₼@goal.TargetAmount.ToString("N2")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
 
 @section Scripts {
-    <script src="~/js/pages/goals.js" asp-append-version="true"></script>
+    <script src="~/assets/js/goal.js" asp-append-version="true"></script>
 }

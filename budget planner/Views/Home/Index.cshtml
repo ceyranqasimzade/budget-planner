@@ -520,45 +520,61 @@
             </div>
         </div>
 
-        <!-- 4. Hədəflərim Vidceti -->
-        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
-            <div class="card-body p-4">
+        <!-- AKTİV HƏDƏFLƏR KARTI -->
+        <div class="card bg-dark text-white border-0 shadow-sm rounded-4 p-3 mb-4" style="background-color: #1e1e1e !important;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="m-0 d-flex align-items-center gap-2 fs-6 fw-bold text-light">
+                    <i class="bi bi-bullseye text-success"></i> Aktiv Hədəflər
+                </h5>
+                <a asp-controller="Goal" asp-action="Index" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                    Hamısına bax <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
 
-                <!-- Başlıq -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0">Hədəflərim</h5>
-                    <a asp-controller="Goal" asp-action="Index" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1 text-decoration-none">
-                        Hamısına bax
-                    </a>
-                </div>
-
-                <!-- Məzmun -->
+            @if (Model.ActiveGoals != null && Model.ActiveGoals.Any())
+            {
                 <div class="d-flex flex-column gap-3">
-                    @if (Model.ActiveGoals != null && Model.ActiveGoals.Any())
+                    @foreach (var goal in Model.ActiveGoals)
                     {
-                        foreach (var goal in Model.ActiveGoals)
-                        {
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="fw-medium small"><i class="fa-solid @goal.IconClass me-2 text-muted"></i>@goal.Name</span>
-                                    <span class="small text-muted">@goal.CurrentAmount.ToString("N0") / @goal.TargetAmount.ToString("N0") ₼ (@goal.Percentage.ToString("0")%)</span>
+                        // Faizi hesablayırıq (maksimum 100%)
+                        var percent = goal.TargetAmount > 0
+                        ? (int)Math.Min(100, Math.Round((goal.CurrentAmount / goal.TargetAmount) * 100))
+                        : 0;
+
+                        <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);">
+                            <!-- 1. Hədəfin Adı və Faizi -->
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <!-- 🟢 Dinamik İkon (Sistem üzrə unifikasiya edilmiş bi-bullseye fallback ilə) -->
+                                    <i class="bi @(string.IsNullOrEmpty(goal.IconClass) ? "bi-bullseye" : goal.IconClass) text-success"></i>
+                                    <span class="fw-semibold text-light fs-6">@goal.Name</span>
                                 </div>
-                                <div class="progress bg-secondary bg-opacity-25" style="height: 8px;">
-                                    <div class="progress-bar @goal.ColorClass rounded-pill" role="progressbar" style="width: @Math.Min(100, goal.Percentage).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;" aria-valuenow="@goal.Percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                                <span class="badge bg-success bg-opacity-20 text-success fw-bold px-2 py-1 rounded-pill">
+                                    @percent%
+                                </span>
+                            </div>
+
+                            <!-- 2. Uzunsov Dolduqca Artan Progress Bar -->
+                            <div class="progress" style="height: 10px; background-color: rgba(255, 255, 255, 0.1); border-radius: 10px;">
+                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                     role="progressbar"
+                                     style="width: @percent%; border-radius: 10px;"
+                                     aria-valuenow="@percent"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
                                 </div>
                             </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="text-center text-muted py-3">
-                            <i class="fa-solid fa-bullseye opacity-50 display-6 mb-2"></i>
-                            <p class="mb-0 small">Hələ heç bir hədəf təyin etməmisiniz.</p>
                         </div>
                     }
                 </div>
-
-            </div>
+            }
+            else
+            {
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-flag fs-2 d-block mb-2 opacity-50"></i>
+                    Hələ heç bir aktiv hədəf yoxdur.
+                </div>
+            }
         </div>
 
     </div> <!-- /SAĞ TƏRƏF SONU -->
