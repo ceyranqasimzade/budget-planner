@@ -130,8 +130,7 @@
               "RelativeToolTip": "budget planner\\Controllers\\AccountController.cs",
               "ViewState": "AgIAAL8AAAAAAAAAAAAAwNsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T11:09:07.089Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T11:09:07.089Z"
             },
             {
               "$type": "Document",
@@ -143,8 +142,7 @@
               "RelativeToolTip": "budget planner\\Areas\\AdminPanel\\Controllers\\DashboardController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T12:28:09.016Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T12:28:09.016Z"
             },
             {
               "$type": "Document",
@@ -156,8 +154,7 @@
               "RelativeToolTip": "budget planner\\Areas\\AdminPanel\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAACcAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T13:08:39.426Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T13:08:39.426Z"
             },
             {
               "$type": "Document",
@@ -169,8 +166,7 @@
               "RelativeToolTip": "budget planner\\Areas\\AdminPanel\\Views\\Dashboard\\Index.cshtml",
               "ViewState": "AgIAAB4AAAAAAAAAAAAAADUAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T13:00:52.017Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T13:00:52.017Z"
             },
             {
               "$type": "Document",
@@ -182,8 +178,7 @@
               "RelativeToolTip": "budget planner\\Areas\\AdminPanel\\Views\\User\\Create.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T13:58:56.04Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T13:58:56.04Z"
             },
             {
               "$type": "Document",
@@ -193,7 +188,7 @@
               "RelativeDocumentMoniker": "budget planner\\Areas\\AdminPanel\\Views\\User\\Update.cshtml",
               "ToolTip": "D:\\Users\\User\\Desktop\\budget planner\\budget planner\\Areas\\AdminPanel\\Views\\User\\Update.cshtml",
               "RelativeToolTip": "budget planner\\Areas\\AdminPanel\\Views\\User\\Update.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAxAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-08-07T14:00:01.271Z",
               "EditorCaption": ""
@@ -208,8 +203,7 @@
               "RelativeToolTip": "budget planner\\Areas\\AdminPanel\\Controllers\\UserController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T13:31:09.039Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T13:31:09.039Z"
             },
             {
               "$type": "Document",
@@ -221,8 +215,7 @@
               "RelativeToolTip": "budget planner\\Program.cs",
               "ViewState": "AgIAAD4AAAAAAAAAAAAcwCUAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T11:15:49.325Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T11:15:49.325Z"
             },
             {
               "$type": "Document",
@@ -234,8 +227,7 @@
               "RelativeToolTip": "budget planner\\Views\\Account\\Register.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T17:34:32.321Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T17:34:32.321Z"
             },
             {
               "$type": "Document",
@@ -247,8 +239,7 @@
               "RelativeToolTip": "budget planner\\DAL\\BudgetDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAHYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T15:47:45.138Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T15:47:45.138Z"
             },
             {
               "$type": "Document",
@@ -260,8 +251,7 @@
               "RelativeToolTip": "budget planner\\Models\\ApplicationUser.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T14:22:53.523Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T14:22:53.523Z"
             },
             {
               "$type": "Document",
@@ -273,8 +263,7 @@
               "RelativeToolTip": "budget planner\\Areas\\AdminPanel\\Views\\User\\Index.cshtml",
               "ViewState": "AgIAAA4AAAAAAAAAAAAUwC4AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T13:31:52.22Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T13:31:52.22Z"
             },
             {
               "$type": "Document",
@@ -286,8 +275,7 @@
               "RelativeToolTip": "budget planner\\wwwroot\\adminpanel\\js\\template.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-08-07T16:39:10.662Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-07T16:39:10.662Z"
             },
             {
               "$type": "Document",
