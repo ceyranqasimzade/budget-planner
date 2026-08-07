@@ -1,24 +1,30 @@
 ﻿@using System.Text.Json
+@using System.Globalization
 @model IEnumerable<budget_planner.ViewModels.TransactionVM>
 @{
     ViewData["Title"] = "Tranzaksiyalar Paneli";
-
-    var totalsByCurrency = Model.GroupBy(t => t.Currency ?? "AZN").Select(g => new
+    // Null safety üçün təhlükəsiz model siyahısı
+    var transactionList = Model ?? Enumerable.Empty<budget_planner.ViewModels.TransactionVM>();
+    var totalsByCurrency = transactionList.GroupBy(t => t.Currency ?? "AZN").Select(g => new
     {
         currency = g.Key,
         income = g.Where(t => t.IsIncome).Sum(t => t.Amount),
         expense = g.Where(t => !t.IsIncome).Sum(t => t.Amount)
     }).ToList();
-
     string totalsJson = JsonSerializer.Serialize(totalsByCurrency);
 }
+<!-- JS CSRF Token tapması üçün gizli form -->
+<form id="csrfForm" class="d-none">
+    @Html.AntiForgeryToken()
+</form>
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="~/assets/css/transaction.css" asp-append-version="true" />
 }
-
 <div class="container-fluid py-4">
+    <!-- BAŞLIQ VƏ ƏMƏLİYYAT DÜYMƏLƏRİ -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
             <h3 class="fw-bold m-0">
@@ -36,12 +42,12 @@
             <button id="btnBulkDelete" onclick="bulkDeleteTransactions()" class="btn btn-danger btn-action shadow-sm d-none">
                 <i class="fa-solid fa-trash-can me-1"></i> Seçilənləri Sil (<span id="selectedCount">0</span>)
             </button>
-            <a asp-action="Create" class="btn btn-primary btn-action shadow-sm">
+            <a href="/Transaction/Create" class="btn btn-primary btn-action shadow-sm">
                 <i class="fa-solid fa-circle-plus me-1"></i> Yeni Əməliyyat
             </a>
         </div>
     </div>
-
+    <!-- FİLTER HİSSƏSİ -->
     <div class="page-card filter-section mb-4">
         <div class="row g-3">
             <div class="col-xl-3 col-md-6">
@@ -75,176 +81,221 @@
         </div>
     </div>
 
+    <!-- CƏDVƏL VƏ SƏHİFƏLƏMƏ HİSSƏSİ (BİRLƏŞDİRİLDİ) -->
+    <div class="card shadow-sm border-0 mb-4 rounded overflow-hidden">
+        <div class="table-responsive m-0">
+            <table id="transactionTable" class="table table-hover align-middle m-0 custom-rounded-table">
+                <thead class="premium-thead">
+                    <tr>
+                        <th class="text-center col-select">
+                            <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" class="form-check-input">
+                        </th>
+                        <th onclick="sortTable(1, 'date')" class="text-center sortable-header text-nowrap col-date">
+                            Tarix
+                        </th>
+                        <th onclick="sortTable(2, 'text')" class="sortable-header text-nowrap col-desc">
+                            Təsvir
+                        </th>
+                        <th onclick="sortTable(3, 'text')" class="text-center sortable-header text-nowrap col-cat">
+                            Kateqoriya
+                        </th>
+                        <th onclick="sortTable(4, 'number')" class="text-end sortable-header text-nowrap col-amount">
+                            Məbləğ
+                        </th>
+                        <th onclick="sortTable(5, 'text')" class="text-center sortable-header text-nowrap col-status">
+                            Status
+                        </th>
+                        <th class="text-center text-nowrap col-action">İdarəetmə</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    @if (transactionList.Any())
+                    {
+                        foreach (var item in transactionList)
+                        {
+                            <tr data-type="@(item.IsIncome ? "income" : "expense")" data-date="@item.Date.ToString("yyyy-MM-dd")">
+                                <td class="text-center">
+                                    <input type="checkbox" name="rowSelect" value="@item.Id" onclick="updateBulkDeleteButton()" class="form-check-input row-checkbox">
+                                </td>
+                                <td class="text-center small fw-bold text-dark" ">@item.Date.ToString("dd MMM yyyy", new CultureInfo("az-Latn-AZ"))</td>
+                                <td class="fw-semibold text-wrap">@item.Description</td>
+                                <td class="text-center align-middle">
+                                    @item.CategoryName
+                                </td>
+                                <td class="text-end fw-bold @(item.IsIncome ? "text-success" : "text-danger")" data-amount="@item.Amount" data-currency="@item.Currency">
+                                    @(item.IsIncome ? "+" : "-") @item.Amount.ToString("N2")
+                                    <span class="currency-symbol ms-1">
+                                        @switch (item.Currency)
+                                        {
+                                            case "USD":
+                                                <text>$</text>
+                                                break;
+                                            case "EUR":
+                                                <text>€</text>
+                                                break;
+                                            case "TRY":
+                                                <text>₺</text>
+                                                break;
+                                            case "RUB":
+                                                <text>₽</text>
+                                                break;
+                                            case "GBP":
+                                                <text>£</text>
+                                                break;
+                                            case "GEL":
+                                                <text>₾</text>
+                                                break;
+                                            case "AED":
+                                                <text>د.إ</text>
+                                                break;
+                                            case "SAR":
+                                                <text>﷼</text>
+                                                break;
+                                            case "CHF":
+                                                <text>CHF</text>
+                                                break;
+                                            case "CNY":
+                                                <text>¥</text>
+                                                break;
+                                            default:
+                                                <text>₼</text>
+                                                break;
+                                        }
+                                    </span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <span class="badge-status border">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Redaktə et">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <button type="button"
+                                                class="btn btn-outline-danger delete-btn"
+                                                data-url="@Url.Action("Delete", "Transaction", new { id = item.Id })"
+                                                data-description="@item.Description"
+                                                title="Sil">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr id="emptyRow">
+                            <td colspan="7" class="text-center py-5 empty-table-cell">
+                                <i class="fa-solid fa-folder-open fs-1 mb-3 empty-icon text-muted"></i>
+                                <h5 class="fw-bold empty-title">Hələ heç bir əməliyyat yoxdur.</h5>
+                                <p class="fw-bold empty-desc text-muted">Yuxarıdakı "Yeni Əməliyyat" düyməsinə klikləyərək ilk qeydinizi yaradın.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINATION HİSSƏSİ (DƏRHAL CƏDVƏLİN ALTI) -->
+        <div class="card-footer bg-white border-top pagination-container py-3 d-flex justify-content-between align-items-center">
+            <div class="rows-per-page">
+                <select id="rowsPerPage" onchange="changeRowsPerPage(this)" class="form-select form-select-sm rows-select">
+                    <option value="10" selected>10 sətir</option>
+                    <option value="25">25 sətir</option>
+                    <option value="50">50 sətir</option>
+                    <option value="100">100 sətir</option>
+                </select>
+            </div>
+            <div id="paginationControls" class="pagination-controls d-flex gap-1 align-items-center">
+            </div>
+        </div>
+    </div>
+
+    <!-- QRAFİK VƏ AI QƏBZ OXUYUCU HİSSƏSİ -->
     <div class="row align-items-stretch mb-4">
-        <div class="col-lg-4 d-flex">
+        <!-- Nisbət Analizi Qrafiki -->
+        <div class="col-lg-5 d-flex">
             <div class="card page-card p-4 w-100 shadow-sm border-0">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold m-0 fs-6 text-nowrap">
                         <i class="fa-solid fa-chart-pie text-warning me-1"></i> Nisbət Analizi
                     </h5>
                     <select id="chartCurrencySelector" class="form-select form-select-sm chart-currency-compact fw-bold" onchange="renderChart()">
-                        <option value="AZN">AZN</option>
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="TRY">TRY</option>
-                        <option value="RUB">RUB</option>
-                        <option value="GBP">GBP</option>
+                        <option value="AZN">AZN (₼)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="TRY">TRY (₺)</option>
+                        <option value="RUB">RUB (₽)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="GEL">GEL (₾)</option>
+                        <option value="AED">AED (د.إ)</option>
+                        <option value="SAR">SAR (﷼)</option>
+                        <option value="CHF">CHF (CHF)</option>
+                        <option value="CNY">CNY (¥)</option>
                     </select>
                 </div>
-                <div class="chart-canvas-wrapper d-flex justify-content-center align-items-center">
+                <div class="chart-canvas-wrapper d-flex justify-content-center align-items-center h-100">
                     <canvas id="myBudgetChart" data-totals='@totalsJson'></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-8 d-flex">
+        <!-- Süni İntellektlə Qəbz Oxuyucu -->
+        <div class="col-lg-7 d-flex">
             <div class="card page-card p-4 w-100 d-flex flex-column justify-content-between border-0 shadow-sm">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold m-0">
-                        <i class="fa-solid fa-qrcode icon-purple me-2"></i> Ağıllı Qəbz Daxiletmə
+                        <i class="fa-solid fa-file-invoice icon-purple me-2"></i> Qəbz Oxuyucu
                     </h5>
-                    <span class="badge border px-2 py-1 small badge-purple">Fiskal / QR</span>
+                    <span class="badge border px-2 py-1 small badge-purple">
+                        <i class="fa-solid fa-wand-magic-sparkles me-1"></i> AI Dəstəkli
+                    </span>
                 </div>
-                <div class="row g-3 align-items-center my-auto">
-                    <div class="col-md-7 border-end pe-md-4">
-                        <p class="small mb-3 opacity-75">12 simvollu **Fiskal ID (PIN)** yazın və ya kameradan **QR kodu** oxudun.</p>
+                <div class="d-flex flex-column align-items-center justify-content-center my-auto w-100 h-100">
+                    <p class="small text-center opacity-75 mb-3" style="max-width: 500px;">
+                        Qəbzin şəklini sistemə yükləyin. Süni intellekt (OCR) tarix, məbləğ və təsviri avtomatik tapıb yeni əməliyyat səhifəsinə yönləndirəcək.
+                    </p>
 
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold mb-1">Fiskal ID (PIN Kod)</label>
-                            <div class="input-group">
-                                <span class="input-group-text fw-bold">#</span>
-                                <input type="text" id="fiskalIdInp" class="form-control text-uppercase fw-bold fiskal-input" placeholder="Y7R5T9E2W1Q8" maxlength="12">
-                                <button onclick="processFiskalId()" class="btn text-white px-3 btn-purple" type="button">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
+                    <!-- ƏLAVƏ OLUNAN FORM BLOKU (YAZILAR AZƏRBAYCAN DİLİNƏ UYĞUNLAŞDIRILDI) -->
+                    <form id="receiptForm" enctype="multipart/form-data" class="w-100 mb-3">
+                        @Html.AntiForgeryToken()
+                        <div class="input-group">
+                            <!-- Gizli standart fayl seçimi -->
+                            <input type="file" id="receiptFileInp" name="receiptFile" accept="image/*" class="d-none">
 
-                        <div class="d-grid">
-                            <button class="btn btn-outline-purple btn-sm py-2 fw-semibold" onclick="startQRScanner()">
-                                <i class="fa-solid fa-camera me-2"></i> QR Kodu Skan Et
+                            <!-- Azərbaycan dilli xüsusi düymə -->
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('receiptFileInp').click()">
+                                Fayl seçin
                             </button>
+
+                            <!-- Seçilən faylın adını göstərən sahə -->
+                            <span class="form-control text-muted" id="fileNameDisplay">Fayl seçilməyib</span>
                         </div>
-                    </div>
-                    <div class="col-md-5 ps-md-4 text-center">
-                        <label class="form-label small fw-bold mb-2 d-block">Və ya Şəkil Kimi Yüklə</label>
-                        <div class="receipt-drop-zone d-flex flex-column align-items-center justify-content-center p-3 text-center">
-                            <i class="fa-solid fa-cloud-arrow-up fs-4 icon-purple mb-1"></i>
-                            <span class="fw-semibold small drop-zone-text">Çəki bura sürükləyin</span>
-                            <input type="file" id="receiptFileInp" accept="image/*,application/pdf" class="d-none">
+                        <button type="button" id="btnUploadReceipt" class="btn btn-primary mt-2 w-100">
+                            <i class="fas fa-file-invoice me-1"></i> Qəbzi Oxut
+                        </button>
+                    </form>
+
+                    <!-- DROP ZONE -->
+                    <div id="receiptDropZone" class="receipt-drop-zone w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4 text-center rounded transition-all" style="border: 2px dashed #9c27b0; cursor: pointer; min-height: 200px;">
+                        <!-- DEFAULT VƏZİYYƏT -->
+                        <div id="dropZoneDefault" class="d-flex flex-column align-items-center">
+                            <i class="fa-solid fa-cloud-arrow-up fs-1 mb-3" style="color: #9c27b0;"></i>
+                            <h6 class="fw-bold mb-1">Şəkli bura sürükləyin</h6>
+                            <span class="small opacity-75">və ya fayl seçmək üçün klikləyin (PNG, JPG, JPEG)</span>
+                        </div>
+                        <!-- YÜKLƏNMƏ (ANALİZ) VƏZİYYƏTİ -->
+                        <div id="dropZoneProcessing" class="d-flex flex-column align-items-center d-none">
+                            <div class="spinner-border mb-3" style="color: #9c27b0; width: 3rem; height: 3rem;" role="status"></div>
+                            <h6 class="fw-bold mb-1">Qəbz oxunur...</h6>
+                            <span class="small opacity-75">Süni intellekt məlumatları analiz edir, lütfən gözləyin.</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <table id="transactionTable" class="table table-hover align-middle m-0 border overflow-hidden custom-rounded-table">
-        <thead class="premium-thead">
-            <tr>
-                <th class="text-center col-select">
-                    <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" class="form-check-input">
-                </th>
-                <th onclick="sortTable(1, 'date')" class="text-center sortable-header text-nowrap col-date">
-                    Tarix
-                </th>
-                <th onclick="sortTable(2, 'text')" class="sortable-header text-nowrap col-desc">
-                    Təsvir
-                </th>
-                <th onclick="sortTable(3, 'text')" class="text-center sortable-header text-nowrap col-cat">
-                    Kateqoriya
-                </th>
-                <th onclick="sortTable(4, 'number')" class="text-end sortable-header text-nowrap col-amount">
-                    Məbləğ
-                </th>
-                <th onclick="sortTable(5, 'text')" class="text-center sortable-header text-nowrap col-status">
-                    Status
-                </th>
-                <th class="text-center text-nowrap col-action">İdarəetmə</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            @if (Model != null && Model.Any())
-            {
-                foreach (var item in Model)
-                {
-                    <tr data-type="@(item.IsIncome ? "income" : "expense")" data-timestamp="@item.Date.ToString("yyyy-MM-dd")">
-                        <td class="text-center">
-                            <input type="checkbox" name="rowSelect" value="@item.Id" onclick="updateBulkDeleteButton()" class="form-check-input row-checkbox">
-                        </td>
-                        <td class="text-center small fw-bold opacity-75">@item.Date.ToString("dd MMM yyyy")</td>
-                        <td class="fw-semibold text-wrap">@item.Description</td>
-                        <td class="text-center align-middle">
-                            @item.CategoryName
-                        </td>
-                        <td class="text-end fw-bold @(item.IsIncome ? "text-success" : "text-danger")" data-amount="@item.Amount" data-currency="@item.Currency">
-                            @(item.IsIncome ? "+" : "-") @item.Amount.ToString("N2")
-                            <span class="currency-symbol ms-1">
-                                @switch (item.Currency)
-                                {
-                                    case "USD":
-                                        <text>$</text>
-                                        break;
-                                    case "EUR":
-                                        <text>€</text>
-                                        break;
-                                    case "TRY":
-                                        <text>₺</text>
-                                        break;
-                                    case "RUB":
-                                        <text>₽</text>
-                                        break;
-                                    case "GBP":
-                                        <text>£</text>
-                                        break;
-                                    default:
-                                        <text>₼</text>
-                                        break;
-                                }
-                            </span>
-                        </td>
-                        <td class="text-center align-middle">
-                            <span class="badge-status border">
-                                @item.Status
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <div class="btn-group btn-group-sm">
-                                <a asp-action="Update" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Redaktə et">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger"
-                                   onclick="return confirm('Silmək istədiyinizdən əminsiniz?');" title="Sil">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="7" class="text-center py-5 empty-table-cell">
-                        <i class="fa-solid fa-folder-open fs-1 mb-3 empty-icon"></i>
-                        <h5 class="fw-bold empty-title">Hələ heç bir əməliyyat yoxdur.</h5>
-                        <p class="fw-bold empty-desc">Yuxarıdakı "Yeni Əməliyyat" düyməsinə klikləyərək ilk qeydinizi yaradın.</p>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div class="pagination-container mt-3 d-flex justify-content-between align-items-center">
-        <div class="rows-per-page">
-            <select id="rowsPerPage" class="form-select form-select-sm rows-select">
-                <option value="10">10 sətir</option>
-                <option value="25">25 sətir</option>
-                <option value="50">50 sətir</option>
-                <option value="100">100 sətir</option>
-            </select>
-        </div>
-        <div id="paginationControls" class="pagination-controls d-flex gap-1 align-items-center">
         </div>
     </div>
 </div>
@@ -255,6 +306,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/az.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- 🟢 QR SKANER KİTABXANASI (ƏLAVƏ OLUNDU) -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="~/assets/js/budgetChart.js" asp-append-version="true"></script>
     <script src="~/assets/js/indexTransaction.js" asp-append-version="true"></script>
+    <script src="~/assets/js/billTransaction.js" asp-append-version="true"></script>
 }

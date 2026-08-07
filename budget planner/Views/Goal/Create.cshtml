@@ -1,18 +1,16 @@
 ﻿@model budget_planner.ViewModels.GoalVM
-
 @{
     ViewData["Title"] = "Yeni Hədəf Yarat";
     var defaultIcon = string.IsNullOrEmpty(Model?.IconClass) ? "bi-bullseye" : Model.IconClass;
 }
-
 @section Styles {
     <link rel="stylesheet" href="~/assets/css/goal.css" asp-append-version="true" />
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 }
-
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
-
+        <div class="col-12 col-lg-11">
             <!-- Başlıq Və Geri Qayıt Düyməsi -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
@@ -25,21 +23,18 @@
                     <i class="bi bi-arrow-left me-1"></i> Geri Qayıt
                 </a>
             </div>
-
             <div class="row g-4">
                 <!-- FORM BÖLMƏSİ -->
                 <div class="col-12 col-lg-7">
                     <div class="card border-0 shadow-sm rounded-4 p-4">
                         <form asp-controller="Goal" asp-action="Create" method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
                             <!-- Hədəf Adı -->
                             <div class="mb-3">
                                 <label asp-for="Name" class="form-label fw-semibold">Hədəfin Adı</label>
                                 <input asp-for="Name" id="inputName" class="form-control rounded-3" placeholder="Məs: Yeni Avtomobil, Tətil Və s." required />
                                 <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
-
                             <!-- Məbləğ Və Valyuta -->
                             <div class="row">
                                 <div class="col-md-7 mb-3">
@@ -47,7 +42,6 @@
                                     <input asp-for="TargetAmount" id="inputTarget" type="number" step="0.01" class="form-control rounded-3" placeholder="0.00" required />
                                     <span asp-validation-for="TargetAmount" class="text-danger small"></span>
                                 </div>
-
                                 <div class="col-md-5 mb-3">
                                     <label asp-for="Currency" class="form-label fw-semibold">Valyuta</label>
                                     <select asp-for="Currency" id="inputCurrency" class="form-select rounded-3">
@@ -66,95 +60,37 @@
                                     <span asp-validation-for="Currency" class="text-danger small"></span>
                                 </div>
                             </div>
-
                             <!-- Bitiş Tarixi -->
                             <div class="mb-4">
                                 <label asp-for="Deadline" class="form-label fw-semibold">Bitiş Tarixi (Deadline)</label>
-                                <input asp-for="Deadline" type="date" class="form-control rounded-3" asp-format="{0:yyyy-MM-dd}" />
+                                <input asp-for="Deadline" id="inputDeadline" type="text" class="form-control rounded-3" placeholder="Tarix seçin..." />
                                 <span asp-validation-for="Deadline" class="text-danger small"></span>
                             </div>
-
                             <!-- İKON SEÇİMİ -->
                             <div class="mb-4">
                                 <label class="form-label fw-semibold d-block">Hədəf İkonunu Seçin</label>
-
                                 <input type="hidden" asp-for="IconClass" id="IconClassInput" value="@defaultIcon" />
-
-                                <div class="d-flex flex-wrap gap-2 icon-grid-container p-2 bg-light rounded-3 border">
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-bullseye" ? "active-icon" : "")" data-icon="bi-bullseye">
-                                        <i class="bi bi-bullseye"></i> <span>Ümumi</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-piggy-bank-fill" ? "active-icon" : "")" data-icon="bi-piggy-bank-fill">
-                                        <i class="bi bi-piggy-bank-fill"></i> <span>Yığım</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-house-heart-fill" ? "active-icon" : "")" data-icon="bi-house-heart-fill">
-                                        <i class="bi bi-house-heart-fill"></i> <span>Ev</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-car-front-fill" ? "active-icon" : "")" data-icon="bi-car-front-fill">
-                                        <i class="bi bi-car-front-fill"></i> <span>Maşın</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-airplane-fill" ? "active-icon" : "")" data-icon="bi-airplane-fill">
-                                        <i class="bi bi-airplane-fill"></i> <span>Səyahət</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-mortarboard-fill" ? "active-icon" : "")" data-icon="bi-mortarboard-fill">
-                                        <i class="bi bi-mortarboard-fill"></i> <span>Təhsil</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-laptop" ? "active-icon" : "")" data-icon="bi-laptop">
-                                        <i class="bi bi-laptop"></i> <span>Texnologiya</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-phone-fill" ? "active-icon" : "")" data-icon="bi-phone-fill">
-                                        <i class="bi bi-phone-fill"></i> <span>Telefon</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-briefcase-fill" ? "active-icon" : "")" data-icon="bi-briefcase-fill">
-                                        <i class="bi bi-briefcase-fill"></i> <span>Biznes</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-graph-up-arrow" ? "active-icon" : "")" data-icon="bi-graph-up-arrow">
-                                        <i class="bi bi-graph-up-arrow"></i> <span>İnvestisiya</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-credit-card-fill" ? "active-icon" : "")" data-icon="bi-credit-card-fill">
-                                        <i class="bi bi-credit-card-fill"></i> <span>Kredit/Borc</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-gem" ? "active-icon" : "")" data-icon="bi-gem">
-                                        <i class="bi bi-gem"></i> <span>Zinət</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-gift-fill" ? "active-icon" : "")" data-icon="bi-gift-fill">
-                                        <i class="bi bi-gift-fill"></i> <span>Hədiyyə</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-bag-check-fill" ? "active-icon" : "")" data-icon="bi-bag-check-fill">
-                                        <i class="bi bi-bag-check-fill"></i> <span>Şopinq</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-heart-pulse-fill" ? "active-icon" : "")" data-icon="bi-heart-pulse-fill">
-                                        <i class="bi bi-heart-pulse-fill"></i> <span>Sağlamlıq</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-trophy-fill" ? "active-icon" : "")" data-icon="bi-trophy-fill">
-                                        <i class="bi bi-trophy-fill"></i> <span>İdman</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-controller" ? "active-icon" : "")" data-icon="bi-controller">
-                                        <i class="bi bi-controller"></i> <span>Əyləncə</span>
-                                    </button>
-
-                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-shield-lock-fill" ? "active-icon" : "")" data-icon="bi-shield-lock-fill">
-                                        <i class="bi bi-shield-lock-fill"></i> <span>Ehtiyat</span>
-                                    </button>
+                                <div class="d-flex flex-wrap gap-2 icon-grid-container p-2 bg-light rounded-3 border" style="max-height: 200px; overflow-y: auto;">
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-bullseye" ? "active-icon" : "")" data-icon="bi-bullseye"><i class="bi bi-bullseye"></i> <span>Ümumi</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-piggy-bank-fill" ? "active-icon" : "")" data-icon="bi-piggy-bank-fill"><i class="bi bi-piggy-bank-fill"></i> <span>Yığım</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-house-heart-fill" ? "active-icon" : "")" data-icon="bi-house-heart-fill"><i class="bi bi-house-heart-fill"></i> <span>Ev</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-car-front-fill" ? "active-icon" : "")" data-icon="bi-car-front-fill"><i class="bi bi-car-front-fill"></i> <span>Maşın</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-airplane-fill" ? "active-icon" : "")" data-icon="bi-airplane-fill"><i class="bi bi-airplane-fill"></i> <span>Səyahət</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-mortarboard-fill" ? "active-icon" : "")" data-icon="bi-mortarboard-fill"><i class="bi bi-mortarboard-fill"></i> <span>Təhsil</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-laptop" ? "active-icon" : "")" data-icon="bi-laptop"><i class="bi bi-laptop"></i> <span>Texnologiya</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-phone-fill" ? "active-icon" : "")" data-icon="bi-phone-fill"><i class="bi bi-phone-fill"></i> <span>Telefon</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-briefcase-fill" ? "active-icon" : "")" data-icon="bi-briefcase-fill"><i class="bi bi-briefcase-fill"></i> <span>Biznes</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-graph-up-arrow" ? "active-icon" : "")" data-icon="bi-graph-up-arrow"><i class="bi bi-graph-up-arrow"></i> <span>İnvestisiya</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-credit-card-fill" ? "active-icon" : "")" data-icon="bi-credit-card-fill"><i class="bi bi-credit-card-fill"></i> <span>Kredit/Borc</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-gem" ? "active-icon" : "")" data-icon="bi-gem"><i class="bi bi-gem"></i> <span>Zinət</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-gift-fill" ? "active-icon" : "")" data-icon="bi-gift-fill"><i class="bi bi-gift-fill"></i> <span>Hədiyyə</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-bag-check-fill" ? "active-icon" : "")" data-icon="bi-bag-check-fill"><i class="bi bi-bag-check-fill"></i> <span>Şopinq</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-heart-pulse-fill" ? "active-icon" : "")" data-icon="bi-heart-pulse-fill"><i class="bi bi-heart-pulse-fill"></i> <span>Sağlamlıq</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-trophy-fill" ? "active-icon" : "")" data-icon="bi-trophy-fill"><i class="bi bi-trophy-fill"></i> <span>İdman</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-controller" ? "active-icon" : "")" data-icon="bi-controller"><i class="bi bi-controller"></i> <span>Əyləncə</span></button>
+                                    <button type="button" class="btn icon-select-btn @(defaultIcon == "bi-shield-lock-fill" ? "active-icon" : "")" data-icon="bi-shield-lock-fill"><i class="bi bi-shield-lock-fill"></i> <span>Ehtiyat</span></button>
                                 </div>
                             </div>
-
                             <!-- Əməliyyat Düymələri -->
                             <div class="d-flex justify-content-end gap-2 pt-3 border-top">
                                 <a asp-action="Index" class="btn btn-light rounded-3 px-4">Ləğv Et</a>
@@ -165,53 +101,69 @@
                         </form>
                     </div>
                 </div>
-
-                <!-- CANLI PREVIEW KARTI (SIDE PREVIEW) -->
+                <!-- CANLI PREVIEW KARTI -->
                 <div class="col-12 col-lg-5">
                     <div class="sticky-top" style="top: 20px;">
-                        <label class="form-label fw-bold text-muted small text-uppercase mb-2">Canlı Önizləmə</label>
-                        <div id="prevCard" class="card border-0 rounded-4 shadow-sm p-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <div id="prevIconBox" class="stat-icon icon-green rounded-3 p-3 me-3">
-                                    <i id="prevIcon" class="bi bi-bullseye fs-3"></i>
-                                </div>
+                        <label class="form-label fw-bold text-muted small text-uppercase mb-2">Canlı Kart Önizləməsi</label>
+                        <div id="prevCard" class="card h-100 goal-card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-4 d-flex flex-column justify-content-between">
                                 <div>
-                                    <h5 id="prevName" class="fw-bold mb-1">Hədəf Adı</h5>
-                                    <span class="badge bg-light text-dark border">Yeni Hədəf</span>
+                                    <!-- Başlıq, İkon Və Faiz -->
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <!-- İkon Qutusu -->
+                                            <div id="prevIconBox" class="goal-icon-box bg-light text-dark border rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 52px; font-size: 1.5rem; flex-shrink: 0;">
+                                                <i id="prevIcon" class="bi @defaultIcon"></i>
+                                            </div>
+                                            <div>
+                                                <h5 id="prevName" class="goal-title fw-bold mb-1 text-dark">Hədəf Adı</h5>
+                                                <span class="badge bg-light text-muted border border-light-subtle rounded-pill small">Yeni Hədəf</span>
+                                            </div>
+                                        </div>
+                                        <span id="prevPercentage" class="goal-percentage fw-bold text-emerald fs-5">0%</span>
+                                    </div>
+                                    <!-- Progress Bar -->
+                                    <div class="progress custom-progress mb-3 rounded-pill" style="height: 10px;">
+                                        <div id="prevProgressBar" class="progress-bar animated-bar bg-emerald rounded-pill" role="progressbar" style="width: 0%;"></div>
+                                    </div>
+                                    <!-- Statistika -->
+                                    <div class="goal-stats row text-center my-3 py-2 bg-light rounded-3 g-0">
+                                        <div class="col-4 border-end">
+                                            <span class="stat-label d-block text-muted small">Yığılıb</span>
+                                            <span id="prevCurrent" class="stat-value fw-bold text-success">₼0.00</span>
+                                        </div>
+                                        <div class="col-4 border-end">
+                                            <span class="stat-label d-block text-muted small">Hədəf</span>
+                                            <span id="prevTarget" class="stat-value fw-bold text-dark">₼0.00</span>
+                                        </div>
+                                        <div class="col-4">
+                                            <span class="stat-label d-block text-muted small">Qalıb</span>
+                                            <span id="prevRemaining" class="stat-value fw-bold text-secondary">₼0.00</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="my-3">
-                                <div class="d-flex justify-content-between small fw-bold mb-1">
-                                    <span class="text-muted">Proqres</span>
-                                    <span id="prevPercentage" class="text-emerald">0%</span>
-                                </div>
-                                <div class="progress rounded-pill" style="height: 10px;">
-                                    <div id="prevProgressBar" class="progress-bar bg-emerald rounded-pill" role="progressbar" style="width: 0%"></div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-                                <div>
-                                    <small class="text-muted d-block">Toplanan</small>
-                                    <span id="prevRemaining" class="fw-bold text-dark">₼0.00</span>
-                                </div>
-                                <div class="text-end">
-                                    <small class="text-muted d-block">Hədəf</small>
-                                    <span id="prevTarget" class="fw-bold text-dark">₼0.00</span>
+                                <!-- Alt Müddət Indicator -->
+                                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                                    <span id="prevDeadlineBadge" class="badge bg-light text-dark border rounded-pill px-3 py-2">
+                                        <i class="bi bi-clock-history me-1 text-muted"></i>
+                                        <span id="prevDeadline">Müddət seçilməyib</span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-
 @section Scripts {
+    <!-- 1. Flatpickr JS Kitabxanaları -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/az.js"></script>
+    <!-- 2. Sizin JS Faylınız -->
     <script src="~/assets/js/goal.js" asp-append-version="true"></script>
+    <!-- 3. Validation Skriptləri -->
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

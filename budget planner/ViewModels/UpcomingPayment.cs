@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace budget_planner.Models
 {
@@ -13,14 +12,22 @@ namespace budget_planner.Models
         public ApplicationUser User { get; set; } = null!;
 
         [Required]
-        public string Title { get; set; } = null!; // Ödənişin adı (məs: İnternet, Netflix, Kredit)
+        public string Title { get; set; } = null!; // Ödənişin adı
 
         public decimal Amount { get; set; }
 
         public string Currency { get; set; } = "AZN";
 
-        public DateTime DueDate { get; set; } // Ödənişin son tarixi
+        public DateTime DueDate { get; set; }
 
-        public bool IsPaid { get; set; } = false; // Ödənilibmi? (Bəli/Xeyr)
+        public bool IsPaid { get; set; } = false;
+
+        // ===============================
+        // Təkrarlanan ödəniş üçün
+        // ===============================
+
+        public bool IsRecurring { get; set; } = false;
+  
+        public RecurrenceType RecurrenceType { get; set; } = RecurrenceType.None;
     }
 }

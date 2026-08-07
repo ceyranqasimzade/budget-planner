@@ -21,11 +21,19 @@ namespace budget_planner.ViewModels.Reports
         public decimal IncomeChangePercent { get; set; }
         public decimal ExpenseChangePercent { get; set; }
         public decimal SavingsChangePercent { get; set; }
+
+        // 50/30/20 Qaydası
+        public decimal NeedsAmount { get; set; }
+        public decimal WantsAmount { get; set; }
+        public decimal SavingsAmount { get; set; }
     }
 
     public class TrendChartVM
     {
         public List<TrendPointVM> Points { get; set; } = new();
+        public List<string> MonthlyLabels { get; set; } = new();
+        public List<decimal> MonthlyIncomeData { get; set; } = new();
+        public List<decimal> MonthlyExpenseData { get; set; } = new();
     }
 
     public class TrendPointVM

@@ -22,7 +22,7 @@ window.addEventListener("pageshow", function () {
     if (btn) {
         btn.disabled = false;
         btn.innerHTML =
-            TransactionUpdatePage.originalButtonText ?? "Dəyişiklikləri saxla";
+            TransactionUpdatePage.originalButtonText ?? "Yenilə və Saxla";
     }
 });
 
@@ -38,10 +38,29 @@ document.addEventListener("DOMContentLoaded", function () {
         TransactionUpdatePage.originalButtonText = btn.innerHTML;
     }
 
+    initializeDatePicker();
     initializeTransactionUpdateForm();
     initializeAmountInput();
     initializeTypeChange();
 });
+
+// ==========================================
+// FLATPICKR DATEPICKER
+// ==========================================
+
+function initializeDatePicker() {
+    const dateInput = document.getElementById("transactionDate");
+    if (!dateInput || typeof flatpickr !== "function") return;
+
+    flatpickr(dateInput, {
+        locale: "az",
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d.m.Y",
+        defaultDate: dateInput.value || "today",
+        disableMobile: "true"
+    });
+}
 
 // ==========================================
 // SWEETALERT FALLBACK (SAFE GUARD)
@@ -78,13 +97,13 @@ function initializeTransactionUpdateForm() {
     if (!form) return;
 
     form.addEventListener("submit", function (e) {
-        // 1. Təsdiqlənmiş submit zamanı bir dəfəlik bypass edir və bayrağı təmizləyir
+        // 1. Təsdiqlənmiş submit zamanı bir dəfəlik bypass edir
         if (TransactionUpdatePage.confirmedSubmit) {
             TransactionUpdatePage.confirmedSubmit = false;
             return;
         }
 
-        // 2. Double submit mühafizəsi (sürətli təkrar kliklərin qarşısı alınır)
+        // 2. Double submit mühafizəsi
         if (TransactionUpdatePage.isSubmitting) {
             e.preventDefault();
             return;
@@ -98,7 +117,7 @@ function initializeTransactionUpdateForm() {
 
         const amountValue = amount ? Number(amount.value) : 0;
 
-        // Strict Amount Validation (Boş input, NaN, Infinity və <=0 hallarına qarşı)
+        // Strict Amount Validation
         if (
             !amount ||
             !amount.value.trim() ||
@@ -130,7 +149,7 @@ function initializeTransactionUpdateForm() {
             showAlert({
                 icon: "warning",
                 title: "Kateqoriya seçilməyib",
-                text: "Kateqoriya seçin"
+                text: "Lütfən kateqoriya seçin"
             });
             category?.focus();
             return;
@@ -157,7 +176,6 @@ function initializeTransactionUpdateForm() {
         }).then((result) => {
             if (!result.isConfirmed) return;
 
-            // State Sıralaması: Əvvəl təsdiq flag-i, sonra isSubmitting aktiv olunur
             TransactionUpdatePage.confirmedSubmit = true;
             TransactionUpdatePage.isSubmitting = true;
 
@@ -193,13 +211,13 @@ function initializeAmountInput() {
         // Mənfi işarələrin təmizlənməsi
         value = value.replace(/-/g, "");
 
-        // AZN klaviaturası üçün vergülü nöqtəyə çevirmə
+        // Vergülü nöqtəyə çevirmə
         value = value.replace(/,/g, ".");
 
         // Yalnız rəqəm və nöqtə saxlanılır
         value = value.replace(/[^0-9.]/g, "");
 
-        // Tək nöqtə limiti (çoxlu nöqtələrin təmizlənməsi)
+        // Tək nöqtə limiti
         const firstDot = value.indexOf(".");
         if (firstDot !== -1) {
             value =
@@ -230,24 +248,21 @@ function initializeAmountInput() {
 // ==========================================
 
 function initializeTypeChange() {
-    const incomeRadio = document.getElementById("incomeType");
-    const expenseRadio = document.getElementById("expenseType");
+    const isIncomeSelect = document.getElementById("IsIncome");
     const amount = document.getElementById("Amount");
 
-    if (!incomeRadio || !expenseRadio || !amount) return;
+    if (!isIncomeSelect || !amount) return;
 
     function changeColor() {
         amount.classList.remove("text-success", "text-danger");
 
-        if (incomeRadio.checked) {
+        if (isIncomeSelect.value === "true") {
             amount.classList.add("text-success");
-        } else if (expenseRadio.checked) {
+        } else if (isIncomeSelect.value === "false") {
             amount.classList.add("text-danger");
         }
     }
 
-    incomeRadio.addEventListener("change", changeColor);
-    expenseRadio.addEventListener("change", changeColor);
-
+    isIncomeSelect.addEventListener("change", changeColor);
     changeColor();
 }

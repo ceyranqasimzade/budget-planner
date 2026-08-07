@@ -17,26 +17,22 @@
         <div class="login-box">
             <h2>Qeydiyyat</h2>
             <form asp-action="Register" method="post" autocomplete="off">
-                <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
-                
+                <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>             
                 <!-- 1. Ad və Soyad -->
                 <div class="input-group">
                     <input asp-for="FullName" placeholder="Ad və Soyad" required />
                     <span asp-validation-for="FullName" class="text-danger"></span>
                 </div>
-
                 <!-- 2. İstifadəçi adı -->
                 <div class="input-group">
                     <input asp-for="Username" placeholder="İstifadəçi adı" required />
                     <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
-
                 <!-- 3. E-poçt (Gmail və s.) -->
                 <div class="input-group">
                     <input asp-for="Email" type="email" placeholder="E-poçt (Gmail)" required />
                     <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                
+                </div>        
                 <!-- 4. Şifrə -->
                 <div class="input-group password-group">
                     <input asp-for="Password" id="regPassword" placeholder="Şifrə" required autocomplete="new-password" />
@@ -45,7 +41,6 @@
                     </span>
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-
                 <!-- 5. Şifrənin təkrarı -->
                 <div class="input-group password-group">
                     <input asp-for="ConfirmPassword" id="regConfirmPassword" placeholder="Şifrənin təkrarı" required autocomplete="new-password" />
@@ -54,16 +49,13 @@
                     </span>
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
-
                 <button type="submit" class="btn-submit">Qeydiyyatdan Keç</button>
-
                 <div class="register-link">
                     Hesabınız var? <a asp-action="Login">Daxil olun</a>
                 </div>
             </form>
         </div>
     </div>
-
     <script>
         function togglePassword(inputId, iconId) {
             const input = document.getElementById(inputId);

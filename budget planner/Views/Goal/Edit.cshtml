@@ -1,24 +1,16 @@
 ﻿@model budget_planner.ViewModels.GoalVM
-
 @{
     ViewData["Title"] = "Hədəfə Düzəliş Et";
 
-    // Aktiv ikona 'active-icon' klassını dinamik təyin edən yardımçı funksiya
-    string GetActiveIconClass(string iconName)
-    {
-        var currentIcon = string.IsNullOrEmpty(Model?.IconClass) ? "bi-bullseye" : Model.IconClass;
-        return currentIcon == iconName ? "active-icon" : "";
-    }
+    var currentIcon = string.IsNullOrEmpty(Model?.IconClass) ? "bi-bullseye" : Model.IconClass;
+    string GetActiveIconClass(string iconName) => currentIcon == iconName ? "active-icon" : "";
 }
-
 @section Styles {
     <link rel="stylesheet" href="~/assets/css/goal.css" asp-append-version="true" />
 }
-
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
-
             <!-- Başlıq Və Geri Qayıt Düyməsi -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
@@ -31,39 +23,34 @@
                     <i class="bi bi-arrow-left me-1"></i> Geri Qayıt
                 </a>
             </div>
-
             <div class="row g-4">
                 <!-- FORM BÖLMƏSİ -->
                 <div class="col-12 col-lg-7">
                     <div class="card border-0 shadow-sm rounded-4 p-4">
                         <form asp-action="Edit" method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
                             <input type="hidden" asp-for="Id" />
-
                             <!-- Hədəf Adı -->
                             <div class="mb-3">
                                 <label asp-for="Name" class="form-label fw-semibold">Hədəfin Adı</label>
                                 <input asp-for="Name" id="inputName" class="form-control rounded-3" placeholder="Məs: Yeni Maşın" required />
                                 <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
-
                             <!-- Məbləğlər -->
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label asp-for="TargetAmount" class="form-label fw-semibold">Hədəf Məbləğ</label>
                                     <div class="input-group">
-                                        <input asp-for="TargetAmount" id="inputTarget" class="form-control rounded-start-3" type="number" step="0.01" required />
+                                        <input asp-for="TargetAmount" id="inputTarget" class="form-control rounded-3" type="number" step="0.01" required />
                                     </div>
                                     <span asp-validation-for="TargetAmount" class="text-danger small"></span>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label asp-for="CurrentAmount" class="form-label fw-semibold">Cari Məbləğ</label>
-                                    <input asp-for="CurrentAmount" class="form-control rounded-3" type="number" step="0.01" />
+                                    <input asp-for="CurrentAmount" id="inputCurrent" class="form-control rounded-3" type="number" step="0.01" />
                                     <span asp-validation-for="CurrentAmount" class="text-danger small"></span>
                                 </div>
                             </div>
-
                             <!-- Valyuta və Bitiş Tarixi -->
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -85,156 +72,135 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label asp-for="Deadline" class="form-label fw-semibold">Bitiş Tarixi</label>
-                                    <!-- asp-format atributu ilə tarix inputunun düzgün dolması təmin edilir -->
                                     <input asp-for="Deadline" class="form-control rounded-3" type="date" asp-format="{0:yyyy-MM-dd}" />
                                     <span asp-validation-for="Deadline" class="text-danger small"></span>
                                 </div>
                             </div>
-
                             <!-- İKON SEÇİMİ -->
                             <div class="mb-4">
                                 <label class="form-label fw-semibold d-block">Hədəf İkonunu Seçin</label>
-
-                                <input type="hidden" asp-for="IconClass" id="IconClassInput" value="@(string.IsNullOrEmpty(Model?.IconClass) ? "bi-bullseye" : Model.IconClass)" />
+                                <input type="hidden" asp-for="IconClass" id="IconClassInput" value="@currentIcon" />
 
                                 <div class="d-flex flex-wrap gap-2 icon-grid-container p-2 bg-light rounded-3 border">
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-bullseye")" data-icon="bi-bullseye">
                                         <i class="bi bi-bullseye"></i> <span>Ümumi</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-piggy-bank-fill")" data-icon="bi-piggy-bank-fill">
                                         <i class="bi bi-piggy-bank-fill"></i> <span>Yığım</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-house-heart-fill")" data-icon="bi-house-heart-fill">
                                         <i class="bi bi-house-heart-fill"></i> <span>Ev</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-car-front-fill")" data-icon="bi-car-front-fill">
                                         <i class="bi bi-car-front-fill"></i> <span>Maşın</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-airplane-fill")" data-icon="bi-airplane-fill">
                                         <i class="bi bi-airplane-fill"></i> <span>Səyahət</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-mortarboard-fill")" data-icon="bi-mortarboard-fill">
                                         <i class="bi bi-mortarboard-fill"></i> <span>Təhsil</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-laptop")" data-icon="bi-laptop">
                                         <i class="bi bi-laptop"></i> <span>Texnologiya</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-phone-fill")" data-icon="bi-phone-fill">
                                         <i class="bi bi-phone-fill"></i> <span>Telefon</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-briefcase-fill")" data-icon="bi-briefcase-fill">
                                         <i class="bi bi-briefcase-fill"></i> <span>Biznes</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-graph-up-arrow")" data-icon="bi-graph-up-arrow">
                                         <i class="bi bi-graph-up-arrow"></i> <span>İnvestisiya</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-credit-card-fill")" data-icon="bi-credit-card-fill">
                                         <i class="bi bi-credit-card-fill"></i> <span>Kredit/Borc</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-gem")" data-icon="bi-gem">
                                         <i class="bi bi-gem"></i> <span>Zinət</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-gift-fill")" data-icon="bi-gift-fill">
                                         <i class="bi bi-gift-fill"></i> <span>Hədiyyə</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-bag-check-fill")" data-icon="bi-bag-check-fill">
                                         <i class="bi bi-bag-check-fill"></i> <span>Şopinq</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-heart-pulse-fill")" data-icon="bi-heart-pulse-fill">
                                         <i class="bi bi-heart-pulse-fill"></i> <span>Sağlamlıq</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-trophy-fill")" data-icon="bi-trophy-fill">
                                         <i class="bi bi-trophy-fill"></i> <span>İdman</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-controller")" data-icon="bi-controller">
                                         <i class="bi bi-controller"></i> <span>Əyləncə</span>
                                     </button>
-
                                     <button type="button" class="btn icon-select-btn @GetActiveIconClass("bi-shield-lock-fill")" data-icon="bi-shield-lock-fill">
                                         <i class="bi bi-shield-lock-fill"></i> <span>Ehtiyat</span>
                                     </button>
                                 </div>
                             </div>
-
                             <!-- Əməliyyat Düymələri -->
                             <div class="d-flex justify-content-end gap-2 pt-3 border-top">
                                 <a asp-action="Index" class="btn btn-light rounded-3 px-4">Ləğv Et</a>
-                                <button type="submit" class="btn btn-emerald text-white rounded-3 px-4 fw-semibold">
+                                <button type="submit" class="btn btn-emerald text-white rounded-3 px-4 fw-semibold" id="btnSubmit">
                                     <i class="bi bi-check2-circle me-1"></i> Yadda Saxla
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
-
                 <!-- CANLI PREVIEW KARTI (SIDE PREVIEW) -->
                 <div class="col-12 col-lg-5">
                     <div class="sticky-top" style="top: 20px;">
                         <label class="form-label fw-bold text-muted small text-uppercase mb-2">Canlı Önizləmə</label>
+                        @{
+                            var current = Model?.CurrentAmount ?? 0;
+                            var target = Model?.TargetAmount > 0 ? Model.TargetAmount : 1;
+                            var initialPercent = Math.Min(100, (current / target) * 100);
+                        }
                         <div id="prevCard" class="card border-0 rounded-4 shadow-sm p-4">
                             <div class="d-flex align-items-center mb-3">
-                                <div id="prevIconBox" class="stat-icon icon-green rounded-3 p-3 me-3">
-                                    <i id="prevIcon" class="bi @(string.IsNullOrEmpty(Model?.IconClass) ? "bi-bullseye" : Model.IconClass) fs-3"></i>
+                                <div id="prevIconBox" class="goal-icon-box bg-light text-dark border rounded-3 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                                    <i id="prevIcon" class="bi @currentIcon fs-3"></i>
                                 </div>
                                 <div>
                                     <h5 id="prevName" class="fw-bold mb-1">@(string.IsNullOrEmpty(Model?.Name) ? "Hədəf Adı" : Model.Name)</h5>
                                     <span class="badge bg-light text-dark border">Cari Yenilənmə</span>
                                 </div>
                             </div>
-
-                            @{
-                                var current = Model?.CurrentAmount ?? 0;
-                                var target = Model?.TargetAmount > 0 ? Model.TargetAmount : 1;
-                                var initialPercent = Math.Min(100, (current / target) * 100);
-                            }
-
                             <div class="my-3">
                                 <div class="d-flex justify-content-between small fw-bold mb-1">
                                     <span class="text-muted">Proqres</span>
                                     <span id="prevPercentage" class="text-emerald">@initialPercent.ToString("F0")%</span>
                                 </div>
-                                <div class="progress rounded-pill" style="height: 10px;">
+                                <div class="progress rounded-pill" style="height: 10px; background-color: #e9ecef;">
                                     <div id="prevProgressBar" class="progress-bar bg-emerald rounded-pill" role="progressbar" style="width: @initialPercent%"></div>
                                 </div>
                             </div>
-
                             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
                                 <div>
                                     <small class="text-muted d-block">Toplanan</small>
-                                    <span id="prevRemaining" class="fw-bold text-dark">₼@current.ToString("N2")</span>
+                                    <span id="prevRemaining" class="fw-bold text-dark">@Model?.Currency @current.ToString("N2")</span>
                                 </div>
                                 <div class="text-end">
                                     <small class="text-muted d-block">Hədəf</small>
-                                    <span id="prevTarget" class="fw-bold text-dark">₼@target.ToString("N2")</span>
+                                    <span id="prevTarget" class="fw-bold text-dark">@Model?.Currency @target.ToString("N2")</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-
 @section Scripts {
+    <!-- 1. Flatpickr Kitabxanaları -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/az.js"></script>
+    <!-- 2. Sizin JS Faylınız -->
     <script src="~/assets/js/goal.js" asp-append-version="true"></script>
+    <!-- 3. Validation Skriptləri -->
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

@@ -1,14 +1,15 @@
 ﻿@model budget_planner.ViewModels.GoalVM
-
 <div class="col-12 col-md-6 col-lg-4 mb-4">
-    <div class="card h-100 goal-card @(Model.IsCompleted ? "completed-goal" : "") border-0 shadow-sm rounded-4 border-top border-4 border-@Model.ColorClass">
+    <div class="card h-100 goal-card @(Model.IsCompleted ? "completed-goal" : "") border-0 shadow-sm rounded-4 border-top border-4 border-emerald">
         <div class="card-body p-4 d-flex flex-column justify-content-between">
             <div>
-                <!-- Başlıq, İkon və Faiz -->
+                <!-- Başlıq, Canlı İkon və Faiz -->
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="goal-icon bg-@Model.ColorClass text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                            <i class="bi @(string.IsNullOrEmpty(Model.IconClass) ? "bi-bullseye" : Model.IconClass) fs-4"></i>
+                        <!-- SOFT FONLU İKON QUTUSU -->
+                        <div class="goal-icon-box bg-emerald-subtle text-emerald border border-emerald-subtle rounded-4 d-flex align-items-center justify-content-center shadow-sm"
+                             style="width: 52px; height: 52px; font-size: 1.5rem; flex-shrink: 0;">
+                            <i class="bi @(string.IsNullOrEmpty(Model.IconClass) ? "bi-bullseye" : Model.IconClass)"></i>
                         </div>
                         <div>
                             <h5 class="goal-title fw-bold mb-1">
@@ -24,12 +25,11 @@
                             }
                         </div>
                     </div>
-                    <span class="goal-percentage fw-bold text-@Model.ColorClass fs-5">@Model.Percentage%</span>
+                    <span class="goal-percentage fw-bold text-emerald fs-5">@Model.Percentage%</span>
                 </div>
-
                 <!-- Animated Progress Bar -->
                 <div class="progress custom-progress mb-3 rounded-pill" style="height: 10px;">
-                    <div class="progress-bar animated-bar bg-@Model.ColorClass rounded-pill"
+                    <div class="progress-bar animated-bar bg-emerald rounded-pill"
                          role="progressbar"
                          data-width="@Model.Percentage%"
                          style="width: 0%;"
@@ -38,7 +38,6 @@
                          aria-valuemax="100">
                     </div>
                 </div>
-
                 <!-- 3 Sütunlu Statistika: Yığılıb | Hədəf | Qalıb -->
                 <div class="goal-stats row text-center my-3 py-2 bg-light rounded-3 g-0">
                     <div class="col-4 border-end">
@@ -55,25 +54,21 @@
                     </div>
                 </div>
             </div>
-
             <!-- Alt Müddət və Action Düymələri -->
             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
                 <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
                     <i class="bi bi-clock-history me-1 text-muted"></i>
                     @(Model.MonthsRemaining > 0 ? $"{Model.MonthsRemaining} ay qaldı" : "Müddətsiz / Çatıb")
                 </span>
-
                 <div class="goal-actions d-flex gap-2">
                     <!-- Redaktə Düyməsi -->
                     <a asp-controller="Goal" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary rounded-3" title="Redaktə et">
                         <i class="bi bi-pencil-fill"></i>
                     </a>
-
-                    <!-- Pul Əlavə Et Düyməsi (Modal Çağırışı) -->
+                    <!-- Pul Əlavə Et Düyməsi -->
                     <button type="button" class="btn btn-sm btn-outline-success rounded-3" title="Pul əlavə et" data-bs-toggle="modal" data-bs-target="#addFundsModal-@Model.Id">
                         <i class="bi bi-cash-coin"></i>
                     </button>
-
                     <!-- Sil Düyməsi -->
                     <form asp-action="Delete" asp-controller="Goal" method="post" class="d-inline" onsubmit="return confirm('Bu hədəfi silmək istədiyinizə əminsiniz?');">
                         @Html.AntiForgeryToken()

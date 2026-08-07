@@ -45,9 +45,11 @@ body, html, .stat-amount, span, strong {
         color: var(--primary-color);
     }
 
+    /* ================= 1. GƏLİR / YAŞIL TONLARININ PREMIUM HALI ================= */
     .stat-icon.income {
-        background-color: rgba(16, 185, 129, 0.15);
-        color: var(--color-income);
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #059669; /* Daha kəskin və zəngin zümrüd yaşılı */
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); /* Premium parıltı effekti */
     }
 
     .stat-icon.expense {
@@ -171,7 +173,7 @@ small.text-muted {
     overflow: hidden;
 }
 
-/* ================= BANK KARTLARI (BANK CARDS) ================= */
+/* ================= 2. BANK KARTLARI - DAHA KƏSKİN VƏ LÜKS MAVİ ================= */
 .bank-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -181,14 +183,16 @@ small.text-muted {
 
 .bank-card-item {
     position: relative;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    /* Daha dərin, tünd və premium gecə mavisi qradiyenti */
+    background: linear-gradient(135deg, #030d22 0%, #0c204c 50%, #112d68 100%);
     border-radius: 16px;
     padding: 1.25rem 1.5rem;
     color: #ffffff;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Daha kəskin, parlaq neon mavi çərçivə */
+    border: 1px solid rgba(0, 210, 255, 0.6);
 }
 
     .bank-card-item::after {
@@ -196,16 +200,17 @@ small.text-muted {
         position: absolute;
         top: -30px;
         right: -30px;
-        width: 120px;
-        height: 120px;
-        background: rgba(255, 255, 255, 0.08);
+        width: 130px;
+        height: 130px;
+        background: radial-gradient(circle, rgba(0, 210, 255, 0.25) 0%, rgba(0, 114, 255, 0) 70%);
         border-radius: 50%;
         pointer-events: none;
     }
 
     .bank-card-item:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        transform: translateY(-5px);
+        box-shadow: 0 18px 35px rgba(0, 210, 255, 0.35); /* Daha güclü mavi işıq effekti */
+        border-color: rgba(0, 210, 255, 1); /* Hover zamanı tam kəskin neon mavi */
     }
 
 .bank-card-header {
@@ -223,7 +228,7 @@ small.text-muted {
 }
 
 .bank-card-delete {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     border: none;
     color: #ffffff;
     width: 28px;
@@ -238,20 +243,22 @@ small.text-muted {
 }
 
     .bank-card-delete:hover {
-        background: rgba(239, 68, 68, 0.8);
+        background: rgba(239, 68, 68, 0.95);
     }
 
 .bank-card-number {
     font-family: 'Courier New', Courier, monospace !important;
     letter-spacing: 2px;
     font-size: 0.95rem;
-    opacity: 0.85;
+    opacity: 0.9;
     margin-bottom: 0.75rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .bank-card-balance {
     font-size: 1.35rem;
     font-weight: 800;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* ================= QARŞIDAN GƏLƏN ÖDƏNİŞLƏR ================= */
@@ -351,4 +358,121 @@ small.text-muted {
     align-items: center;
     justify-content: center;
     vertical-align: middle;
+}
+/* ================= AKTİV HƏDƏFLƏR VƏ ÖDƏNİŞLƏR (GÜCLƏNDİRİLMİŞ DÜZƏLİŞ) ================= */
+
+/* ----- 1. LİGHT MODE (AÇIQ REJİM) STANDARTLARI ----- */
+.active-goals-wrapper {
+    background-color: #ffffff !important;
+}
+
+    .active-goals-wrapper .goals-title,
+    .active-goals-wrapper .goals-name,
+    .active-goals-wrapper .goals-percent {
+        color: #212529 !important;
+    }
+
+    .active-goals-wrapper .goals-item {
+        background-color: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    .active-goals-wrapper .goals-progress {
+        height: 10px;
+        border-radius: 10px;
+        background-color: #e9ecef !important;
+    }
+
+/* Qarşıdan Gələn Ödənişlər üçün Light Mode */
+.upcoming-payment-card {
+    background-color: #ffffff !important;
+}
+
+/* ----- 2. DARK MODE (QARANLIQ REJİM) HƏR EHTİMALA QARŞI BÜTÜN SELEKTORLAR ----- */
+html[data-theme="dark"] .active-goals-wrapper,
+html[data-bs-theme="dark"] .active-goals-wrapper,
+[data-theme="dark"] .active-goals-wrapper,
+[data-bs-theme="dark"] .active-goals-wrapper {
+    background-color: transparent !important;
+}
+
+    html[data-theme="dark"] .active-goals-wrapper .goals-title,
+    html[data-bs-theme="dark"] .active-goals-wrapper .goals-title,
+    html[data-theme="dark"] .active-goals-wrapper .goals-name,
+    html[data-bs-theme="dark"] .active-goals-wrapper .goals-name,
+    html[data-theme="dark"] .active-goals-wrapper .goals-percent,
+    html[data-bs-theme="dark"] .active-goals-wrapper .goals-percent,
+    [data-theme="dark"] .active-goals-wrapper .goals-title,
+    [data-bs-theme="dark"] .active-goals-wrapper .goals-title,
+    [data-theme="dark"] .active-goals-wrapper .goals-name,
+    [data-bs-theme="dark"] .active-goals-wrapper .goals-name,
+    [data-theme="dark"] .active-goals-wrapper .goals-percent,
+    [data-bs-theme="dark"] .active-goals-wrapper .goals-percent {
+        color: #ffffff !important;
+    }
+
+    html[data-theme="dark"] .active-goals-wrapper .goals-item,
+    html[data-bs-theme="dark"] .active-goals-wrapper .goals-item,
+    [data-theme="dark"] .active-goals-wrapper .goals-item,
+    [data-bs-theme="dark"] .active-goals-wrapper .goals-item {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    html[data-theme="dark"] .active-goals-wrapper .goals-progress,
+    html[data-bs-theme="dark"] .active-goals-wrapper .goals-progress,
+    [data-theme="dark"] .active-goals-wrapper .goals-progress,
+    [data-bs-theme="dark"] .active-goals-wrapper .goals-progress {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+html[data-theme="dark"] .upcoming-payment-card,
+html[data-bs-theme="dark"] .upcoming-payment-card,
+[data-theme="dark"] .upcoming-payment-card,
+[data-bs-theme="dark"] .upcoming-payment-card {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+    html[data-theme="dark"] .upcoming-payment-card .text-dark,
+    html[data-bs-theme="dark"] .upcoming-payment-card .text-dark,
+    [data-theme="dark"] .upcoming-payment-card .text-dark,
+    [data-bs-theme="dark"] .upcoming-payment-card .text-dark,
+    html[data-theme="dark"] .card h5.text-dark,
+    html[data-bs-theme="dark"] .card h5.text-dark,
+    [data-theme="dark"] .card h5.text-dark,
+    [data-bs-theme="dark"] .card h5.text-dark {
+        color: #ffffff !important;
+    }
+
+/* ========================================================
+   YALNIZ "QARŞIDAN GƏLƏN ÖDƏNİŞLƏR" ÜÇÜN CSS
+   ======================================================== */
+.upcoming-payment-item {
+    border-left: 4px solid #f6c23e !important;
+    transition: all 0.3s ease-in-out;
+    background-color: #ffffff;
+}
+
+    .upcoming-payment-item:hover {
+        background-color: #fffdf5;
+        transform: translateX(6px);
+        box-shadow: 0 4px 12px rgba(246, 194, 62, 0.15) !important;
+        border-left-color: #e74a3b !important;
+    }
+
+.upcoming-date-badge {
+    background-color: #ffeeec;
+    color: #e74a3b;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: bold;
+    text-align: center;
+    min-width: 55px;
+}
+
+.upcoming-amount-text {
+    font-weight: 700;
+    color: #e74a3b;
+    font-size: 1.1rem;
 }

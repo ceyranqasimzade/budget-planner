@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using budget_planner.Models
+@using System.Globalization
 @inject SignInManager<ApplicationUser> SignInManager
 @using budget_planner.Services
 @model budget_planner.ViewModels.DashboardVM
@@ -8,20 +9,16 @@
     // 1. İstifadəçinin sistemə daxil olub-olmadığını yoxlayırıq
     bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 }
-
 @section Styles {
     <link rel="stylesheet" href="~/assets/css/dashboard.css" asp-append-version="true" />
-
     <!-- Flag Icons CDN (Rəngli bayraqlar üçün) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.0/css/flag-icons.min.css" />
-
     <!-- ================= QLOBAL ŞRİFT VƏ OXUNURLUQ DƏSTƏYİ ================= -->
     <style>
         /* Manat (₼) simvolunun bütün cihazlarda düzgün görünməsi üçün */
         body, html, .stat-amount, span, strong, td, th, h1, h2, h3, h4, h5, h6 {
             font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
         }
-
         /* Modal daxilində uzun valyuta/kart adlarının daşmasının qarşısını almaq üçün */
         .modal-body select.form-select {
             width: 100%;
@@ -31,7 +28,7 @@
         }
     </style>
 }
-
+<!-- 1. QONAQ XƏBƏRDARLIĞI -->
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="alert-warning-custom alert-dismissible fade show mb-4 shadow-sm d-flex align-items-center justify-content-between" role="alert">
@@ -48,6 +45,40 @@
             </div>
         </div>
         <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<!-- 🔴 BÜDCƏ XƏBƏRDARLIĞI BİLDİRİŞİ -->
+@{
+    decimal xerc = Model?.TotalExpense ?? 0;
+    decimal gelir = Model?.TotalIncome ?? 0;
+    decimal balans = Model?.TotalBalance ?? 0;
+    string valyuta = Model?.BaseCurrencySymbol ?? "₼";
+    // Pulun çatmadığı halların yoxlanılması:
+    // 1. Xərclər gəliri aşdıqda OR
+    // 2. Balans mənfiyə düşdükdə OR
+    // 3. Controller-dən xüsusi BudgetWarning mətni gəldikdə
+    bool pulCatmir = (xerc > gelir) || (balans < 0) || !string.IsNullOrEmpty(Model?.BudgetWarning);
+}
+@if (pulCatmir)
+{
+    <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-between p-3 mb-4 rounded-3 border-0 shadow-sm" role="alert" style="background-color: #2c0b0e; color: #ff6b6b; border-left: 5px solid #dc3545 !important;">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill fs-3 me-3 text-danger"></i>
+            <div>
+                <h6 class="fw-bold mb-1">Xəbərdarlıq: Kifayət qədər vəsait yoxdur!</h6>
+                <p class="mb-0 small">
+                    @if (!string.IsNullOrEmpty(Model?.BudgetWarning))
+                    {
+                        @Model.BudgetWarning
+                    }
+                    else
+                    {
+                        <span>Ümumi xərcləriniz (<strong>@xerc.ToString("N2") @valyuta</strong>) gəlirlərinizi (<strong>@gelir.ToString("N2") @valyuta</strong>) aşıb. Balansınız mənfiyə doğru gedir.</span>
+                    }
+                </p>
+            </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Bağla"></button>
     </div>
 }
 <!-- ================= 1. LIVE CURRENCY TICKER (VALYUTA KURLARI) ================= -->
@@ -77,19 +108,15 @@
                                     "CAD" => "fi fi-ca",
                         _ => "fi fi-xx"
                     };
-
                     // Dəyişimə görə rəng və Bootstrap İkonu
                     string colorClass = item.IsUp ? "text-success" : (item.IsDown ? "text-danger" : "text-secondary");
                     string iconClass = item.IsUp ? "bi-caret-up-fill" : (item.IsDown ? "bi-caret-down-fill" : "bi-dash");
-
                     <div class="d-inline-flex align-items-center me-2">
                         <!-- Rəngli Bayraq İkonu və Kod -->
                         <span class="@flagClass me-1 rounded-1"></span>
                         <span class="fw-bold text-body me-1">@item.Code:</span>
-
                         <!-- Əsas Məzənnə Rəqəmi -->
                         <strong class="@colorClass me-1">@item.Rate.ToString("0.0000") @Model.BaseCurrencySymbol</strong>
-
                         <!-- Fərq və Ox İşarəsi -->
                         <small class="@colorClass d-flex align-items-center" style="font-size: 0.75rem;">
                             <i class="bi @iconClass me-1"></i> @Math.Abs(item.Change).ToString("0.0000")
@@ -104,7 +131,6 @@
         </div>
     </div>
 </div>
-
 <!-- ================= PAGE HEADER & QUICK ACTIONS (TEZ ƏMƏLİYYAT DÜYMƏLƏRİ) ================= -->
 <div class="page-header mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
     <!-- Başlıq və Büdcə Seçicisi (Multi-budget) -->
@@ -114,10 +140,8 @@
             <p class="page-subtitle text-muted mb-0">Maliyyə vəziyyətinizə ümumi baxış</p>
         </div>
     </div>
-
     <!-- Right Actions: Əməliyyat Düymələri -->
     <div class="d-flex align-items-center gap-2 flex-wrap">
-
         <!-- Quick Action Buttons - Dəyişdirildi -->
         <button type="button" class="btn btn-success btn-sm px-3 d-flex align-items-center gap-1 shadow-sm" onclick="openModalIfAuth('#quickIncomeModal')">
             <i class="bi bi-plus-lg"></i> Gəlir Əlavə Et
@@ -131,10 +155,8 @@
 
     </div>
 </div>
-
 <!-- ================= 2. BÜDCƏ LİMİTİ VƏ AĞILLI MƏSLƏHƏTÇİ BANNERS ================= -->
 <div class="row mb-4 g-3 align-items-stretch">
-
     <!-- Büdcə Xəbərdarlığı -->
     <div class="col-md-7">
         <div class="alert alert-warning border-0 shadow-sm mb-0 d-flex align-items-center gap-3 p-3 h-100">
@@ -149,7 +171,6 @@
             </div>
         </div>
     </div>
-
     <!-- Ağıllı Maliyyə Məsləhətçisi -->
     <div class="col-md-5">
         <div class="alert alert-info border-0 shadow-sm mb-0 d-flex align-items-center gap-3 p-3 h-100">
@@ -164,9 +185,7 @@
             </div>
         </div>
     </div>
-
 </div>
-
 <!-- Ümumi Valyuta Seçimi -->
 <div class="d-flex justify-content-end align-items-center mb-3">
     <label for="globalCurrency" class="fw-bold me-2">Göstərici Valyuta:</label>
@@ -184,7 +203,6 @@
         <option value="CAD">CAD ($) - Kanada Dolları</option>
     </select>
 </div>
-
 <!-- ================= 3. STATISTICS (ÖTƏN AYLA MÜQAYİSƏ İLƏ) ================= -->
 <div class="row g-4 mb-4">
     <!-- Total Balance -->
@@ -204,7 +222,6 @@
             </div>
         </div>
     </div>
-
     <!-- Income -->
     <div class="col-lg-4 col-md-6">
         <div class="card stat-card h-100">
@@ -240,7 +257,6 @@
             </div>
         </div>
     </div>
-
     <!-- Expense -->
     <div class="col-lg-4 col-md-6">
         <div class="card stat-card h-100">
@@ -250,7 +266,6 @@
             <div class="stat-details">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="stat-title">Xərc</div>
-
                     <!-- DİNAMİK XƏRC FAİZİ (Həmişə görünəcək) -->
                     @{
                         decimal expTrend = Model.ExpenseTrend ?? 0;
@@ -282,10 +297,8 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0">Mənim Kartlarım və Balansım</h5>
     </div>
-
     <!-- BOOTSTRAP GRID (ROW) TƏTBİQ OLUNDU - flex-wrap problemi tam həll edildi -->
     <div class="row g-3">
-
         <!-- 🟢 1. NAĞD PUL (CİBDƏKİ PUL) KARTI -->
         <div class="col-12 col-sm-6 col-md-4 col-xl-3">
             <div class="card p-3 shadow-sm border-0 text-white rounded-3 h-100"
@@ -304,7 +317,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 🔵 2. İSTİFADƏÇİNİN BANK KARTLARI -->
         @if (Model.Cards != null && Model.Cards.Any())
         {
@@ -338,7 +350,6 @@
                 </div>
             }
         }
-
         <!-- ➕ 3. "Kart əlavə et" düyməsi -->
         <div class="col-12 col-sm-6 col-md-4 col-xl-3">
             <div class="card add-card-box d-flex flex-column justify-content-center align-items-center text-center p-3 h-100"
@@ -350,17 +361,14 @@
                 <small class="text-muted" style="font-size: 0.75rem;">Yeni bank kartı</small>
             </div>
         </div>
-
     </div> <!-- row sonu -->
 </div>
 <!-- MAIN ROW BAŞLANĞICI -->
 <div class="row g-4">
-
     <!-- ========================================== -->
     <!-- SOL TƏRƏF (Son Əməliyyatlar + Qarşıdan Gələn Ödənişlər) -->
     <!-- ========================================== -->
     <div class="col-xl-8 col-lg-7 d-flex flex-column gap-4">
-
         <!-- 1. Son Əməliyyatlar -->
         <div class="card border-0 shadow-sm" style="border-radius: 16px;">
             <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
@@ -388,7 +396,7 @@
                                 @foreach (var item in Model.LastTransactions)
                                 {
                                     <tr>
-                                        <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                                       <td>@item.Date.ToString("dd MMM yyyy", new CultureInfo("az-Latn-AZ"))</td>
                                         <td><span class="text-truncate d-inline-block" style="max-width: 120px;">@item.Description</span></td>
                                         <td><span class="badge bg-secondary bg-opacity-25 text-body fw-normal">@(item.CategoryName ?? "Ümumi")</span></td>
                                         <td>
@@ -434,7 +442,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 2. Qarşıdan Gələn Ödənişlər -->
         <div class="card border-0 shadow-sm p-4" style="border-radius: 16px;">
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -445,11 +452,9 @@
                     Hamısına bax <i class="fa-solid fa-arrow-right ms-1"></i>
                 </a>
             </div>
-
             @{
                 var upcomingList = ViewBag.UpcomingPayments as List<budget_planner.Models.UpcomingPayment>;
             }
-
             @if (upcomingList != null && upcomingList.Any())
             {
                 <div class="d-flex flex-column gap-3">
@@ -465,15 +470,54 @@
                                     <h6 class="fw-semibold mb-1 text-dark">@item.Title</h6>
                                     <span class="text-muted small d-flex align-items-center gap-1">
                                         <i class="fa-regular fa-clock"></i>
-                                        Son tarix: <strong>@item.DueDate.ToString("dd.MM.yyyy")</strong>
+                                        Son tarix: <strong>@item.DueDate.ToString("dd MMM yyyy", new CultureInfo("az-Latn-AZ"))</strong>
                                     </span>
                                 </div>
                             </div>
-
-                            <!-- Sağ tərəf: Məbləğ və Status -->
-                            <div class="text-end">
-                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 fs-6 fw-bold">
+                            <!-- Sağ tərəf: Məbləğ və Təkrarlanma -->
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 fs-6 fw-bold me-2">
                                     @item.Amount.ToString("N2") @item.Currency
+                                </span>
+
+                                <span class="badge bg-light border text-secondary px-3 py-2 d-flex align-items-center">
+                                    @switch (item.RecurrenceType)
+                                    {
+                                        case budget_planner.Models.RecurrenceType.Daily:
+                                            <text>
+                                                <i class="fa-solid fa-arrows-rotate text-success me-1"></i>
+                                                Hər gün
+                                            </text>
+                                            break;
+
+                                        case budget_planner.Models.RecurrenceType.Weekly:
+                                            <text>
+                                                <i class="fa-solid fa-calendar-week text-primary me-1"></i>
+                                                Hər həftə
+                                            </text>
+                                            break;
+
+                                        case budget_planner.Models.RecurrenceType.Monthly:
+                                            <text>
+                                                <i class="fa-solid fa-calendar-days text-info me-1"></i>
+                                                Hər ay
+                                            </text>
+                                            break;
+
+                                        case budget_planner.Models.RecurrenceType.Yearly:
+                                            <text>
+                                                <i class="fa-solid fa-calendar-check text-warning me-1"></i>
+                                                Hər il
+                                            </text>
+                                            break;
+
+                                        default:
+                                            <text>
+                                                <i class="fa-regular fa-calendar text-secondary me-1"></i>
+                                                Bir dəfə
+                                            </text>
+                                            break;
+                                    }
                                 </span>
                             </div>
                         </div>
@@ -492,18 +536,15 @@
             }
         </div>
         <!-- /Qarşıdan Gələn Ödənişlər -->
-
     </div> <!-- /SOL TƏRƏF SONU -->
     <!-- ========================================== -->
     <!-- SAĞ TƏRƏF (Xərclərin Bölgüsü + Hədəflərim) -->
     <!-- ========================================== -->
     <div class="col-xl-4 col-lg-5 d-flex flex-column gap-4">
-
         <!-- 3. Xərclərin Bölgüsü -->
         <div class="card border-0 shadow-sm" style="border-radius: 16px;">
             <div class="card-body p-4 d-flex flex-column">
                 <h5 class="fw-bold mb-3">Xərclərin bölgüsü</h5>
-
                 <div class="w-100 d-flex align-items-center justify-content-center position-relative" style="min-height: 320px; height: 320px;">
                     @if (Model.CategoryExpenses != null && Model.CategoryExpenses.Any())
                     {
@@ -519,66 +560,48 @@
                 </div>
             </div>
         </div>
-
         <!-- AKTİV HƏDƏFLƏR KARTI -->
-        <div class="card bg-dark text-white border-0 shadow-sm rounded-4 p-3 mb-4" style="background-color: #1e1e1e !important;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="m-0 d-flex align-items-center gap-2 fs-6 fw-bold text-light">
-                    <i class="bi bi-bullseye text-success"></i> Aktiv Hədəflər
-                </h5>
-                <a asp-controller="Goal" asp-action="Index" class="btn btn-sm btn-outline-success rounded-pill px-3">
-                    Hamısına bax <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-
-            @if (Model.ActiveGoals != null && Model.ActiveGoals.Any())
+<div class="card border-0 shadow-sm rounded-4 p-3 mb-4 active-goals-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="m-0 d-flex align-items-center gap-2 fs-6 fw-bold goals-title">
+            <i class="bi bi-bullseye text-success"></i> Aktiv Hədəflər
+        </h5>
+        <a asp-controller="Goal" asp-action="Index" class="btn btn-sm btn-outline-success rounded-pill px-3">
+            Hamısına bax <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    @if (Model.ActiveGoals != null && Model.ActiveGoals.Any())
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var goal in Model.ActiveGoals)
             {
-                <div class="d-flex flex-column gap-3">
-                    @foreach (var goal in Model.ActiveGoals)
-                    {
-                        // Faizi hesablayırıq (maksimum 100%)
-                        var percent = goal.TargetAmount > 0
-                        ? (int)Math.Min(100, Math.Round((goal.CurrentAmount / goal.TargetAmount) * 100))
-                        : 0;
-
-                        <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);">
-                            <!-- 1. Hədəfin Adı və Faizi -->
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <!-- 🟢 Dinamik İkon (Sistem üzrə unifikasiya edilmiş bi-bullseye fallback ilə) -->
-                                    <i class="bi @(string.IsNullOrEmpty(goal.IconClass) ? "bi-bullseye" : goal.IconClass) text-success"></i>
-                                    <span class="fw-semibold text-light fs-6">@goal.Name</span>
-                                </div>
-                                <span class="badge bg-success bg-opacity-20 text-success fw-bold px-2 py-1 rounded-pill">
-                                    @percent%
-                                </span>
-                            </div>
-
-                            <!-- 2. Uzunsov Dolduqca Artan Progress Bar -->
-                            <div class="progress" style="height: 10px; background-color: rgba(255, 255, 255, 0.1); border-radius: 10px;">
-                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                                     role="progressbar"
-                                     style="width: @percent%; border-radius: 10px;"
-                                     aria-valuenow="@percent"
-                                     aria-valuemin="0"
-                                     aria-valuemax="100">
-                                </div>
-                            </div>
+                var percent = goal.TargetAmount > 0 ? (int)Math.Min(100, Math.Round((goal.CurrentAmount / goal.TargetAmount) * 100)) : 0;
+                
+                <div class="p-3 rounded-3 goals-item">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi @(string.IsNullOrEmpty(goal.IconClass) ? "bi-bullseye" : goal.IconClass) text-success"></i>
+                            <span class="fw-semibold fs-6 goals-name">@goal.Name</span>
                         </div>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="text-center py-4 text-muted">
-                    <i class="bi bi-flag fs-2 d-block mb-2 opacity-50"></i>
-                    Hələ heç bir aktiv hədəf yoxdur.
+                        <span class="badge bg-success bg-opacity-20 text-success fw-bold px-2 py-1 rounded-pill goals-percent">
+                            @percent%
+                        </span>
+                    </div>
+                    <div class="progress goals-progress">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: @percent%; border-radius: 10px;" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                 </div>
             }
         </div>
-
-    </div> <!-- /SAĞ TƏRƏF SONU -->
-
+    }
+    else
+    {
+        <div class="text-center py-4 text-muted">
+            <i class="bi bi-flag fs-2 d-block mb-2 opacity-50"></i>
+            Hələ heç bir aktiv hədəf yoxdur.
+        </div>
+    }
+</div>
 </div> <!-- /MAIN ROW SONU -->
 <!-- ================= MODALS (PƏNCƏRƏLƏR) ================= -->
 <!-- 1. ADD CARD MODAL -->
@@ -599,7 +622,6 @@
                                oninvalid="this.setCustomValidity('Zəhmət olmasa kartın adını daxil edin.')"
                                oninput="this.setCustomValidity('')" />
                     </div>
-
                     <!-- Kartın son 4 rəqəmi -->
                     <div class="mb-3">
                         <label class="form-label">Kart nömrəsinin son 4 rəqəmi</label>
@@ -607,7 +629,6 @@
                                oninvalid="this.setCustomValidity('Zəhmət olmasa kartın son 4 rəqəmini dəqiq daxil edin.')"
                                oninput="this.setCustomValidity('')" />
                     </div>
-
                     <div class="row">
                         <!-- Valyuta -->
                         <div class="col-md-6 mb-3">
@@ -626,13 +647,17 @@
                                 <option value="CAD">CAD ($) - Kanada Dolları</option>
                             </select>
                         </div>
-
                         <!-- İlkin Balans -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">İlkin Balans</label>
-                            <input type="number" name="Balance" step="0.01" min="0.00" class="form-control" placeholder="0.00" required
+                            <input type="text"
+                                   inputmode="decimal"
+                                   name="Balance"
+                                   class="form-control"
+                                   placeholder="0.00"
+                                   required
                                    oninvalid="this.setCustomValidity('Zəhmət olmasa ilkin balansı daxil edin.')"
-                                   oninput="this.setCustomValidity('')" />
+                                   oninput="this.value = this.value.replace(',', '.'); this.setCustomValidity('');" />
                         </div>
                     </div>
                 </div>
@@ -644,7 +669,6 @@
         </div>
     </div>
 </div>
-
 <!-- 2. GƏLİR MODALI -->
 <div class="modal fade" id="quickIncomeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -652,14 +676,12 @@
             <form asp-controller="Transaction" asp-action="Create" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="IsIncome" value="true" />
-
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title fw-bold">
                         <i class="bi bi-plus-circle-fill me-2"></i>Gəlir Əlavə Et
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
                     <!-- 1-ci yer: Ödəniş Üsulu -->
                     <div class="mb-3">
@@ -671,7 +693,6 @@
                             <option value="card">Bank Kartı</option>
                         </select>
                     </div>
-
                     <!-- 2-ci yer: Kartı Seçin -->
                     <div class="mb-3 card-select-group" style="display: none;">
                         <label class="form-label fw-semibold">
@@ -690,7 +711,6 @@
                             }
                         </select>
                     </div>
-
                     <!-- 3-cü yer: Kateqoriya Seçimi -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -707,16 +727,13 @@
                             }
                         </select>
                     </div>
-
                     <div class="text-center my-2 fw-bold text-muted small">--- VƏ YA ---</div>
-
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
                             <i class="bi bi-plus-circle text-success me-1"></i> Yeni kateqoriya əlavə edin
                         </label>
                         <input type="text" name="NewCategoryName" class="form-control" placeholder="Məsləhət: Maaş, Əlavə gəlir və s." />
                     </div>
-
                     <!-- Valyuta (ƏLAVƏ EDİLDİ) -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -736,17 +753,20 @@
                             <option value="CAD">CAD ($) - Kanada Dolları</option>
                         </select>
                     </div>
-
                     <!-- Məbləğ -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
                             <i class="bi bi-cash-stack text-warning me-1"></i> Məbləğ
                         </label>
-                        <input type="number" name="Amount" step="0.01" min="0.01" class="form-control" placeholder="0.00" required
+                        <input type="text"
+                               inputmode="decimal"
+                               name="Amount"
+                               class="form-control"
+                               placeholder="0.00"
+                               required
                                oninvalid="this.setCustomValidity('Zəhmət olmasa məbləği daxil edin.')"
-                               oninput="this.setCustomValidity('')" />
+                               oninput="this.value = this.value.replace(',', '.'); this.setCustomValidity('');" />
                     </div>
-
                     <!-- Təsvir -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -757,7 +777,6 @@
                                oninput="this.setCustomValidity('')" />
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success w-100 fw-bold">
                         <i class="bi bi-check-circle me-1"></i> Gəliri Təsdiqlə
@@ -767,7 +786,6 @@
         </div>
     </div>
 </div>
-
 <!-- 3. XƏRC MODALI -->
 <div class="modal fade" id="quickExpenseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -775,14 +793,12 @@
             <form asp-controller="Transaction" asp-action="Create" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="IsIncome" value="false" />
-
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title fw-bold">
                         <i class="bi bi-dash-circle-fill me-2"></i>Xərc Əlavə Et
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
                     <!-- 1-ci yer: Ödəniş Üsulu -->
                     <div class="mb-3">
@@ -794,7 +810,6 @@
                             <option value="card">Bank Kartı</option>
                         </select>
                     </div>
-
                     <!-- 2-ci yer: Kartı Seçin -->
                     <div class="mb-3 card-select-group" style="display: none;">
                         <label class="form-label fw-semibold">
@@ -813,7 +828,6 @@
                             }
                         </select>
                     </div>
-
                     <!-- 3-cü yer: Kateqoriya Seçimi -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -830,16 +844,13 @@
                             }
                         </select>
                     </div>
-
                     <div class="text-center my-2 fw-bold text-muted small">--- VƏ YA ---</div>
-
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
                             <i class="bi bi-plus-circle text-danger me-1"></i> Yeni kateqoriya əlavə edin
                         </label>
                         <input type="text" name="NewCategoryName" class="form-control" placeholder="Məsləhət: Kofe, Restoran və s." />
                     </div>
-
                     <!-- Valyuta (ƏLAVƏ EDİLDİ) -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -859,17 +870,20 @@
                             <option value="CAD">CAD ($) - Kanada Dolları</option>
                         </select>
                     </div>
-
                     <!-- Məbləğ -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
                             <i class="bi bi-cash-stack text-warning me-1"></i> Məbləğ
                         </label>
-                        <input type="number" name="Amount" step="0.01" min="0.01" class="form-control" placeholder="0.00" required
+                        <input type="text"
+                               inputmode="decimal"
+                               name="Amount"
+                               class="form-control"
+                               placeholder="0.00"
+                               required
                                oninvalid="this.setCustomValidity('Zəhmət olmasa məbləği daxil edin.')"
-                               oninput="this.setCustomValidity('')" />
+                               oninput="this.value = this.value.replace(',', '.'); this.setCustomValidity('');" />
                     </div>
-
                     <!-- Təsvir -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -880,7 +894,6 @@
                                oninput="this.setCustomValidity('')" />
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-danger w-100 fw-bold">
                         <i class="bi bi-check-circle me-1"></i> Xərci Təsdiqlə
@@ -890,7 +903,6 @@
         </div>
     </div>
 </div>
-
 <!-- 4. CARD TRANSFER MODAL (KARTLAR ARASI TRANSFER) -->
 <div class="modal fade" id="transferModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -903,7 +915,6 @@
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
                     <!-- Göndərən Kart -->
                     <div class="mb-3">
@@ -923,7 +934,6 @@
                             }
                         </select>
                     </div>
-
                     <!-- Alan Kart -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -942,7 +952,6 @@
                             }
                         </select>
                     </div>
-
                     <!-- Valyuta (ƏLAVƏ EDİLDİ) -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -962,7 +971,6 @@
                             <option value="CAD">CAD ($) - Kanada Dolları</option>
                         </select>
                     </div>
-
                     <!-- Məbləğ -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -973,7 +981,6 @@
                                oninput="this.setCustomValidity('')" />
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary w-100 fw-bold">
                         <i class="bi bi-arrow-repeat me-1"></i> Köçürməni İcra Et
@@ -989,17 +996,14 @@
         <div class="modal-content">
             <form asp-controller="Card" asp-action="Delete" method="post">
                 @Html.AntiForgeryToken()
-
                 <!-- Silinəcək kartın ID-si bura JavaScript ilə yazılacaq -->
                 <input type="hidden" id="deleteCardId" name="id" value="" />
-
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title fw-bold">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i>Kartı Sil
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <div class="mb-3 text-danger">
                         <i class="bi bi-trash3-fill display-3"></i>
@@ -1009,7 +1013,6 @@
                         <strong id="deleteCardName" class="text-dark"></strong> kartı silinəcək. Bu əməliyyatı geri qaytarmaq mümkün olmaya bilər.
                     </p>
                 </div>
-
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Ləğv et</button>
                     <button type="submit" class="btn btn-danger px-4 fw-bold">

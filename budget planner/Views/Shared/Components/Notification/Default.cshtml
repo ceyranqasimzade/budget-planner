@@ -1,5 +1,4 @@
 ﻿@model List<budget_planner.ViewModels.NotificationVM>
-
 <div class="dropdown">
     <button class="icon-btn position-relative d-flex align-items-center justify-content-center"
             type="button"
@@ -7,9 +6,7 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
             style="background: transparent; border: none; color: inherit; padding: 8px;">
-
         <i class="fa-regular fa-bell fs-5"></i>
-
         @if (Model != null && Model.Count > 0)
         {
             <!-- Əgər bildiriş varsa, qırmızı nöqtəni göstər -->
@@ -18,7 +15,6 @@
             </span>
         }
     </button>
-
     <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="notificationDropdown" style="width: 320px; border-radius: 12px;">
         <li>
             <div class="d-flex justify-content-between align-items-center px-2">
@@ -30,7 +26,6 @@
             </div>
         </li>
         <li><hr class="dropdown-divider"></li>
-
         @if (Model == null || Model.Count == 0)
         {
             <li>
@@ -54,7 +49,6 @@
                 </li>
             }
         }
-
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item text-center small text-primary fw-bold" href="#">Bütün bildirişlərə bax</a></li>
     </ul>

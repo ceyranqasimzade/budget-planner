@@ -4,7 +4,7 @@
     min-height: 100vh;
 }
 
-/* ================= SIDEBAR (Sol Menyu) ================= */
+/* ================= SIDEBAR (Sol Menyu - Optimizə Edilmiş) ================= */
 .sidebar {
     width: var(--sidebar-width);
     background-color: var(--bg-surface);
@@ -24,7 +24,7 @@
     padding: 0 1.5rem;
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: #d4af37; /* Lüks qızılı loqo */
     gap: 10px;
     border-bottom: 1px solid var(--border-color);
 }
@@ -47,13 +47,15 @@
     }
 
         .sidebar-nav .nav-link:hover {
-            background-color: rgba(11, 70, 53, 0.05);
-            color: var(--primary-color);
+            background-color: rgba(212, 175, 55, 0.1);
+            color: #d4af37 !important;
         }
 
         .sidebar-nav .nav-link.active {
-            background-color: var(--primary-color);
-            color: #ffffff;
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%) !important;
+            color: #ffffff !important;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
 
 /* ================= MAIN WRAPPER ================= */
@@ -116,7 +118,7 @@
 }
 
     .icon-btn:hover {
-        color: var(--primary-color);
+        color: #d4af37;
     }
 
 .user-profile {

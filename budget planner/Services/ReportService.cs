@@ -1,13 +1,11 @@
-﻿using budget_planner.DAL;
-using budget_planner.Extensions; // SessionExtensions üçün
-using budget_planner.Services.ReportModels;
-using budget_planner.ViewModels.Reports;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using budget_planner.DAL;
+using budget_planner.Models;
+using budget_planner.ViewModels.Reports;
 
 namespace budget_planner.Services
 {
@@ -15,248 +13,460 @@ namespace budget_planner.Services
     {
         private readonly BudgetDbContext _context;
         private readonly ICurrencyService _currencyService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private static readonly string[] MonthNamesAz =
-            { "Yan", "Fev", "Mar", "Apr", "May", "İyn", "İyl", "Avq", "Sen", "Okt", "Noy", "Dek" };
-
-        private static readonly string[] DayNamesAz =
-            { "Bazar e.", "Çərşənbə a.", "Çərşənbə", "Cümə a.", "Cümə", "Şənbə", "Bazar" };
-
-        public ReportService(
-            BudgetDbContext context,
-            ICurrencyService currencyService,
-            IHttpContextAccessor httpContextAccessor)
+        public ReportService(BudgetDbContext context, ICurrencyService currencyService)
         {
             _context = context;
             _currencyService = currencyService;
-            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<ReportVM> GetReportDataAsync(string userId, ReportFilterVM filter = null)
+        public async Task<ReportVM> GetReportDataAsync(string userId, ReportFilterVM? filter = null)
         {
-            filter ??= new ReportFilterVM();
-            var displayCurrency = string.IsNullOrWhiteSpace(filter.DisplayCurrency) ? "AZN" : filter.DisplayCurrency;
-
+            var filterObj = filter ?? new ReportFilterVM();
             var now = DateTime.Now;
-            var currentMonthStart = filter.StartDate ?? new DateTime(now.Year, now.Month, 1);
-            var currentMonthEnd = filter.EndDate ?? currentMonthStart.AddMonths(1).AddDays(-1);
 
-            List<Models.Transaction> rawTransactions;
+            string targetCurrency = string.IsNullOrWhiteSpace(filterObj.DisplayCurrency)
+                ? "AZN"
+                : filterObj.DisplayCurrency.ToUpper();
 
-            // Əgər İstifadəçi Qonaqdırsa:
-            if (userId != null && userId.StartsWith("guest_"))
+            // 1. Bazadan Əsas Sorğu
+            var query = _context.Transactions
+                .Include(t => t.Category)
+                .Where(t => !t.IsDeleted && t.UserId == userId)
+                .AsQueryable();
+
+            if (filterObj.StartDate.HasValue)
             {
-                var session = _httpContextAccessor.HttpContext?.Session;
-                string sessionKey = $"Guest_Transactions_{userId}";
+                var start = filterObj.StartDate.Value.Date;
+                query = query.Where(t => t.Date >= start);
+            }
 
-                // Sizin yaratdığınız GetObject<T> genişlənmə metodundan istifadə olunur
-                var guestTxs = session?.GetObject<List<Models.Transaction>>(sessionKey) ?? new List<Models.Transaction>();
+            if (filterObj.EndDate.HasValue)
+            {
+                var end = filterObj.EndDate.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(t => t.Date <= end);
+            }
 
-                var guestQuery = guestTxs.Where(t => !t.IsDeleted);
+            if (filterObj.CardId.HasValue && filterObj.CardId.Value > 0)
+                query = query.Where(t => t.CardId == filterObj.CardId.Value);
 
-                if (filter.CardId.HasValue)
-                    guestQuery = guestQuery.Where(t => t.CardId == filter.CardId.Value);
-                if (filter.CategoryId.HasValue)
-                    guestQuery = guestQuery.Where(t => t.CategoryId == filter.CategoryId.Value);
+            if (filterObj.CategoryId.HasValue && filterObj.CategoryId.Value > 0)
+                query = query.Where(t => t.CategoryId == filterObj.CategoryId.Value);
 
-                rawTransactions = guestQuery.ToList();
+            var transactions = await query.ToListAsync();
+
+            // 2. Məbləğləri TargetCurrency-ə çevirmək (Optimizasiya olunmuş)
+            var convertedTransactions = new List<ConvertedTransaction>();
+            foreach (var tx in transactions)
+            {
+                string fromCurrency = string.IsNullOrEmpty(tx.Currency) ? "AZN" : tx.Currency.ToUpper();
+
+                // Valyutalar eynidirsə API-yə sorğu göndərməyə ehtiyac yoxdur
+                decimal convertedAmount = (fromCurrency == targetCurrency)
+                    ? tx.Amount
+                    : await _currencyService.ConvertAsync(tx.Amount, fromCurrency, targetCurrency);
+
+                convertedTransactions.Add(new ConvertedTransaction
+                {
+                    Transaction = tx,
+                    ConvertedAmount = convertedAmount
+                });
+            }
+
+            // 3. Məbləğlərin Hesablanması (Tarix filtri varsa filtrlənmiş məlumatları, yoxdursa cari ayı əhatə edir)
+            List<ConvertedTransaction> targetPeriodTxs;
+
+            if (filterObj.StartDate.HasValue || filterObj.EndDate.HasValue)
+            {
+                targetPeriodTxs = convertedTransactions;
             }
             else
             {
-                // Qeydiyyatlı istifadəçidirsə bazadan oxuyuruq
-                var query = _context.Transactions
-                    .Include(t => t.Category)
-                    .Where(t => t.UserId == userId && !t.IsDeleted);
-
-                if (filter.CardId.HasValue) query = query.Where(t => t.CardId == filter.CardId.Value);
-                if (filter.CategoryId.HasValue) query = query.Where(t => t.CategoryId == filter.CategoryId.Value);
-
-                rawTransactions = await query.ToListAsync();
+                var monthStart = new DateTime(now.Year, now.Month, 1);
+                var monthEnd = monthStart.AddMonths(1);
+                targetPeriodTxs = convertedTransactions
+                    .Where(ct => ct.Transaction.Date >= monthStart && ct.Transaction.Date < monthEnd)
+                    .ToList();
             }
 
-            // Normalizasiya və Hesabatın qurulması
-            var rates = await GetCurrencyRatesAsync(displayCurrency, rawTransactions.Select(t => t.Currency).Distinct());
-            var normalizedTxs = NormalizeTransactions(rawTransactions, rates, displayCurrency);
+            decimal monthlyIncome = targetPeriodTxs.Where(ct => ct.Transaction.IsIncome).Sum(ct => ct.ConvertedAmount);
+            decimal monthlyExpense = targetPeriodTxs.Where(ct => !ct.Transaction.IsIncome).Sum(ct => ct.ConvertedAmount);
+            decimal monthlySavings = monthlyIncome - monthlyExpense;
 
-            return new ReportVM
+            // 4. Əvvəlki Ayın Göstəriciləri
+            var currentMonthStart = new DateTime(now.Year, now.Month, 1);
+            var prevStart = currentMonthStart.AddMonths(-1);
+            var prevEnd = currentMonthStart.AddTicks(-1);
+
+            var prevTransactions = await _context.Transactions
+                .Where(t => !t.IsDeleted && t.UserId == userId && t.Date >= prevStart && t.Date <= prevEnd)
+                .ToListAsync();
+
+            decimal prevIncome = 0;
+            decimal prevExpense = 0;
+
+            foreach (var tx in prevTransactions)
             {
-                Filter = filter,
-                Kpi = BuildKpi(normalizedTxs, currentMonthStart, currentMonthEnd),
-                Trend = BuildTrend(normalizedTxs, currentMonthStart),
-                Categories = BuildCategories(normalizedTxs, currentMonthStart, currentMonthEnd),
-                Weekdays = BuildWeekdays(normalizedTxs, currentMonthStart, currentMonthEnd)
-            };
-        }
+                string fromCurrency = string.IsNullOrEmpty(tx.Currency) ? "AZN" : tx.Currency.ToUpper();
+                decimal convertedAmount = (fromCurrency == targetCurrency)
+                    ? tx.Amount
+                    : await _currencyService.ConvertAsync(tx.Amount, fromCurrency, targetCurrency);
 
-        // =========================================================================
-        // PRIVATE BUILDER METODLARI
-        // =========================================================================
-
-        private async Task<Dictionary<string, decimal>> GetCurrencyRatesAsync(string baseCurrency, IEnumerable<string> currencies)
-        {
-            var rates = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
-            {
-                { baseCurrency, 1.0m }
-            };
-
-            foreach (var curr in currencies)
-            {
-                if (!rates.ContainsKey(curr))
-                {
-                    decimal rate = await _currencyService.ConvertAsync(1m, curr, baseCurrency);
-                    rates[curr] = rate;
-                }
+                if (tx.IsIncome) prevIncome += convertedAmount;
+                else prevExpense += convertedAmount;
             }
-            return rates;
-        }
+            decimal prevSavings = prevIncome - prevExpense;
 
-        private List<ReportTransaction> NormalizeTransactions(
-            List<Models.Transaction> rawTxs,
-            Dictionary<string, decimal> rates,
-            string baseCurrency)
-        {
-            return rawTxs.Select(t =>
-            {
-                decimal rate = string.Equals(t.Currency, baseCurrency, StringComparison.OrdinalIgnoreCase)
-                    ? 1.0m
-                    : rates.GetValueOrDefault(t.Currency, 1.0m);
+            // 5. Kateqoriyalara Görə Xərclər
+            decimal filterTotalExpense = convertedTransactions.Where(ct => !ct.Transaction.IsIncome).Sum(ct => ct.ConvertedAmount);
 
-                return new ReportTransaction
+            var topCategoryList = convertedTransactions
+                .Where(ct => !ct.Transaction.IsIncome)
+                .GroupBy(ct => ct.Transaction.Category != null && !string.IsNullOrWhiteSpace(ct.Transaction.Category.Name)
+                    ? ct.Transaction.Category.Name
+                    : "Kateqoriyasız")
+                .Select(g => new TopCategoryVM
                 {
-                    Date = t.Date,
-                    Amount = t.Amount * rate,
-                    IsIncome = t.IsIncome,
-                    CategoryName = t.Category?.Name ?? "Digər",
-                    CardId = t.CardId
-                };
-            }).ToList();
-        }
+                    CategoryName = g.Key,
+                    Amount = g.Sum(ct => ct.ConvertedAmount),
+                    Percentage = filterTotalExpense > 0
+                        ? Math.Round((double)(g.Sum(ct => ct.ConvertedAmount) / filterTotalExpense * 100), 1)
+                        : 0
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
 
-        private ReportKpiVM BuildKpi(List<ReportTransaction> txs, DateTime monthStart, DateTime monthEnd)
-        {
-            var currentTxs = txs.Where(t => t.Date >= monthStart && t.Date <= monthEnd).ToList();
+            // 6. Son 6 Ayın Trend Məlumatları
+            var trendPoints = new List<TrendPointVM>();
+            var monthlyLabels = new List<string>();
+            var monthlyIncomeData = new List<decimal>();
+            var monthlyExpenseData = new List<decimal>();
 
-            var prevMonthStart = monthStart.AddMonths(-1);
-            var prevMonthEnd = monthStart.AddDays(-1);
-            var prevTxs = txs.Where(t => t.Date >= prevMonthStart && t.Date <= prevMonthEnd).ToList();
-
-            decimal income = currentTxs.Where(t => t.IsIncome).Sum(t => t.Amount);
-            decimal expense = currentTxs.Where(t => !t.IsIncome).Sum(t => t.Amount);
-
-            decimal prevIncome = prevTxs.Where(t => t.IsIncome).Sum(t => t.Amount);
-            decimal prevExpense = prevTxs.Where(t => !t.IsIncome).Sum(t => t.Amount);
-
-            return new ReportKpiVM
-            {
-                MonthlyIncome = income,
-                MonthlyExpense = expense,
-                MonthlySavings = income - expense,
-                IncomeChangePercent = prevIncome > 0 ? ((income - prevIncome) / prevIncome) * 100 : 0,
-                ExpenseChangePercent = prevExpense > 0 ? ((expense - prevExpense) / prevExpense) * 100 : 0,
-                SavingsChangePercent = (prevIncome - prevExpense) != 0 ? (((income - expense) - (prevIncome - prevExpense)) / Math.Abs(prevIncome - prevExpense)) * 100 : 0,
-                HealthScore = CalculateHealthScore(income, expense)
-            };
-        }
-
-        private TrendChartVM BuildTrend(List<ReportTransaction> txs, DateTime currentMonthStart)
-        {
-            var grouped = txs
-                .GroupBy(t => (t.Date.Year, t.Date.Month))
-                .ToDictionary(
-                    g => g.Key,
-                    g => new { Income = g.Where(x => x.IsIncome).Sum(x => x.Amount), Expense = g.Where(x => !x.IsIncome).Sum(x => x.Amount) }
-                );
-
-            var trendVM = new TrendChartVM();
+            var sixMonthsAgo = currentMonthStart.AddMonths(-5);
+            var trendTransactions = await _context.Transactions
+                .Where(t => !t.IsDeleted && t.UserId == userId && t.Date >= sixMonthsAgo)
+                .ToListAsync();
 
             for (int i = 5; i >= 0; i--)
             {
-                var targetMonth = currentMonthStart.AddMonths(-i);
-                var key = (targetMonth.Year, targetMonth.Month);
+                var mStart = currentMonthStart.AddMonths(-i);
+                var mEnd = mStart.AddMonths(1);
 
-                grouped.TryGetValue(key, out var data);
+                var mTxs = trendTransactions.Where(t => t.Date >= mStart && t.Date < mEnd).ToList();
 
-                trendVM.Points.Add(new TrendPointVM
+                decimal inc = 0;
+                decimal exp = 0;
+
+                foreach (var tx in mTxs)
                 {
-                    Label = $"{MonthNamesAz[targetMonth.Month - 1]} {targetMonth.Year}",
-                    Income = data?.Income ?? 0,
-                    Expense = data?.Expense ?? 0
-                });
+                    string fromCurr = string.IsNullOrEmpty(tx.Currency) ? "AZN" : tx.Currency.ToUpper();
+                    decimal converted = (fromCurr == targetCurrency)
+                        ? tx.Amount
+                        : await _currencyService.ConvertAsync(tx.Amount, fromCurr, targetCurrency);
+
+                    if (tx.IsIncome) inc += converted;
+                    else exp += converted;
+                }
+
+                string label = mStart.ToString("MMM");
+                trendPoints.Add(new TrendPointVM { Label = label, Income = inc, Expense = exp });
+                monthlyLabels.Add(label);
+                monthlyIncomeData.Add(inc);
+                monthlyExpenseData.Add(exp);
             }
 
-            return trendVM;
-        }
+            // 7. Həftənin Günlərinə Görə Xərclər
+            var daysOfWeek = new[] { "B.E", "Ç.Ə", "Ç", "C.A", "C", "Ş", "B" };
+            var dayExpenses = new decimal[7];
 
-        private CategoryChartVM BuildCategories(List<ReportTransaction> txs, DateTime monthStart, DateTime monthEnd)
+            foreach (var ct in convertedTransactions.Where(ct => !ct.Transaction.IsIncome))
+            {
+                int dayIndex = ((int)ct.Transaction.Date.DayOfWeek + 6) % 7;
+                dayExpenses[dayIndex] += ct.ConvertedAmount;
+            }
+
+            // 8. Yekun ReportVM
+            return new ReportVM
+            {
+                Filter = filterObj,
+                Kpi = new ReportKpiVM
+                {
+                    MonthlyIncome = monthlyIncome,
+                    MonthlyExpense = monthlyExpense,
+                    MonthlySavings = monthlySavings,
+                    HealthScore = CalculateHealthScore(monthlyIncome, monthlyExpense),
+
+                    IncomeChangePercent = CalculateChangePercent(prevIncome, monthlyIncome),
+                    ExpenseChangePercent = CalculateChangePercent(prevExpense, monthlyExpense),
+                    SavingsChangePercent = CalculateChangePercent(prevSavings, monthlySavings),
+
+                    NeedsAmount = monthlyExpense * 0.50m,
+                    WantsAmount = monthlyExpense * 0.30m,
+                    SavingsAmount = monthlyExpense * 0.20m
+                },
+                Categories = new CategoryChartVM
+                {
+                    CategoryNames = topCategoryList.Select(c => c.CategoryName).ToList(),
+                    CategoryExpenses = topCategoryList.Select(c => c.Amount).ToList(),
+                    TopCategories = topCategoryList
+                },
+                Trend = new TrendChartVM
+                {
+                    Points = trendPoints,
+                    MonthlyLabels = monthlyLabels,
+                    MonthlyIncomeData = monthlyIncomeData,
+                    MonthlyExpenseData = monthlyExpenseData
+                },
+                Weekdays = new WeekdayChartVM
+                {
+                    DayNames = daysOfWeek.ToList(),
+                    DayExpenses = dayExpenses.ToList()
+                }
+            };
+        }
+            public async Task<ReportVM> GetGuestReportDataAsync(
+    List<Transaction> guestTransactions,
+    ReportFilterVM? filter = null)
         {
-            var catGrouped = txs
-                .Where(t => t.Date >= monthStart && t.Date <= monthEnd && !t.IsIncome)
-                .GroupBy(t => t.CategoryName)
-                .Select(g => new { CategoryName = g.Key, Total = g.Sum(x => x.Amount) })
-                .OrderByDescending(x => x.Total)
+            var filterObj = filter ?? new ReportFilterVM();
+            var now = DateTime.Now;
+
+            string targetCurrency = string.IsNullOrWhiteSpace(filterObj.DisplayCurrency)
+                ? "AZN"
+                : filterObj.DisplayCurrency.ToUpper();
+
+            // 1. Session-dakı əməliyyatları götürürük
+            var transactions = guestTransactions
+                .Where(t => !t.IsDeleted)
+                .AsQueryable();
+
+            if (filterObj.StartDate.HasValue)
+            {
+                var start = filterObj.StartDate.Value.Date;
+                transactions = transactions.Where(t => t.Date >= start);
+            }
+
+            if (filterObj.EndDate.HasValue)
+            {
+                var end = filterObj.EndDate.Value.Date.AddDays(1).AddTicks(-1);
+                transactions = transactions.Where(t => t.Date <= end);
+            }
+
+            if (filterObj.CardId.HasValue && filterObj.CardId.Value > 0)
+                transactions = transactions.Where(t => t.CardId == filterObj.CardId.Value);
+
+            if (filterObj.CategoryId.HasValue && filterObj.CategoryId.Value > 0)
+                transactions = transactions.Where(t => t.CategoryId == filterObj.CategoryId.Value);
+
+            var transactionList = transactions.ToList();
+
+            // 2. Məbləğləri seçilmiş valyutaya çeviririk
+            var convertedTransactions = new List<ConvertedTransaction>();
+
+            foreach (var tx in transactionList)
+            {
+                string fromCurrency = string.IsNullOrEmpty(tx.Currency)
+                    ? "AZN"
+                    : tx.Currency.ToUpper();
+
+                decimal convertedAmount = fromCurrency == targetCurrency
+                    ? tx.Amount
+                    : await _currencyService.ConvertAsync(
+                        tx.Amount,
+                        fromCurrency,
+                        targetCurrency);
+
+                convertedTransactions.Add(new ConvertedTransaction
+                {
+                    Transaction = tx,
+                    ConvertedAmount = convertedAmount
+                });
+            }
+            // 3. Məbləğlərin Hesablanması
+            List<ConvertedTransaction> targetPeriodTxs;
+
+            if (filterObj.StartDate.HasValue || filterObj.EndDate.HasValue)
+            {
+                targetPeriodTxs = convertedTransactions;
+            }
+            else
+            {
+                var monthStart = new DateTime(now.Year, now.Month, 1);
+                var monthEnd = monthStart.AddMonths(1);
+
+                targetPeriodTxs = convertedTransactions
+                    .Where(ct => ct.Transaction.Date >= monthStart &&
+                                 ct.Transaction.Date < monthEnd)
+                    .ToList();
+            }
+
+            decimal monthlyIncome = targetPeriodTxs
+                .Where(ct => ct.Transaction.IsIncome)
+                .Sum(ct => ct.ConvertedAmount);
+
+            decimal monthlyExpense = targetPeriodTxs
+                .Where(ct => !ct.Transaction.IsIncome)
+                .Sum(ct => ct.ConvertedAmount);
+
+            decimal monthlySavings = monthlyIncome - monthlyExpense;
+
+            // 4. Əvvəlki ayın göstəriciləri
+            var currentMonthStart = new DateTime(now.Year, now.Month, 1);
+            var prevStart = currentMonthStart.AddMonths(-1);
+            var prevEnd = currentMonthStart.AddTicks(-1);
+
+            var prevTransactions = convertedTransactions
+                .Where(ct => ct.Transaction.Date >= prevStart &&
+                             ct.Transaction.Date <= prevEnd)
                 .ToList();
 
-            decimal totalExpense = catGrouped.Sum(x => x.Total);
+            decimal prevIncome = prevTransactions
+                .Where(ct => ct.Transaction.IsIncome)
+                .Sum(ct => ct.ConvertedAmount);
 
-            var vm = new CategoryChartVM
-            {
-                CategoryNames = catGrouped.Select(x => x.CategoryName).ToList(),
-                CategoryExpenses = catGrouped.Select(x => x.Total).ToList()
-            };
+            decimal prevExpense = prevTransactions
+                .Where(ct => !ct.Transaction.IsIncome)
+                .Sum(ct => ct.ConvertedAmount);
 
-            foreach (var item in catGrouped.Take(5))
-            {
-                vm.TopCategories.Add(new TopCategoryVM
+            decimal prevSavings = prevIncome - prevExpense;
+
+            // 5. Kateqoriyalara görə xərclər
+            decimal filterTotalExpense = convertedTransactions
+                .Where(ct => !ct.Transaction.IsIncome)
+                .Sum(ct => ct.ConvertedAmount);
+
+            var topCategoryList = convertedTransactions
+                .Where(ct => !ct.Transaction.IsIncome)
+                .GroupBy(ct => ct.Transaction.Category != null &&
+                               !string.IsNullOrWhiteSpace(ct.Transaction.Category.Name)
+                    ? ct.Transaction.Category.Name
+                    : "Kateqoriyasız")
+                .Select(g => new TopCategoryVM
                 {
-                    CategoryName = item.CategoryName,
-                    Amount = item.Total,
-                    Percentage = totalExpense > 0 ? (double)(item.Total / totalExpense * 100) : 0
+                    CategoryName = g.Key,
+                    Amount = g.Sum(ct => ct.ConvertedAmount),
+                    Percentage = filterTotalExpense > 0
+                        ? Math.Round((double)(g.Sum(ct => ct.ConvertedAmount) /
+                            filterTotalExpense * 100), 1)
+                        : 0
+                })
+                .OrderByDescending(c => c.Amount)
+                .ToList();
+            // 6. Son 6 ayın trend məlumatları
+            var trendPoints = new List<TrendPointVM>();
+            var monthlyLabels = new List<string>();
+            var monthlyIncomeData = new List<decimal>();
+            var monthlyExpenseData = new List<decimal>();
+
+            var sixMonthsAgo = currentMonthStart.AddMonths(-5);
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var mStart = currentMonthStart.AddMonths(-i);
+                var mEnd = mStart.AddMonths(1);
+
+                var mTxs = convertedTransactions
+                    .Where(ct => ct.Transaction.Date >= mStart &&
+                                 ct.Transaction.Date < mEnd)
+                    .ToList();
+
+                decimal inc = mTxs
+                    .Where(x => x.Transaction.IsIncome)
+                    .Sum(x => x.ConvertedAmount);
+
+                decimal exp = mTxs
+                    .Where(x => !x.Transaction.IsIncome)
+                    .Sum(x => x.ConvertedAmount);
+
+                string label = mStart.ToString("MMM");
+
+                trendPoints.Add(new TrendPointVM
+                {
+                    Label = label,
+                    Income = inc,
+                    Expense = exp
                 });
+
+                monthlyLabels.Add(label);
+                monthlyIncomeData.Add(inc);
+                monthlyExpenseData.Add(exp);
             }
 
-            return vm;
-        }
+            // 7. Həftənin günlərinə görə xərclər
+            var daysOfWeek = new[] { "B.E", "Ç.Ə", "Ç", "C.A", "C", "Ş", "B" };
+            var dayExpenses = new decimal[7];
 
-        private WeekdayChartVM BuildWeekdays(List<ReportTransaction> txs, DateTime monthStart, DateTime monthEnd)
-        {
-            var dayArray = new decimal[7];
-            var currentMonthExpenses = txs.Where(t => t.Date >= monthStart && t.Date <= monthEnd && !t.IsIncome);
-
-            foreach (var tx in currentMonthExpenses)
+            foreach (var ct in convertedTransactions.Where(x => !x.Transaction.IsIncome))
             {
-                int dayIndex = ((int)tx.Date.DayOfWeek + 6) % 7;
-                dayArray[dayIndex] += tx.Amount;
+                int dayIndex = ((int)ct.Transaction.Date.DayOfWeek + 6) % 7;
+                dayExpenses[dayIndex] += ct.ConvertedAmount;
             }
 
-            return new WeekdayChartVM
+            // 8. ReportVM qaytarırıq
+            return new ReportVM
             {
-                DayNames = DayNamesAz.ToList(),
-                DayExpenses = dayArray.ToList()
+                Filter = filterObj,
+
+                Kpi = new ReportKpiVM
+                {
+                    MonthlyIncome = monthlyIncome,
+                    MonthlyExpense = monthlyExpense,
+                    MonthlySavings = monthlySavings,
+                    HealthScore = CalculateHealthScore(monthlyIncome, monthlyExpense),
+
+                    IncomeChangePercent = CalculateChangePercent(prevIncome, monthlyIncome),
+                    ExpenseChangePercent = CalculateChangePercent(prevExpense, monthlyExpense),
+                    SavingsChangePercent = CalculateChangePercent(prevSavings, monthlySavings),
+
+                    NeedsAmount = monthlyExpense * 0.50m,
+                    WantsAmount = monthlyExpense * 0.30m,
+                    SavingsAmount = monthlyExpense * 0.20m
+                },
+
+                Categories = new CategoryChartVM
+                {
+                    CategoryNames = topCategoryList.Select(x => x.CategoryName).ToList(),
+                    CategoryExpenses = topCategoryList.Select(x => x.Amount).ToList(),
+                    TopCategories = topCategoryList
+                },
+
+                Trend = new TrendChartVM
+                {
+                    Points = trendPoints,
+                    MonthlyLabels = monthlyLabels,
+                    MonthlyIncomeData = monthlyIncomeData,
+                    MonthlyExpenseData = monthlyExpenseData
+                },
+
+                Weekdays = new WeekdayChartVM
+                {
+                    DayNames = daysOfWeek.ToList(),
+                    DayExpenses = dayExpenses.ToList()
+                }
             };
         }
 
-        private int CalculateHealthScore(decimal income, decimal expense)
+
+        private static decimal CalculateChangePercent(decimal previous, decimal current)
         {
-            if (income <= 0) return 20;
+            if (previous <= 0) return current > 0 ? 100 : 0;
+            return Math.Round(((current - previous) / previous) * 100, 1);
+        }
 
-            int score = 15;
-            if (income >= expense) score += 15;
+        private static int CalculateHealthScore(decimal income, decimal expense)
+        {
+            if (income <= 0) return 0;
+            var ratio = (expense / income) * 100;
+            if (ratio <= 50) return 90;
+            if (ratio <= 80) return 70;
+            if (ratio <= 100) return 50;
+            return 20;
+        }
 
-            decimal savingsRatio = (income - expense) / income;
-            if (savingsRatio > 0)
-            {
-                decimal cappedRatio = Math.Min(savingsRatio, 0.40m);
-                score += (int)((cappedRatio / 0.40m) * 35m);
-            }
-
-            decimal expenseRatio = expense / income;
-            if (expenseRatio < 1.0m)
-            {
-                score += (int)((1.0m - expenseRatio) * 35m);
-            }
-
-            return Math.Clamp(score, 0, 100);
+        private class ConvertedTransaction
+        {
+            public Transaction Transaction { get; set; } = null!;
+            public decimal ConvertedAmount { get; set; }
         }
     }
 }

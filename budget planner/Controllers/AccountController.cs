@@ -1,9 +1,9 @@
 ﻿using budget_planner.Models;
-using budget_planner.ViewModels;
 using budget_planner.Services;
+using budget_planner.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
 namespace budget_planner.Controllers
 {
     public class AccountController : Controller
@@ -11,14 +11,12 @@ namespace budget_planner.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailService;
-
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
         }
-
         // ==========================================
         // QEYDİYYAT (REGISTER)
         // ==========================================
@@ -27,7 +25,6 @@ namespace budget_planner.Controllers
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken] // Təhlükəsizlik üçün əlavə edildi
         public async Task<IActionResult> Register(RegisterVM model)
@@ -40,23 +37,18 @@ namespace budget_planner.Controllers
                 Email = model.Email,
                 FullName = model.FullName
             };
-
             var result = await _userManager.CreateAsync(user, model.Password);
-
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
             }
-
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
-
             return View(model);
         }
-
         // ==========================================
         // GİRİŞ (LOGIN)
         // ==========================================
@@ -66,7 +58,6 @@ namespace budget_planner.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken] // Təhlükəsizlik üçün əlavə edildi
         public async Task<IActionResult> Login(LoginVM model, string? returnUrl = null)
@@ -76,9 +67,7 @@ namespace budget_planner.Controllers
                 ViewData["ReturnUrl"] = returnUrl;
                 return View(model);
             }
-
             ApplicationUser? user = null;
-
             // Null reference xəbərdarlığının qarşısını almaq üçün yoxlama
             if (!string.IsNullOrEmpty(model.UsernameOrEmail) && model.UsernameOrEmail.Contains("@"))
             {
@@ -88,7 +77,6 @@ namespace budget_planner.Controllers
             {
                 user = await _userManager.FindByNameAsync(model.UsernameOrEmail);
             }
-
             // user və user.UserName üçün null yoxlamaları əlavə edildi
             if (user != null && !string.IsNullOrEmpty(user.UserName))
             {
@@ -103,12 +91,10 @@ namespace budget_planner.Controllers
                     return RedirectToAction("Index", "Home");
                 }
             }
-
             ModelState.AddModelError("", "İstifadəçi adı/E-poçt və ya şifrə yanlışdır!");
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
-
         // ==========================================
         // ÇIXIŞ (LOGOUT)
         // ==========================================
@@ -119,7 +105,6 @@ namespace budget_planner.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-
         // ==========================================
         // ŞİFRƏNİ UNUTMUSAN
         // ==========================================
@@ -128,7 +113,6 @@ namespace budget_planner.Controllers
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken] // Məsləhətdir ki, bura da əlavə olunsun
         public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
@@ -140,22 +124,18 @@ namespace budget_planner.Controllers
             {
                 return RedirectToAction("ForgotPasswordConfirmation");
             }
-
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token }, Request.Scheme);
 
             string emailBody = $"<h3>Şifrəni Sıfırlama</h3><p>Şifrənizi sıfırlamaq üçün <a href='{callbackUrl}'>BURAYA KLİKLƏYİN</a>.</p>";
             await _emailService.SendEmailAsync(model.Email, "Şifrənin Sıfırlanması", emailBody);
-
             return RedirectToAction("ForgotPasswordConfirmation");
         }
-
         [HttpGet]
         public IActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
-
         // ==========================================
         // YENİ ŞİFRƏ TƏYİN ET
         // ==========================================
@@ -168,29 +148,63 @@ namespace budget_planner.Controllers
             var model = new ResetPasswordVM { Email = email, Token = token };
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken] // Məsləhətdir ki, bura da əlavə olunsun
         public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
         {
             if (!ModelState.IsValid) return View(model);
-
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return RedirectToAction("Login");
-
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
-
             if (result.Succeeded)
             {
                 return RedirectToAction("Login");
             }
-
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-
             return View(model);
+        }
+        // ==========================================
+        // ŞİFRƏNİ DƏYİŞ
+        // ==========================================
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(
+            string CurrentPassword,
+            string NewPassword,
+            string ConfirmPassword)
+        {
+            if (NewPassword != ConfirmPassword)
+            {
+                TempData["Error"] = "Yeni şifrələr uyğun gəlmir.";
+                return RedirectToAction("Index", "Settings");
+            }
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+            var result = await _userManager.ChangePasswordAsync(
+                user,
+                CurrentPassword,
+                NewPassword);
+            if (result.Succeeded)
+            {
+                // Cookie-ni yenilə ki, istifadəçi sistemdən atılmasın
+                await _signInManager.RefreshSignInAsync(user);
+
+                TempData["Success"] = "Şifrəniz uğurla dəyişdirildi.";
+            }
+            else
+            {
+                TempData["Error"] = result.Errors.FirstOrDefault()?.Description
+                                    ?? "Şifrə dəyişdirilə bilmədi.";
+            }
+            return RedirectToAction("Index", "Settings");
         }
     }
 }

@@ -8,26 +8,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-
 namespace budget_planner.Controllers
 {
     public class GoalController : Controller
     {
         private readonly BudgetDbContext _context;
         private const string GuestGoalsKey = "Guest_Goals";
-
         // Defolt Dizayn Dəyərləri (Emerald Mövzusu ilə Sinxron)
         private const string DefaultCurrency = "AZN";
         private const string DefaultIcon = "bi-bullseye";
         private const string DefaultColor = "emerald";
-
         public GoalController(BudgetDbContext context)
         {
             _context = context;
         }
-
         #region --- 1. INDEX (LIST ALL GOALS) ---
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -56,15 +51,11 @@ namespace budget_planner.Controllers
             {
                 goals = GetGuestGoals();
             }
-
             var model = new GoalsVM { Goals = goals };
             return View(model);
         }
-
         #endregion
-
         #region --- 2. CREATE (GET & POST) ---
-
         [HttpGet]
         public IActionResult Create()
         {
@@ -76,7 +67,6 @@ namespace budget_planner.Controllers
             };
             return View(defaultGoal);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GoalVM model)
@@ -87,7 +77,6 @@ namespace budget_planner.Controllers
             model.Currency = string.IsNullOrEmpty(model.Currency) ? DefaultCurrency : model.Currency;
             model.IconClass = string.IsNullOrEmpty(model.IconClass) ? DefaultIcon : model.IconClass;
             model.ColorClass = string.IsNullOrEmpty(model.ColorClass) ? DefaultColor : model.ColorClass;
-
             if (IsUserAuthenticated())
             {
                 var userId = GetCurrentUserId();
@@ -102,7 +91,6 @@ namespace budget_planner.Controllers
                     Deadline = model.Deadline,
                     UserId = userId
                 };
-
                 _context.Goals.Add(goal);
                 await _context.SaveChangesAsync();
             }
@@ -110,24 +98,18 @@ namespace budget_planner.Controllers
             {
                 var guestGoals = GetGuestGoals();
                 model.Id = guestGoals.Any() ? guestGoals.Max(g => g.Id) + 1 : 1;
-
                 guestGoals.Add(model);
                 SaveGuestGoals(guestGoals);
             }
-
             TempData["SuccessMessage"] = "Yeni maliyyə hədəfiniz uğurla yaradıldı!";
             return RedirectToAction(nameof(Index));
         }
-
         #endregion
-
         #region --- 3. EDIT (GET & POST) ---
-
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             GoalVM model = null;
-
             if (IsUserAuthenticated())
             {
                 var userId = GetCurrentUserId();
@@ -142,26 +124,20 @@ namespace budget_planner.Controllers
                 var guestGoals = GetGuestGoals();
                 model = guestGoals.FirstOrDefault(g => g.Id == id);
             }
-
             if (model == null) return NotFound();
-
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, GoalVM model)
         {
             if (id != model.Id) return NotFound();
-
             if (!ModelState.IsValid) return View(model);
-
             if (IsUserAuthenticated())
             {
                 var userId = GetCurrentUserId();
                 var goal = await _context.Goals.FirstOrDefaultAsync(g => g.Id == id && g.UserId == userId);
                 if (goal == null) return NotFound();
-
                 goal.Name = model.Name;
                 goal.TargetAmount = model.TargetAmount;
                 goal.CurrentAmount = model.CurrentAmount;
@@ -169,7 +145,6 @@ namespace budget_planner.Controllers
                 goal.IconClass = model.IconClass;
                 goal.ColorClass = model.ColorClass;
                 goal.Deadline = model.Deadline;
-
                 _context.Goals.Update(goal);
                 await _context.SaveChangesAsync();
             }
@@ -182,20 +157,15 @@ namespace budget_planner.Controllers
                 guestGoals[index] = model;
                 SaveGuestGoals(guestGoals);
             }
-
             TempData["SuccessMessage"] = "Hədəf uğurla yeniləndi!";
             return RedirectToAction(nameof(Index));
         }
-
         #endregion
-
         #region --- 4. DETAILS ---
-
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
             GoalVM model = null;
-
             if (IsUserAuthenticated())
             {
                 var userId = GetCurrentUserId();
@@ -211,14 +181,10 @@ namespace budget_planner.Controllers
                 var guestGoals = GetGuestGoals();
                 model = guestGoals.FirstOrDefault(g => g.Id == id);
             }
-
             if (model == null) return NotFound();
-
             return View(model);
         }
-
         #endregion
-
         #region --- 5. DELETE ---
 
         [HttpPost]
@@ -250,31 +216,24 @@ namespace budget_planner.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
         #endregion
-
         #region --- PRIVATE HELPER METHODS (KODU TƏMİZ VƏ DRY SAXLAMAQ ÜÇÜN) ---
-
         private bool IsUserAuthenticated()
         {
             return User.Identity != null && User.Identity.IsAuthenticated;
         }
-
         private string GetCurrentUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
-
         private List<GoalVM> GetGuestGoals()
         {
             return HttpContext.Session.GetObject<List<GoalVM>>(GuestGoalsKey) ?? new List<GoalVM>();
         }
-
         private void SaveGuestGoals(List<GoalVM> goals)
         {
             HttpContext.Session.SetObject(GuestGoalsKey, goals);
         }
-
         private static GoalVM MapToGoalVM(Goal goal)
         {
             return new GoalVM
@@ -289,7 +248,6 @@ namespace budget_planner.Controllers
                 Deadline = goal.Deadline
             };
         }
-
         #endregion
     }
 }

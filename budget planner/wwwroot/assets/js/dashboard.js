@@ -112,11 +112,67 @@ function openDeleteCardModal(cardId, cardName) {
     }
 }
 
+// Global confirmDelete (Köhnə inline onclick bağlamaları üçün)
+function confirmDelete(e, deleteUrl, itemName) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (window.Swal) {
+        Swal.fire({
+            title: 'Silmək istədiyinizə əminsiniz?',
+            text: `"${itemName}" əməliyyatı həmişəlik silinəcək!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Bəli, sil!',
+            cancelButtonText: 'Ləğv et'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = deleteUrl;
+            }
+        });
+    } else {
+        if (confirm(`"${itemName}" əməliyyatını silməyə əminsiniz?`)) {
+            window.location.href = deleteUrl;
+        }
+    }
+    return false;
+}
+
+// Inline confirmDeleteUpcomingPayment funksiyası (Qlobal)
+window.confirmDeleteUpcomingPayment = function (e, formId, itemName) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const form = document.getElementById(formId);
+    if (!form) return false;
+
+    if (window.Swal) {
+        Swal.fire({
+            title: 'Silmək istədiyinizə əminsiniz?',
+            text: `"${itemName}" ödənişi həmişəlik silinəcək!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Bəli, sil!',
+            cancelButtonText: 'Ləğv et'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    } else {
+        if (confirm(`"${itemName}" ödənişini silməyə əminsiniz?`)) {
+            form.submit();
+        }
+    }
+    return false;
+};
+
 // ==========================================
 // SƏHİFƏ YÜKLƏNDİKDƏ İŞƏ DÜŞƏN PROSESLƏR
 // ==========================================
 document.addEventListener("DOMContentLoaded", function () {
-    // VALYUTA İNİSİALİZASİYASI
+    // 1. VALYUTA İNİSİALİZASİYASI
     const savedCurrency = localStorage.getItem("globalCurrency") || "AZN";
     const currencySelect = document.getElementById("globalCurrency");
     if (currencySelect) {
@@ -124,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     updateAmounts(savedCurrency);
 
-    // MODALLARIN SIFIRLANMASI
+    // 2. MODALLARIN SIFIRLANMASI
     const modals = document.querySelectorAll('.modal');
     modals.forEach(modal => {
         modal.addEventListener('hidden.bs.modal', function () {
@@ -144,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // DARK MODE & İKON
+    // 3. DARK MODE & İKON
     const themeToggleBtn = document.getElementById("theme-toggle");
     const themeIcon = document.getElementById("theme-icon");
     const savedTheme = localStorage.getItem("theme");
@@ -182,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // QRAFİK DATA (CHART.JS - DOUGHNUT)
+    // 4. QRAFİK DATA (CHART.JS - DOUGHNUT)
     const canvas = document.getElementById('expenseChart');
     if (canvas && typeof Chart !== 'undefined') {
 
@@ -238,86 +294,109 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ==========================================
-    // ÖDƏNİŞ ÜSULU (KART) DƏYİŞDİKDƏ İŞƏ DÜŞƏN FUNKSİYA
-    // ==========================================
+    // 5. ÖDƏNİŞ ÜSULU DƏYİŞDİKDƏ İŞƏ DÜŞƏN PROSES
     const paymentSelects = document.querySelectorAll('select[name="PaymentMethod"], select[name="CardId"]');
 
     paymentSelects.forEach(select => {
         select.addEventListener('change', function () {
-            // Seçilmiş option-u tapırıq
             const selectedOption = this.options[this.selectedIndex];
             const cardCurrency = selectedOption.getAttribute('data-currency');
-
-            // Eyni modalın içindəki valyuta xanasını tapırıq
             const modalBody = this.closest('.modal-body');
 
-            // Əgər modal tapılarsa, içindəki .transaction-currency axtarırıq
             if (modalBody) {
                 const currencyDropdown = modalBody.querySelector('.transaction-currency');
-
-                // Əgər kartın valyutası varsa, dropdown-u o valyutaya dəyişirik
                 if (cardCurrency && currencyDropdown) {
                     currencyDropdown.value = cardCurrency;
                 }
             }
         });
     });
-});
 
-// ==========================================
-// DATEPICKER (FLATPICKR) İNİSİALİZASİYASI
-// ==========================================
-document.addEventListener("DOMContentLoaded", function () {
-    // Təqvimin işə salınması
-    flatpickr(".datepicker", {
-        locale: "az",               // Azərbaycan dili
-        dateFormat: "Y-m-d",        // Arxa planda serverə gedən gizli format (C# üçün ideal)
-        altInput: true,             // İstifadəçiyə fərqli format göstərməyə icazə ver
-        altFormat: "d.m.Y",         // Ekranda görünən format (26.07.2026)
-        allowInput: true            // Əllə yazmağa icazə ver
-    });
-});
+    // 6. FLATPICKR İNİSİALİZASİYASI
+    if (typeof flatpickr !== 'undefined') {
+        flatpickr(".datepicker", {
+            locale: "az",
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d.m.Y",
+            allowInput: true
+        });
+    }
 
-// ==========================================
-// SWEETALERT2 İLƏ SİLMƏNİ TƏSDİQLƏMƏ
-// ==========================================
-function confirmDelete(e, deleteUrl, itemName) {
-    e.preventDefault();
-    Swal.fire({
-        title: 'Silmək istədiyinizə əminsiniz?',
-        text: `"${itemName}" əməliyyatı kalıcı olaraq silinəcək!`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Bəli, sil!',
-        cancelButtonText: 'Ləğv et'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = deleteUrl;
+    // Dynamic düymələr daxil olmaqla bütün klikləri dinləyirik:
+    document.addEventListener('click', function (e) {
+        // Kliklənən element və ya onun daxilindəki icon '.btn-delete-payment' klassına sahibdirmi?
+        const btn = e.target.closest('.btn-delete-payment');
+
+        if (btn) {
+            e.preventDefault();
+
+            const formId = btn.getAttribute('data-form-id');
+            const itemName = btn.getAttribute('data-title') || "Bu əməliyyat";
+            const form = document.getElementById(formId);
+
+            if (!form) {
+                console.error("Form tapılmadı! Axtarılan ID:", formId);
+                return;
+            }
+
+            if (window.Swal) {
+                Swal.fire({
+                    title: 'Silmək istədiyinizə əminsiniz?',
+                    text: `"${itemName}" həmişəlik silinəcək!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Bəli, sil!',
+                    cancelButtonText: 'Ləğv et'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            } else {
+                if (confirm(`"${itemName}" silinməsinə əminsiniz?`)) {
+                    form.submit();
+                }
+            }
         }
     });
-    return false;
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const deleteButtons = document.querySelectorAll('button[data-bs-target^="#deleteModal-"]');
-
-    deleteButtons.forEach(button => {
+    // 8. MODAL DÜYMƏLƏRİ İLƏ SİLMƏ (Köhnə data-bs-target yapısı üçün)
+    const modalDeleteButtons = document.querySelectorAll('button[data-bs-target^="#deleteModal-"]');
+    modalDeleteButtons.forEach(button => {
         button.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
 
             const row = button.closest("tr");
             const titleElement = row ? row.querySelector("td:first-child span.fw-semibold") : null;
-            const itemName = titleElement ? titleElement.innerText.trim() : "Bu ödəniş";
+            const itemName = titleElement ? titleElement.innerText.trim() : "Bu əməliyyat";
 
             const modalId = button.getAttribute("data-bs-target");
             const form = document.querySelector(`${modalId} form`);
 
-            if (form && form.action) {
-                confirmDelete(e, form.action, itemName);
+            if (form) {
+                if (window.Swal) {
+                    Swal.fire({
+                        title: 'Silmək istədiyinizə əminsiniz?',
+                        text: `"${itemName}" həmişəlik silinəcək!`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Bəli, sil!',
+                        cancelButtonText: 'Ləğv et'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                } else {
+                    if (confirm(`"${itemName}" silinməsinə əminsiniz?`)) {
+                        form.submit();
+                    }
+                }
             }
         });
     });

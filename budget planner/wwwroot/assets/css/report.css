@@ -1,56 +1,58 @@
 ﻿/* ==========================================================================
-   1. ƏSAS DƏYİŞƏNLƏR (MAMIR YAŞILI VƏ SİYAN FINTECH PALİTRASI)
+   1. ƏSAS DƏYİŞƏNLƏR (ULTRA PREMIUM LUXURY QIZILI VƏ DƏRİN QARA PALİTRA)
    ========================================================================== */
 :root {
-    --primary-green: #0b4635; /* Tünd Yaşıl / Mamır Yaşılı */
-    --primary-green-hover: #0f5944; /* Tünd Yaşıl Hover */
-    --gold-color: #00a8cc; /* Maliyyə Məsləhəti Parlayan Siyan */
-    --gold-hover: #0080a0; /* Siyan Hover */
-    --header-green: #082d22; /* Cədvəl/Kart Başlığı üçün Tünd Yaşıl */
-    --bg-hover-light: rgba(0, 168, 204, 0.08); /* Yumşaq Siyan Hover */
-    --border-light: #e2e8f0;
-    --input-border: #cbd5e1;
-    --purple-bg-light: rgba(0, 168, 204, 0.12);
-    --purple-border-light: rgba(0, 168, 204, 0.3);
+    --primary-black: #0f172a; /* Dərin Tünd Qara / Navy */
+    --secondary-black: #1e293b; /* Tünd Qrafit / Başlıq Fonu */
+    --gold-accent: #d4af37; /* Premium Qızılı / Amber */
+    --gold-hover: #fbbf24; /* Hover üçün Parlaq Qızılı */
+    --gold-glow: rgba(212, 175, 55, 0.25);
+    --hover-gold-tint: rgba(212, 175, 55, 0.1); /* Yumşaq Qızılı Hover Tint */
+    --header-black: #020617; /* Kalendar Başlıq Fonu */
+
+    --border-light: rgba(212, 175, 55, 0.35); /* Zərif Qızılı Haşiyə */
+    --input-border: rgba(212, 175, 55, 0.3);
+    --text-primary: #0f172a; /* Dərin Tünd Mətn */
+    --text-muted: #64748b; /* Neytral Boz Mətn */
 }
 
 /* ==========================================================================
    2. REPORT CARD & GENERAL STYLES
    ========================================================================== */
 .report-card {
-    background-color: var(--bs-card-bg, #ffffff);
-    border: 1px solid var(--bs-border-color, #e5e7eb);
-    border-radius: 20px; /* Digər kartlarla tam harmonik olması üçün 20px */
-    padding: 16px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.04) 0%, rgba(212, 175, 55, 0.02) 100%) !important;
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 20px;
     transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
 }
 
     .report-card:hover {
-        border-color: var(--gold-color); /* Hoverdə Siyan rəngli zərif haşiyə */
+        border-color: var(--gold-accent);
         transform: translateY(-3px);
-        box-shadow: 0 12px 30px rgba(0, 168, 204, 0.12); /* Siyan kölgə effekti */
+        box-shadow: 0 12px 30px rgba(212, 175, 55, 0.18);
     }
 
 .kpi-title {
-    color: var(--bs-secondary-color, #6b7280);
+    color: var(--text-muted);
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 
 .kpi-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--bs-body-color, #111827);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
     margin-top: 4px;
 }
 
 .chart-title {
-    color: var(--bs-body-color, #111827);
-    font-weight: 700;
-    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 800;
+    font-size: 1rem;
 }
 
 .chart-container {
@@ -74,227 +76,286 @@
 }
 
     .health-score-text .score {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         font-weight: 800;
+        color: var(--gold-accent);
         line-height: 1;
     }
 
 /* ==========================================================================
-   3. İNPUTLAR, SELEKTLƏR VƏ DÜYMƏLƏR (REPORT SƏHİFƏSİ ÜÇÜN)
+   3. İNPUTLAR, SELEKTLƏR VƏ DÜYMƏLƏR
    ========================================================================== */
 .report-card .form-control,
 .report-card .form-select {
-    background-color: var(--bs-body-bg) !important;
-    color: var(--bs-body-color) !important;
+    background-color: var(--bs-body-bg, #ffffff) !important;
+    color: var(--text-primary) !important;
     border: 1px solid var(--input-border) !important;
     font-size: 0.875rem;
-    border-radius: 14px !important;
-    height: 48px;
+    border-radius: 12px !important;
+    height: 46px;
     box-shadow: none !important;
     transition: all 0.2s ease;
 }
 
-    /* İnputlar fokuslananda CYAN/SİYAN glow effekti */
+    .report-card .form-control:hover,
+    .report-card .form-select:hover {
+        border-color: var(--gold-accent) !important;
+        background-color: var(--hover-gold-tint) !important;
+    }
+
     .report-card .form-control:focus,
     .report-card .form-select:focus {
-        border-color: var(--gold-color) !important;
-        box-shadow: 0 0 0 0.25rem rgba(0, 168, 204, 0.25) !important;
+        border-color: var(--gold-accent) !important;
+        box-shadow: 0 0 0 0.25rem var(--gold-glow) !important;
     }
 
 /* ==========================================================================
-   4. FLATPICKR TƏQVİMİ
+   4. FLATPICKR TƏQVİMİ (TAM QARA VƏ QIZILI MÖVZU)
    ========================================================================== */
 .flatpickr-calendar {
-    border: 1px solid rgba(0, 168, 204, 0.3) !important;
+    border: 1px solid var(--gold-accent) !important;
     border-radius: 18px !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
     overflow: hidden;
-    background: var(--bs-card-bg, #ffffff) !important;
+    background: #ffffff !important;
 }
 
-/* Başlıq Hissəsi - Tünd Mamır Yaşılı */
+/* Başlıq Hissəsi (Dərin Qara) */
 .flatpickr-months,
 .flatpickr-weekdays,
 .flatpickr-months .flatpickr-month {
-    background: var(--header-green, #082d22) !important;
+    background: var(--header-black) !important;
     color: #ffffff !important;
 }
 
-    /* Başlıqdakı Yazılar və Oxlar - Siyan */
-    span.flatpickr-weekday,
-    .flatpickr-current-month .flatpickr-monthDropdown-months,
-    .flatpickr-current-month input.cur-year,
-    .flatpickr-months .flatpickr-prev-month svg,
-    .flatpickr-months .flatpickr-next-month svg {
-        color: #00a8cc !important;
-        fill: #00a8cc !important;
-        font-weight: 600;
-    }
-
-/* ==========================================================
-   FLATPICKR COMPLETE COLOR OVERRIDE
-   ========================================================== */
-
-/* Normal gün */
-.flatpickr-day {
-    border-radius: 10px;
-    transition: all .15s ease;
+/* Ay və İl Seçimi */
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    background: transparent !important;
+    color: var(--gold-accent) !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    padding: 2px 6px !important;
 }
 
-    /* Hover */
+    .flatpickr-current-month .flatpickr-monthDropdown-months:hover,
+    .flatpickr-current-month .flatpickr-monthDropdown-months:focus {
+        background: rgba(212, 175, 55, 0.15) !important;
+        color: var(--gold-accent) !important;
+    }
+
+    .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
+        background-color: var(--header-black) !important;
+        color: var(--gold-accent) !important;
+    }
+
+/* Həftə günləri və Oxlar */
+span.flatpickr-weekday {
+    background: var(--header-black) !important;
+    color: var(--gold-accent) !important;
+    font-weight: 700 !important;
+}
+
+.flatpickr-current-month input.cur-year,
+.flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-months .flatpickr-next-month svg {
+    color: var(--gold-accent) !important;
+    fill: var(--gold-accent) !important;
+    font-weight: 700 !important;
+}
+
+/* Günlər Şəbəkəsi */
+.flatpickr-days,
+.dayContainer {
+    background: #ffffff !important;
+}
+
+.flatpickr-day {
+    color: #0f172a !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    border: 1px solid transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: all 0.15s ease;
+}
+
+    /* Hover Və Fokus Halları */
     .flatpickr-day:hover,
-    .flatpickr-day:focus {
-        background: #e6f8fc !important;
-        border-color: #e6f8fc !important;
-        color: #111827 !important;
-    }
-
-    /* Bugünkü gün */
-    .flatpickr-day.today {
-        border: 2px solid #00a8cc !important;
-        color: #111827 !important;
-    }
-
-        /* Bugünkü gün hover */
-        .flatpickr-day.today:hover,
-        .flatpickr-day.today:focus {
-            background: #e6f8fc !important;
-            border-color: #00a8cc !important;
-            color: #111827 !important;
-        }
-
-    /* Seçilmiş gün */
-    .flatpickr-day.selected,
-    .flatpickr-day.startRange,
-    .flatpickr-day.endRange {
-        background: #00a8cc !important;
-        border-color: #00a8cc !important;
-        color: #fff !important;
-    }
-
-        /* Seçilmiş gün hover */
-        .flatpickr-day.selected:hover,
-        .flatpickr-day.selected:focus,
-        .flatpickr-day.startRange:hover,
-        .flatpickr-day.startRange:focus,
-        .flatpickr-day.endRange:hover,
-        .flatpickr-day.endRange:focus {
-            background: #00a8cc !important;
-            border-color: #00a8cc !important;
-            color: #fff !important;
-        }
-
-    /* Range hissəsi */
-    .flatpickr-day.inRange,
-    .flatpickr-day.inRange:hover,
-    .flatpickr-day.inRange:focus {
-        background: #e6f8fc !important;
-        border-color: #e6f8fc !important;
-        color: #111827 !important;
+    .flatpickr-day:focus,
+    .flatpickr-day:focus-visible,
+    .flatpickr-day:active,
+    .flatpickr-day.prevMonthDay:hover,
+    .flatpickr-day.nextMonthDay:hover {
+        background: var(--hover-gold-tint) !important;
+        border-color: var(--gold-accent) !important;
+        color: #121214 !important;
+        outline: none !important;
         box-shadow: none !important;
     }
 
-    /* Range başlanğıcı və sonu */
+    /* Bugünkü Gün */
+    .flatpickr-day.today {
+        border: 2px solid var(--gold-accent) !important;
+        color: var(--gold-hover) !important;
+        background: var(--hover-gold-tint) !important;
+    }
+
+        .flatpickr-day.today:hover,
+        .flatpickr-day.today:focus {
+            background: rgba(212, 175, 55, 0.2) !important;
+            border-color: var(--gold-accent) !important;
+        }
+
+    /* Seçilmiş Gün (Gradient Qızılı) */
+    .flatpickr-day.selected,
     .flatpickr-day.startRange,
     .flatpickr-day.endRange {
-        background: #00a8cc !important;
+        background: linear-gradient(135deg, #fbbf24 0%, #d4af37 100%) !important;
+        border-color: var(--gold-accent) !important;
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        outline: none !important;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35) !important;
     }
 
-    /* Keçən/Gələn ayın günləri */
-    .flatpickr-day.prevMonthDay:hover,
-    .flatpickr-day.nextMonthDay:hover {
-        background: #e6f8fc !important;
-        color: #999 !important;
+        .flatpickr-day.selected:hover,
+        .flatpickr-day.selected:focus,
+        .flatpickr-day.startRange:hover,
+        .flatpickr-day.endRange:hover {
+            background: var(--gold-hover) !important;
+            border-color: var(--gold-hover) !important;
+            color: #ffffff !important;
+        }
+
+    /* Tarix Aralığı (In Range) */
+    .flatpickr-day.inRange,
+    .flatpickr-day.inRange:hover,
+    .flatpickr-day.inRange:focus {
+        background: var(--hover-gold-tint) !important;
+        border-color: var(--hover-gold-tint) !important;
+        color: var(--gold-hover) !important;
+        outline: none !important;
+        box-shadow: none !important;
     }
 
-    /* Disabled */
+    /* Passiv Günlər */
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay {
+        color: #94a3b8 !important;
+    }
+
     .flatpickr-day.flatpickr-disabled,
     .flatpickr-day.flatpickr-disabled:hover {
         background: transparent !important;
         color: #cbd5e1 !important;
     }
 
-    /* Keyboard focus */
-    .flatpickr-day:focus-visible {
-        outline: none !important;
+/* ==========================================================================
+   5. DARK MODE DƏSTƏYİ (LUXURY BLACK & GOLD)
+   ========================================================================== */
+[data-bs-theme="dark"] .report-card,
+[data-theme="dark"] .report-card,
+body.dark-mode .report-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(2, 6, 23, 0.95) 100%) !important;
+    border-color: var(--border-light) !important;
+}
+
+    [data-bs-theme="dark"] .report-card:hover,
+    [data-theme="dark"] .report-card:hover,
+    body.dark-mode .report-card:hover {
+        border-color: var(--gold-accent) !important;
+        box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2) !important;
     }
 
-/* ==========================================================================
-   5. FLATPICKR DARK MODE OVERRIDE
-   ========================================================================== */
+[data-bs-theme="dark"] .kpi-title,
+[data-theme="dark"] .kpi-title,
+body.dark-mode .kpi-title {
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .kpi-value,
+[data-bs-theme="dark"] .chart-title,
+[data-theme="dark"] .kpi-value,
+[data-theme="dark"] .chart-title,
+body.dark-mode .kpi-value,
+body.dark-mode .chart-title {
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .health-score-text .score,
+[data-theme="dark"] .health-score-text .score,
+body.dark-mode .health-score-text .score {
+    color: var(--gold-accent) !important;
+}
+
+/* Dark Mode Inputs & Selects */
+[data-bs-theme="dark"] .report-card .form-control,
+[data-bs-theme="dark"] .report-card .form-select,
+[data-theme="dark"] .report-card .form-control,
+[data-theme="dark"] .report-card .form-select,
+body.dark-mode .report-card .form-control,
+body.dark-mode .report-card .form-select {
+    background-color: rgba(2, 6, 23, 0.85) !important;
+    color: #f8fafc !important;
+    border-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+    [data-bs-theme="dark"] .report-card .form-select option,
+    [data-theme="dark"] .report-card .form-select option,
+    body.dark-mode .report-card .form-select option {
+        background-color: #020617 !important;
+        color: #f8fafc !important;
+    }
+
+/* Dark Mode Kalendar */
+[data-bs-theme="dark"] .flatpickr-calendar,
 [data-theme="dark"] .flatpickr-calendar,
 body.dark-mode .flatpickr-calendar {
-    background: #151c28 !important;
-    border-color: #1e293b !important;
+    background: linear-gradient(145deg, #0f172a 0%, #020617 100%) !important;
+    border-color: var(--gold-accent) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.2) !important;
 }
 
+[data-bs-theme="dark"] .flatpickr-days,
+[data-bs-theme="dark"] .dayContainer,
+[data-theme="dark"] .flatpickr-days,
+[data-theme="dark"] .dayContainer,
+body.dark-mode .flatpickr-days,
+body.dark-mode .dayContainer {
+    background: transparent !important;
+}
+
+[data-bs-theme="dark"] .flatpickr-day,
 [data-theme="dark"] .flatpickr-day,
 body.dark-mode .flatpickr-day {
-    color: #e2e8f0 !important;
+    color: #f8fafc !important;
+    outline: none !important;
 }
 
+    [data-bs-theme="dark"] .flatpickr-day:hover,
+    [data-bs-theme="dark"] .flatpickr-day:focus,
     [data-theme="dark"] .flatpickr-day:hover,
     [data-theme="dark"] .flatpickr-day:focus,
     body.dark-mode .flatpickr-day:hover,
     body.dark-mode .flatpickr-day:focus {
-        background: #1f3b45 !important;
-        border-color: #1f3b45 !important;
-        color: #fff !important;
-    }
-
-    [data-theme="dark"] .flatpickr-day.inRange,
-    [data-theme="dark"] .flatpickr-day.inRange:hover,
-    body.dark-mode .flatpickr-day.inRange,
-    body.dark-mode .flatpickr-day.inRange:hover {
-        background: #1f3b45 !important;
-        border-color: #1f3b45 !important;
-        color: #fff !important;
-    }
-
-    [data-theme="dark"] .flatpickr-day.selected,
-    [data-theme="dark"] .flatpickr-day.selected:hover,
-    body.dark-mode .flatpickr-day.selected,
-    body.dark-mode .flatpickr-day.selected:hover {
-        background: #00a8cc !important;
-        border-color: #00a8cc !important;
-        color: #fff !important;
-    }
-/* ==========================================================================
-   DARK MODE FONT VƏ KART ARXA FON DÜZƏLİŞİ
-   ========================================================================== */
-
-[data-theme="dark"] .report-card,
-body.dark-mode .report-card {
-    background-color: #1a222e !important; /* Kartların arxa fonunu tünd göy/boz edir */
-    border-color: #2a3447 !important;
-}
-
-    /* Kart daxilindəki bütün başılıqlar və mətnlər üçün rəng düzəlişi */
-    [data-theme="dark"] .report-card .kpi-title,
-    [data-theme="dark"] .report-card .chart-title,
-    [data-theme="dark"] .report-card .kpi-value,
-    [data-theme="dark"] .report-card label,
-    body.dark-mode .report-card .kpi-title,
-    body.dark-mode .report-card .chart-title,
-    body.dark-mode .report-card .kpi-value,
-    body.dark-mode .report-card label {
-        color: #e2e8f0 !important; /* Mətnləri tam aydın görünən açıq boz/ağ edir */
-    }
-
-    /* Solğun/mərkəzi mətnlərin oxunması üçün */
-    [data-theme="dark"] .report-card small,
-    [data-theme="dark"] .report-card .text-muted,
-    body.dark-mode .report-card small,
-    body.dark-mode .report-card .text-muted {
-        color: #94a3b8 !important;
-    }
-
-    /* İnputlar və Selektlər üçün Dark Mode */
-    [data-theme="dark"] .report-card .form-control,
-    [data-theme="dark"] .report-card .form-select,
-    body.dark-mode .report-card .form-control,
-    body.dark-mode .report-card .form-select {
-        background-color: #0f172a !important;
+        background: rgba(212, 175, 55, 0.2) !important;
         color: #ffffff !important;
-        border-color: #334155 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    [data-bs-theme="dark"] .flatpickr-day.inRange,
+    [data-theme="dark"] .flatpickr-day.inRange,
+    body.dark-mode .flatpickr-day.inRange {
+        background: rgba(212, 175, 55, 0.15) !important;
+        color: #ffffff !important;
+    }
+
+    [data-bs-theme="dark"] .flatpickr-day.prevMonthDay,
+    [data-bs-theme="dark"] .flatpickr-day.nextMonthDay,
+    [data-theme="dark"] .flatpickr-day.prevMonthDay,
+    [data-theme="dark"] .flatpickr-day.nextMonthDay,
+    body.dark-mode .flatpickr-day.prevMonthDay,
+    body.dark-mode .flatpickr-day.nextMonthDay {
+        color: #64748b !important;
     }

@@ -1,0 +1,256 @@
+﻿@model budget_planner.ViewModels.SettingsVM
+@{
+    ViewData["Title"] = "Parametrlər";
+    bool isAuthenticated = User.Identity?.IsAuthenticated ?? false; 
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/assets/css/setting.css" asp-append-version="true" />
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- 👤 HESAB MƏLUMATLARI -->
+            <div class="card settings-card mb-4 position-relative">
+                @if (!isAuthenticated)
+                {
+                    <!-- Qonaqlar üçün ekranı bulantılı (blur) edən overlay -->
+                    <div class="guest-overlay position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+                        <i class="fas fa-user-lock fa-3x guest-icon mb-3"></i>
+                        <h5 class="guest-title mb-2">Profil üçün daxil olun</h5>
+                        <p class="guest-text text-center small px-3 mb-4">Ad, soyad və profil şəkli kimi fərdi məlumatları idarə etmək üçün hesabınıza giriş edin.</p>
+                        <div class="d-flex gap-2">
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-theme-success px-4 py-2 fw-semibold shadow-sm">
+                                <i class="fas fa-sign-in-alt me-2"></i> Daxil ol
+                            </a>
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-theme-outline px-4 py-2 fw-semibold shadow-sm">
+                                Qeydiyyat
+                            </a>
+                        </div>
+                    </div>
+                }
+                <div class="card-header settings-card-header">
+                    <h4 class="mb-0 settings-card-title">Profil Parametrləri</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Settings" asp-action="SaveSettings" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()   
+                        <!-- Yalnız Model səviyyəsindəki xətalar üçün -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="ProfilePicturePath" />
+                        
+                        <!-- Avatar Seçimi -->
+                        <div class="mb-4 text-center">
+                            <img id="avatarPreview" 
+                                 src="@(string.IsNullOrEmpty(Model?.ProfilePicturePath) ? "/uploads/avatars/default-avatar.png" : Model.ProfilePicturePath)" 
+                                 alt="Profile Picture" 
+                                 class="avatar-img rounded-circle mb-3"
+                                 width="120" height="120" 
+                                 loading="lazy" 
+                                 decoding="async">        
+                            <div>
+                                @if (isAuthenticated)
+                                {
+                                    <label for="avatarInput" class="btn btn-outline-secondary btn-sm">
+                                        Şəkli Dəyiş
+                                    </label>
+                                    <input type="file" id="avatarInput" name="AvatarFile" class="d-none" accept="image/*" />
+                                }
+                            </div>
+                        </div>
+                        
+                        <!-- Ad və Soyad -->
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label custom-label small"></label>
+                            <input asp-for="FullName" class="form-control custom-input" readonly="@(!isAuthenticated)" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label custom-label small"></label>
+                            <input asp-for="Email" class="form-control custom-input" readonly="@(!isAuthenticated)" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>        
+                        
+                        <!-- Düymələr -->
+                        <div class="d-flex justify-content-between mt-4">            
+                            @if (isAuthenticated)
+                            {
+                                <button type="button" class="btn btn-outline-secondary px-4 py-2 fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                    Şifrəni Dəyiş
+                                </button>
+                                
+                                <button type="submit" class="btn btn-theme-success px-4 py-2 fw-semibold shadow-sm">
+                                    Dəyişiklikləri Yadda Saxla
+                                </button>
+                            }
+                            else
+                            {
+                                <div></div> <!-- Flex layout-u qorumaq üçün boş div -->
+                                <button type="button" class="btn btn-secondary px-4 py-2 fw-semibold shadow-sm" disabled title="Qonaqlar məlumatları dəyişdirə bilməz">
+                                    Dəyişiklikləri Yadda Saxla (Deaktiv)
+                                </button>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 🚨 TƏHLÜKƏLİ ZONA (Yalnız daxil olan istifadəçilər üçün) -->
+            @if (isAuthenticated)
+            {
+                <div class="card settings-danger-card mt-4">
+                    <div class="card-body">        
+                        <!-- Sıfırlama Düyməsi (Modalı açır) -->
+                        <button type="button" class="btn btn-outline-warning w-100 mb-2 text-start" data-bs-toggle="modal" data-bs-target="#resetDataModal">
+                            <i class="bi bi-arrow-counterclockwise me-2"></i> Bütün məlumatları sıfırla
+                        </button>
+                        <!-- Hesabı Silmə Düyməsi (Modalı açır) -->
+                        <button type="button" class="btn btn-outline-danger w-100 text-start" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                            <i class="bi bi-trash me-2"></i> Hesabı sil
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. Məlumatları Sıfırlama Modalı -->
+                <div class="modal fade" id="resetDataModal" tabindex="-1" aria-labelledby="resetDataModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content custom-modal-warning">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title text-warning" id="resetDataModalLabel">
+                                    <i class="bi bi-exclamation-triangle me-2"></i> Diqqət!
+                                </h5>
+                                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Bağla"></button>
+                            </div>
+                            <div class="modal-body">
+                                Bütün maliyyə əməliyyatlarınız, hədəfləriniz və hesabatlarınız sıfırlanacaq. Bu əməliyyatı <strong>geri qaytarmaq mümkün deyil.</strong><br><br>
+                                Bütün məlumatları sıfırlamaq istədiyinizə əminsiniz?
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Xeyr, ləğv et</button>
+                                
+                                <!-- Əsl Sıfırlama Formu -->
+                                <form asp-controller="Settings" asp-action="ResetData" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-warning text-dark fw-bold">Bəli, hər şeyi sıfırla</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Hesabı Silmə Modalı -->
+                <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content custom-modal-danger">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title text-danger" id="deleteAccountModalLabel">
+                                    <i class="bi bi-exclamation-circle me-2"></i> Hesabı Sil
+                                </h5>
+                                <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Bağla"></button>
+                            </div>
+                            <div class="modal-body">
+                                Hesabınız və ona bağlı olan <strong>bütün məlumatlar</strong> birdəfəlik silinəcək. Bu əməliyyatı <strong>geri qaytarmaq qətiyyən mümkün deyil.</strong><br><br>
+                                Hesabınızı həmişəlik silmək istədiyinizə əminsiniz?
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Xeyr, ləğv et</button>  
+                                <!-- Əsl Hesabı Silmə Formu -->
+                                <form asp-controller="Settings" asp-action="DeleteAccount" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger fw-bold">Bəli, hesabı sil</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- 🔐 ŞİFRƏNİ DƏYİŞ MODAL -->
+@if (isAuthenticated)
+{
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content custom-modal-default">
+                <div class="modal-header">
+                    <h5 class="modal-title settings-card-title">Şifrəni Dəyiş</h5>
+                    <button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Bağla"></button>
+                </div>     
+                <form asp-controller="Account" asp-action="ChangePassword" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-body">    
+                        <div class="mb-3">
+                            <label for="CurrentPassword" class="form-label custom-label small">Cari şifrə</label>
+                            <input type="password" id="CurrentPassword" name="CurrentPassword" class="form-control custom-input" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="NewPassword" class="form-label custom-label small">Yeni şifrə</label>
+                            <input type="password" id="NewPassword" name="NewPassword" class="form-control custom-input" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label custom-label small">Yeni şifrə (təkrar)</label>
+                            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control custom-input" required />
+                        </div>             
+                    </div>    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Ləğv et</button>
+                        <button id="btnChangePasswordSubmit" type="submit" class="btn btn-theme-success">Şifrəni Yenilə</button>
+                    </div>
+                </form>         
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {            
+            @if (TempData["Success"] != null)
+            {
+                <text>
+                Swal.fire({
+                    customClass: { popup: 'custom-swal-popup' },
+                    icon: "success",
+                    title: "Uğurlu!",
+                    text: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["Success"])),
+                    confirmButtonColor: "#10b981"
+                });
+                </text>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <text>
+                Swal.fire({
+                    customClass: { popup: 'custom-swal-popup' },
+                    icon: "error",
+                    title: "Xəta!",
+                    text: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["Error"])),
+                    confirmButtonColor: "#ef4444"
+                });
+                </text>
+            }
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                var errors = string.Join(" ", ViewData.ModelState.Values
+                            .SelectMany(v => v.Errors)
+                            .Select(e => e.ErrorMessage));
+                <text>
+                Swal.fire({
+                    customClass: { popup: 'custom-swal-popup' },
+                    icon: "error",
+                    title: "Xəta baş verdi!",
+                    text: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(errors)),
+                    confirmButtonColor: "#ef4444"
+                });
+                </text>
+            }
+        });
+    </script>
+}

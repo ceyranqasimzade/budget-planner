@@ -17,14 +17,12 @@
         <div class="login-box">
             <h2>Sistemə Daxil Ol</h2>
             <form asp-action="Login" method="post" autocomplete="off">
-                <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
-                
+                <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>   
                 <!-- TƏK XANA: İstifadəçi adı və ya E-poçt -->
                 <div class="input-group">
                     <input asp-for="UsernameOrEmail" type="text" placeholder="İstifadəçi adı və ya E-poçt" required autocomplete="username" />
                     <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
-                </div>
-                
+                </div>   
                 <!-- Şifrə -->
                 <div class="input-group password-group">
                     <input asp-for="Password" id="loginPassword" placeholder="Şifrə" required autocomplete="current-password" />
@@ -33,23 +31,19 @@
                     </span>
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-
                 <div class="form-options">
                     <label class="remember-me">
                         <input asp-for="RememberMe" type="checkbox"> Məni xatırla
                     </label>
                   <a asp-action="ForgotPassword" class="forgot-password">Şifrəni unutmusan?</a>
                 </div>
-
                 <button type="submit" class="btn-submit">Daxil Ol</button>
-
                 <div class="register-link">
                     Hesabınız yoxdur? <a asp-action="Register">Qeydiyyatdan keçin</a>
                 </div>
             </form>
         </div>
     </div>
-
     <script>
         function togglePassword(inputId, iconId) {
             const input = document.getElementById(inputId);

@@ -1,19 +1,20 @@
 ﻿@model budget_planner.ViewModels.Reports.ReportVM
-
+@using System.Globalization
+@using System.Text.Json
+@using budget_planner.DAL
+@using budget_planner.Models
 @{
     ViewData["Title"] = "Maliyyə Hesabatları";
+    var invCulture = CultureInfo.InvariantCulture;
+    var currentCurrency = Model.Filter?.DisplayCurrency ?? "AZN";
 }
-
 @section Styles {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <!-- İkinci şəkildəki rəng uyğunluğu üçün -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_green.css">
     <link rel="stylesheet" href="~/assets/css/report.css" asp-append-version="true" />
 }
-
 <div class="container-fluid px-4 py-3">
-
-    <!-- İkinci şəkildəki üslubda filtr paneli -->
+    <!-- 1. FİLTR PANELİ -->
     <div class="report-card mb-4">
         <div class="row g-3 align-items-end">
             <!-- Başlanğıc Tarixi -->
@@ -21,30 +22,39 @@
                 <label class="form-label fw-semibold text-secondary small d-flex align-items-center gap-2">
                     <i class="bi bi-calendar-event"></i> Başlanğıc Tarixi
                 </label>
-                <input type="text" id="startDate" class="form-control date-picker-input" placeholder="GG.AA.İİİİ" readonly>
+                <input type="text" id="startDate" class="form-control date-picker-input"
+                       value="@Model.Filter?.StartDate?.ToString("yyyy-MM-dd")"
+                       placeholder="Tarix seçin..." readonly>
             </div>
-
             <!-- Bitiş Tarixi -->
             <div class="col-md-3">
                 <label class="form-label fw-semibold text-secondary small d-flex align-items-center gap-2">
                     <i class="bi bi-calendar-check"></i> Bitiş Tarixi
                 </label>
-                <input type="text" id="endDate" class="form-control date-picker-input" placeholder="GG.AA.İİİİ" readonly>
+                <input type="text" id="endDate" class="form-control date-picker-input"
+                       value="@Model.Filter?.EndDate?.ToString("yyyy-MM-dd")"
+                       placeholder="Tarix seçin..." readonly>
             </div>
-
             <!-- Hesabat Valyutası -->
             <div class="col-md-3">
                 <label class="form-label fw-semibold text-secondary small d-flex align-items-center gap-2">
                     <i class="bi bi-currency-exchange"></i> Hesabat Valyutası
                 </label>
                 <select id="currencySelect" class="form-select">
-                    <option value="AZN" selected>AZN (₼)</option>
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
+                    <option value="AZN" selected="@(currentCurrency == "AZN")">AZN (₼) - Azərbaycan Manatı</option>
+                    <option value="USD" selected="@(currentCurrency == "USD")">USD ($) - ABŞ Dolları</option>
+                    <option value="EUR" selected="@(currentCurrency == "EUR")">EUR (€) - Avro</option>
+                    <option value="TRY" selected="@(currentCurrency == "TRY")">TRY (₺) - Türk Lirəsi</option>
+                    <option value="RUB" selected="@(currentCurrency == "RUB")">RUB (₽) - Rusiya Rublu</option>
+                    <option value="GBP" selected="@(currentCurrency == "GBP")">GBP (£) - Britaniya Funtu</option>
+                    <option value="CHF" selected="@(currentCurrency == "CHF")">CHF (CHF) - İsveçrə Frankı</option>
+                    <option value="CAD" selected="@(currentCurrency == "CAD")">CAD ($) - Kanada Dolları</option>
+                    <option value="AUD" selected="@(currentCurrency == "AUD")">AUD ($) - Avstraliya Dolları</option>
+                    <option value="CNY" selected="@(currentCurrency == "CNY")">CNY (¥) - Çin Yuanı</option>
+                    <option value="JPY" selected="@(currentCurrency == "JPY")">JPY (¥) - Yapon Yeni</option>
                 </select>
             </div>
-
-            <!-- Düymələr (Tətbiq Et & Yenilə) -->
+            <!-- Düymələr -->
             <div class="col-md-3 d-flex gap-2">
                 <button type="button" id="applyFilterBtn" class="btn btn-success flex-grow-1 fw-semibold d-flex align-items-center justify-content-center gap-2">
                     <i class="bi bi-funnel-fill"></i> Tətbiq Et
@@ -55,7 +65,6 @@
             </div>
         </div>
     </div>
-
     <!-- 2. KPI TOP CARDS -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
@@ -64,8 +73,7 @@
                     <span class="kpi-title">Aylıq Gəlir</span>
                     <span class="badge bg-success-subtle text-success">↑ Gəlir</span>
                 </div>
-                <div class="kpi-value">@Model.Kpi.MonthlyIncome.ToString("N2") @Model.Filter.DisplayCurrency</div>
-                <small class="text-muted">@Model.Kpi.IncomeChangePercent.ToString("F1")% keçən ayla müqayisədə</small>
+                <div class="kpi-value" id="kpiMonthlyIncome">@Model.Kpi?.MonthlyIncome.ToString("N2", invCulture) @currentCurrency</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -74,8 +82,7 @@
                     <span class="kpi-title">Aylıq Xərc</span>
                     <span class="badge bg-danger-subtle text-danger">↓ Xərc</span>
                 </div>
-                <div class="kpi-value">@Model.Kpi.MonthlyExpense.ToString("N2") @Model.Filter.DisplayCurrency</div>
-                <small class="text-muted">@Model.Kpi.ExpenseChangePercent.ToString("F1")% keçən ayla müqayisədə</small>
+                <div class="kpi-value" id="kpiMonthlyExpense">@Model.Kpi?.MonthlyExpense.ToString("N2", invCulture) @currentCurrency</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -84,8 +91,7 @@
                     <span class="kpi-title">Xalis Qənaət</span>
                     <span class="badge bg-info-subtle text-info">💰 Qənaət</span>
                 </div>
-                <div class="kpi-value text-info">@Model.Kpi.MonthlySavings.ToString("N2") @Model.Filter.DisplayCurrency</div>
-                <small class="text-muted">@Model.Kpi.SavingsChangePercent.ToString("F1")% keçən ayla müqayisədə</small>
+                <div class="kpi-value text-info" id="kpiMonthlySavings">@Model.Kpi?.MonthlySavings.ToString("N2", invCulture) @currentCurrency</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -94,16 +100,15 @@
                 <div class="health-gauge-box">
                     <canvas id="healthGaugeChart"></canvas>
                     <div class="health-score-text">
-                        <div class="score" id="scoreText">@Model.Kpi.HealthScore</div>
+                        <div class="score" id="scoreText">@(Model.Kpi?.HealthScore ?? 0)</div>
                     </div>
                 </div>
                 <small class="fw-bold d-block mt-1" style="color: #f59e0b;">
-                    @(Model.Kpi.HealthScore < 40 ? "Kritik Vəziyyət" : Model.Kpi.HealthScore < 70 ? "Orta Vəziyyət" : "Əla Vəziyyət")
+                    @((Model.Kpi?.HealthScore ?? 0) < 40 ? "Kritik Vəziyyət" : (Model.Kpi?.HealthScore ?? 0) < 70 ? "Orta Vəziyyət" : "Əla Vəziyyət")
                 </small>
             </div>
         </div>
     </div>
-
     <!-- 3. MAIN CHARTS ROW 1 -->
     <div class="row g-3 mb-4">
         <div class="col-lg-8">
@@ -128,7 +133,6 @@
             </div>
         </div>
     </div>
-
     <!-- 4. CHARTS ROW 2 -->
     <div class="row g-3">
         <div class="col-md-4">
@@ -150,18 +154,20 @@
         <div class="col-md-4">
             <div class="report-card">
                 <h6 class="chart-title mb-3"><i class="bi bi-list-stars text-warning me-2"></i>Top Xərc Kateqoriyaları</h6>
-                <div class="mt-3">
-                    @if (Model.Categories != null && Model.Categories.TopCategories.Any())
+                <!-- 🟢 Dinamik AJAX yenilənməsi üçün ID əlavə olundu -->
+                <div class="mt-3" id="topCategoriesList">
+                    @if (Model.Categories?.TopCategories != null && Model.Categories.TopCategories.Any())
                     {
                         @foreach (var cat in Model.Categories.TopCategories)
                         {
+                            var catName = string.IsNullOrWhiteSpace(cat.CategoryName) || cat.CategoryName == "qq" ? "Digər Xərclər" : cat.CategoryName;
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between small mb-1">
-                                    <span class="fw-semibold">@cat.CategoryName</span>
-                                    <span class="fw-bold">@cat.Amount.ToString("N2") @Model.Filter.DisplayCurrency (@cat.Percentage.ToString("F1")%)</span>
+                                    <span class="fw-semibold">@catName</span>
+                                    <span class="fw-bold">@cat.Amount.ToString("N2", invCulture) @currentCurrency (@cat.Percentage.ToString("F1", invCulture)%)</span>
                                 </div>
                                 <div class="progress" style="height: 6px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: @cat.Percentage%"></div>
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: @cat.Percentage.ToString("F1", invCulture)%"></div>
                                 </div>
                             </div>
                         }
@@ -175,9 +181,6 @@
         </div>
     </div>
 </div>
-
-@using System.Text.Json
-
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/az.js"></script>
@@ -185,43 +188,41 @@
     <script src="~/assets/js/report.js" asp-append-version="true"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // C# Nullable xətalarını önləmək üçün fallback-lər
-            const healthScore = @(Model?.Kpi?.HealthScore ?? 0);
-            const monthlyIncome = @(Model?.Kpi?.MonthlyIncome ?? 0m);
-            const monthlyExpense = @(Model?.Kpi?.MonthlyExpense ?? 0m);
+            // Server tərəfindən gələn datanı JSON kimi oxuyuruq
+            var rawServerData = @Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions
+            {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            }));
 
-            const trendLabels = @Html.Raw(JsonSerializer.Serialize(Model?.Trend?.Points?.Select(p => p.Label ?? "").ToList() ?? new List<string>()));
-            const trendIncome = @Html.Raw(JsonSerializer.Serialize(Model?.Trend?.Points?.Select(p => p.Income).ToList() ?? new List<decimal>()));
-            const trendExpense = @Html.Raw(JsonSerializer.Serialize(Model?.Trend?.Points?.Select(p => p.Expense).ToList() ?? new List<decimal>()));
+        if (rawServerData && rawServerData.categories) {
+            if ((!rawServerData.categories.categoryNames || rawServerData.categories.categoryNames.length === 0)
+                && rawServerData.categories.topCategories && rawServerData.categories.topCategories.length > 0) {
 
-            const catLabels = @Html.Raw(JsonSerializer.Serialize(Model?.Categories?.CategoryNames?.ToList() ?? new List<string>()));
-            const catExpenses = @Html.Raw(JsonSerializer.Serialize(Model?.Categories?.CategoryExpenses?.ToList() ?? new List<decimal>()));
-
-            const dayLabels = @Html.Raw(JsonSerializer.Serialize(Model?.Weekdays?.DayNames?.ToList() ?? new List<string>()));
-            const dayExpenses = @Html.Raw(JsonSerializer.Serialize(Model?.Weekdays?.DayExpenses?.ToList() ?? new List<decimal>()));
-
-            const reportData = {
-                kpi: {
-                    healthScore: healthScore,
-                    monthlyIncome: monthlyIncome,
-                    monthlyExpense: monthlyExpense
-                },
-                trend: {
-                    labels: trendLabels,
-                    income: trendIncome,
-                    expense: trendExpense
-                },
-                categories: {
-                    labels: catLabels,
-                    expenses: catExpenses
-                },
-                weekdays: {
-                    labels: dayLabels,
-                    expenses: dayExpenses
+                    rawServerData.categories.categoryNames = rawServerData.categories.topCategories.map(c => c.categoryName);
+                    rawServerData.categories.categoryExpenses = rawServerData.categories.topCategories.map(c => c.amount);
                 }
-            };
+            }
+            // Chart-ları serverdən birbaşa gələn ilkin data ilə render edirik
+            if (typeof initReportCharts === "function") {
+                initReportCharts(rawServerData, "@currentCurrency");
+            }
+            // 🟢 Reset (Sıfırla) Düyməsinin İşlənməsi
+            var resetBtn = document.getElementById("resetFilterBtn");
+            if (resetBtn) {
+                resetBtn.addEventListener("click", function () {
+                    var startDateEl = document.getElementById("startDate");
+                    var endDateEl = document.getElementById("endDate");
+                    var currencyEl = document.getElementById("currencySelect");
 
-            initReportCharts(reportData);
+                    if (startDateEl && startDateEl._flatpickr) startDateEl._flatpickr.clear();
+                    if (endDateEl && endDateEl._flatpickr) endDateEl._flatpickr.clear();
+                    if (currencyEl) currencyEl.value = "AZN";
+
+                    if (typeof fetchReportData === "function") {
+                        fetchReportData();
+                    }
+                });
+            }
         });
     </script>
 }

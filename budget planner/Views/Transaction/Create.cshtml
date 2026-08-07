@@ -1,0 +1,206 @@
+﻿@model budget_planner.ViewModels.TransactionCreateVM
+@{
+    ViewData["Title"] = "Yeni Əməliyyat";
+}
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow border-0 rounded-4">
+                <!-- Başlıq -->
+                <div class="card-header bg-primary text-white p-4 rounded-top-4 text-center">
+                    <h3 class="card-title mb-0 fs-4 fw-bold">
+                        <i class="bi bi-plus-circle me-2"></i>Yeni Əməliyyat Əlavə Et
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <!-- XƏTA BİLDİRİŞLƏRİ -->
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger border-0 shadow-sm mb-3">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["Error"]
+                        </div>
+                    }
+                    <!-- TEK VƏ DÜZGÜN FORM -->
+                    <form asp-action="Create" asp-controller="Transaction" method="post">
+                        <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+                        <!-- 1. Gəlir / Xərc Seçimi -->
+                        <div class="mb-4 text-center">
+                            <label class="form-label d-block fw-bold text-muted mb-2">Əməliyyat Növü</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="IsIncome" id="typeExpense" value="false" @(!Model?.IsIncome ?? true ? "checked" : "")>
+                                <label class="btn btn-outline-danger py-2.5 fw-semibold d-flex align-items-center justify-content-center" for="typeExpense">
+                                    <i class="fa-solid fa-circle-arrow-down fs-5 me-2"></i> Xərc
+                                </label>
+
+                                <input type="radio" class="btn-check" name="IsIncome" id="typeIncome" value="true" @(Model?.IsIncome ?? false ? "checked" : "")>
+                                <label class="btn btn-outline-success py-2.5 fw-semibold d-flex align-items-center justify-content-center" for="typeIncome">
+                                    <i class="fa-solid fa-circle-arrow-up fs-5 me-2"></i> Gəlir
+                                </label>
+                            </div>
+                        </div>
+                        <!-- 2. Məbləğ və Valyuta -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-7">
+                                <label asp-for="Amount" class="form-label fw-bold">Məbləğ</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light fw-bold"><i class="fa-solid fa-money-bill-wave text-success"></i></span>
+                                    <input type="text"
+                                           inputmode="decimal"
+                                           name="Amount"
+                                           id="Amount"
+                                           value="@(Model?.Amount > 0 ? Model.Amount.ToString().Replace(',', '.') : "")"
+                                           class="form-control form-control-lg"
+                                           placeholder="0.00"
+                                           required
+                                           oninput="this.value = this.value.replace(',', '.');" />
+                                </div>
+                                <span asp-validation-for="Amount" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-5">
+                                <label asp-for="Currency" class="form-label fw-bold">Valyuta</label>
+                                <select asp-for="Currency" class="form-select form-select-lg">
+                                    <option value="AZN" selected>AZN (₼)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="TRY">TRY (₺)</option>
+                                    <option value="RUB">RUB (₽)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                    <option value="GEL">GEL (₾)</option>
+                                    <option value="CHF">CHF (Fr)</option>
+                                    <option value="CAD">CAD (C$)</option>
+                                    <option value="AUD">AUD (A$)</option>
+                                    <option value="AED">AED (د.إ)</option>
+                                </select>
+                                <span asp-validation-for="Currency" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <!-- 3. HESAB / ÖDƏNİŞ ÜSULU -->
+                        <div class="mb-3">
+                            <label asp-for="CardId" class="form-label fw-bold">Hesab / Ödəniş Üsulu</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-wallet text-primary"></i></span>
+                                <select asp-for="CardId" class="form-select">
+                                    <option value="">💵 Nağd Pul</option>
+                                    @if (ViewBag.Cards != null)
+                                    {
+                                        foreach (var card in ViewBag.Cards)
+                                        {
+                                            if (card is Microsoft.AspNetCore.Mvc.Rendering.SelectListItem item)
+                                            {
+                                                <option value="@item.Value">💳 @item.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@card.Id">💳 @card.Name — @card.Balance.ToString("N2") @card.Currency</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <span asp-validation-for="CardId" class="text-danger small"></span>
+                        </div>
+                        <!-- 4. Kateqoriya Seçimi -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label asp-for="CategoryId" class="form-label fw-bold m-0">Kateqoriya</label>
+                                <button type="button" class="btn btn-sm btn-outline-success py-0 px-2 fw-bold" data-bs-toggle="modal" data-bs-target="#quickCategoryModal">
+                                    <i class="fa-solid fa-plus me-1"></i> Yeni Kateqoriya
+                                </button>
+                            </div>
+                            <select asp-for="CategoryId" id="CategoryId" class="form-select">
+                                <option value="">-- Kateqoriya seçin --</option>
+                                @if (ViewBag.Categories != null)
+                                {
+                                    foreach (var item in ViewBag.Categories)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+                        <!-- 5. Tarix -->
+                        <div class="mb-3">
+                            <label asp-for="Date" class="form-label fw-bold">Tarix və Saat</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-calendar-days"></i></span>
+                                <input type="text" id="transactionDate" asp-for="Date" class="form-control" placeholder="Tarix seçin..." readonly />
+                            </div>
+                            <span asp-validation-for="Date" class="text-danger small"></span>
+                        </div>
+                        <!-- 6. Təsvir / Qeyd -->
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-bold">Təsvir / Qeyd</label>
+                            <textarea asp-for="Description" class="form-control" rows="2" placeholder="Əməliyyat haqqında qısa qeyd..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                        <!-- Düymələr -->
+                        <div class="d-flex gap-2 pt-2">
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1 shadow-sm">
+                                <i class="fa-solid fa-check me-2"></i>Yadda Saxla
+                            </button>
+                            <a asp-action="Index" class="btn btn-light btn-lg border flex-grow-1 text-center">
+                                <i class="fa-solid fa-xmark me-2"></i>Ləğv Et
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- YENİ KATEQORİYA ÜÇÜN MODAL (Formun xaricində olması daha təhlükəsizdir) -->
+<div class="modal fade" id="quickCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h6 class="modal-title fw-bold"><i class="fa-solid fa-folder-plus text-success me-2"></i>Yeni Kateqoriya</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Kateqoriya Adı</label>
+                    <input type="text" id="quickCategoryName" class="form-control" placeholder="Məs: Restoran, Nəqliyyat..." required>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary p-2">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Ləğv et</button>
+                <button type="button" onclick="saveNewCategory()" class="btn btn-sm btn-success">Əlavə et</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <!-- Sizin mövcud skriptləriniz... -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // URL-dən parametrləri oxuyuruq
+            const urlParams = new URLSearchParams(window.location.search);
+            const amount = urlParams.get('amount');
+            const fiscalId = urlParams.get('fiscalId');
+            // 1. Məbləğ xanasını doldur
+            if (amount && amount !== "null" && amount !== "") {
+                const amountInp = document.querySelector('[name="Amount"]');
+                if (amountInp) {
+                    amountInp.value = parseFloat(amount);
+                }
+            }
+            // 2. Təsvir (Fiskal ID) xanasını doldur (Düzəliş olunan sətir)
+            if (fiscalId && fiscalId !== "null" && fiscalId !== "") {
+                const descInp = document.querySelector('[name="Description"]');
+                if (descInp) {
+                    descInp.value = "Fiskal ID: " + fiscalId;
+                }
+            }
+        });
+    </script>
+    <!-- 1. Əvvəlcə Flatpickr kitabxanası yüklənməlidir -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/az.js"></script>
+    <!-- 2. Sonra öz xüsusi JS faylınız yüklənməlidir -->
+    <script src="~/assets/js/createTransaction.js" asp-append-version="true"></script>
+}

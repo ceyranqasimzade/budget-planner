@@ -1,38 +1,55 @@
 ﻿/* ====================================================== */
-/* 🟢 1. EMERALD THEME & BASE UTILITIES                   */
+/* 👑 1. LUXURY CRIMSON & ROYAL GOLD DYNAMIC VARIABLES   */
 /* ====================================================== */
 :root {
-    --emerald-primary: #10b981;
-    --emerald-hover: #059669;
-    --emerald-subtle: rgba(16, 185, 129, 0.12);
+    --emerald-primary: #9f1239;
+    --emerald-hover: #881337;
+    --emerald-dark: #4c0519;
+    --emerald-gold: #d4af37;
+    --emerald-gold-light: #f59e0b;
+    --emerald-subtle: rgba(159, 18, 57, 0.12);
+    --emerald-glow: rgba(212, 175, 55, 0.35);
+    --emerald-gradient: linear-gradient(135deg, #881337 0%, #9f1239 50%, #be123c 100%);
+    --emerald-gradient-gold: linear-gradient(135deg, #fbbf24 0%, #d4af37 50%, #b45309 100%);
 }
 
 .btn-emerald,
 .bg-emerald {
-    background-color: var(--emerald-primary) !important;
-    border-color: var(--emerald-primary) !important;
+    background: var(--emerald-gradient) !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 18px rgba(159, 18, 57, 0.4), 0 0 10px rgba(212, 175, 55, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
     .btn-emerald:hover {
-        background-color: var(--emerald-hover) !important;
-        border-color: var(--emerald-hover) !important;
+        background: linear-gradient(135deg, #9f1239 0%, #be123c 100%) !important;
+        border-color: #fbbf24 !important;
+        box-shadow: 0 8px 26px var(--emerald-glow) !important;
+        transform: translateY(-2px);
     }
 
 .text-emerald {
-    color: var(--emerald-primary) !important;
+    color: #fbbf24 !important;
+    background: var(--emerald-gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
 }
 
 .bg-emerald-subtle {
     background-color: var(--emerald-subtle) !important;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.25);
 }
 
 .hover-emerald:hover {
-    color: var(--emerald-primary) !important;
-    transition: color 0.2s ease;
+    color: #f59e0b !important;
+    transition: color 0.25s ease;
 }
 
 /* ====================================================== */
-/* 📊 2. STAT ICONS & CARD COMPONENTS                     */
+/* 📊 2. PREMIUM STAT ICONS & CARD COMPONENTS             */
 /* ====================================================== */
 .stat-icon {
     width: 52px;
@@ -40,273 +57,932 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 14px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .icon-blue {
-    background-color: rgba(59, 130, 246, 0.12);
-    color: #3b82f6;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(180, 83, 9, 0.05));
+    color: #f59e0b !important;
+    border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .icon-green {
-    background-color: rgba(16, 185, 129, 0.12);
-    color: #10b981;
+    background: linear-gradient(135deg, rgba(159, 18, 57, 0.18), rgba(136, 19, 55, 0.05));
+    color: #be123c !important;
+    border: 1px solid rgba(159, 18, 57, 0.3);
 }
 
 .icon-purple {
-    background-color: rgba(139, 92, 246, 0.12);
-    color: #8b5cf6;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(212, 175, 55, 0.05));
+    color: #fbbf24 !important;
+    border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
-/* Card Hover Animations */
+/* Goal Icon Box */
+.goal-icon-box {
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(159, 18, 57, 0.2) 0%, rgba(212, 175, 55, 0.08) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+    .goal-icon-box:hover {
+        transform: scale(1.1) rotate(4deg);
+        box-shadow: 0 10px 25px var(--emerald-glow);
+    }
+
+/* Card Hover & Dynamic Depth */
 .stat-card,
 .goal-card,
 .goal-item-card {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 20px !important;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
     .stat-card:hover,
     .goal-card:hover,
     .goal-item-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.08) !important;
+        transform: translateY(-6px);
     }
 
-/* Completed Goal Glow Effect */
+.border-emerald {
+    border-color: rgba(212, 175, 55, 0.45) !important;
+}
+
+/* Completed Goal Glow */
 .completed-goal {
-    border-left: 5px solid #10b981 !important;
+    border-left: 5px solid #d4af37 !important;
     position: relative;
     overflow: hidden;
 }
 
+    .completed-goal::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
+        pointer-events: none;
+    }
+
 /* ====================================================== */
-/* ⚡ 3. ANIMATED PROGRESS BAR                             */
+/* ⚡ 3. ANIMATED GOLD & CRIMSON PROGRESS BAR             */
 /* ====================================================== */
 .custom-progress {
-    background-color: rgba(226, 232, 240, 0.6);
+    border-radius: 50px;
     overflow: hidden;
+    padding: 3px;
+    position: relative;
 }
 
 .animated-bar {
+    background: linear-gradient(90deg, #9f1239 0%, #d4af37 50%, #f59e0b 100%) !important;
+    background-size: 200% 100% !important;
+    border-radius: 50px;
+    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.4);
     transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: shimmer 2.5s infinite linear;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 /* ====================================================== */
-/* 🎯 4. ICON SELECTION GRID (SEÇİM BÖLMƏSİ)             */
+/* 🎯 4. ICON SELECTION GRID                              */
 /* ====================================================== */
 .icon-grid-container {
-    max-height: 230px;
+    max-height: 250px;
     overflow-y: auto;
-    border-radius: 12px;
-    padding: 12px;
-    gap: 10px !important;
+    border-radius: 18px;
+    padding: 16px;
+    gap: 12px !important;
 }
 
-    /* Scrollbar Customization */
     .icon-grid-container::-webkit-scrollbar {
         width: 6px;
     }
 
     .icon-grid-container::-webkit-scrollbar-thumb {
-        background-color: rgba(148, 163, 184, 0.4);
+        background-color: rgba(212, 175, 55, 0.3);
         border-radius: 10px;
     }
 
         .icon-grid-container::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(148, 163, 184, 0.7);
+            background-color: var(--emerald-gold);
         }
 
-/* Icon Select Button */
 .icon-select-btn {
-    transition: all 0.2s ease-in-out;
-    width: 80px;
-    height: 72px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 82px;
+    height: 76px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    border-radius: 12px;
-    padding: 8px 4px !important;
+    border-radius: 14px;
+    padding: 10px 4px !important;
 }
 
     .icon-select-btn i {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         margin-top: 2px;
-        transition: transform 0.2s ease;
+        transition: transform 0.25s ease;
     }
 
     .icon-select-btn span {
         font-size: 11px;
         line-height: 1.1;
-        font-weight: 500;
+        font-weight: 600;
+        letter-spacing: 0.2px;
         margin-bottom: 2px;
         text-align: center;
     }
 
     .icon-select-btn:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px);
     }
 
         .icon-select-btn:hover i {
-            transform: scale(1.15);
+            transform: scale(1.2);
         }
 
-/* Dynamic Specific Icon Colors */
-.icon-btn-bullseye i {
-    color: #ef4444 !important;
-}
+    .icon-select-btn.active-icon {
+        background: var(--emerald-gradient) !important;
+        border: 1px solid #fbbf24 !important;
+        color: #ffffff !important;
+        box-shadow: 0 8px 20px var(--emerald-glow) !important;
+    }
 
-.icon-btn-piggy i {
-    color: #ec4899 !important;
-}
+        .icon-select-btn.active-icon i,
+        .icon-select-btn.active-icon span {
+            color: #fef08a !important;
+        }
 
-.icon-btn-house i {
-    color: #f59e0b !important;
-}
-
-.icon-btn-car i {
-    color: #3b82f6 !important;
-}
-
-.icon-btn-airplane i {
-    color: #06b6d4 !important;
-}
-
-.icon-btn-mortarboard i {
-    color: #8b5cf6 !important;
-}
-
-.icon-btn-laptop i {
-    color: #14b8a6 !important;
-}
-
-.icon-btn-phone i {
-    color: #6366f1 !important;
-}
-
-.icon-btn-briefcase i {
-    color: #b45309 !important;
-}
-
-.icon-btn-graph i {
-    color: #10b981 !important;
-}
-
-.icon-btn-credit i {
+/* ====================================================== */
+/* 🎨 5. REFINED VIBRANT ICON COLOR MAP                  */
+/* ====================================================== */
+.bi-bullseye {
     color: #f43f5e !important;
 }
 
-.icon-btn-gem i {
-    color: #0891b2 !important;
+.bi-piggy-bank-fill {
+    color: #f59e0b !important;
 }
 
-.icon-btn-gift i {
+.bi-house-heart-fill {
+    color: #f472b6 !important;
+}
+
+.bi-car-front-fill {
+    color: #fbbf24 !important;
+}
+
+.bi-airplane-fill {
+    color: #38bdf8 !important;
+}
+
+.bi-mortarboard-fill {
+    color: #d4af37 !important;
+}
+
+.bi-laptop {
     color: #e11d48 !important;
 }
 
-.icon-btn-bag i {
-    color: #a855f7 !important;
+.bi-phone-fill {
+    color: #fb7185 !important;
 }
 
-.icon-btn-heart i {
-    color: #dc2626 !important;
+.bi-briefcase-fill {
+    color: #94a3b8 !important;
 }
 
-.icon-btn-trophy i {
-    color: #eab308 !important;
+.bi-graph-up-arrow {
+    color: #f59e0b !important;
 }
 
-.icon-btn-controller i {
-    color: #84cc16 !important;
+.bi-credit-card-fill {
+    color: #ef4444 !important;
 }
 
-.icon-btn-shield i {
-    color: #64748b !important;
+.bi-gem {
+    color: #fbbf24 !important;
 }
 
-/* Active Icon State */
-.icon-select-btn.active-icon {
-    background-color: var(--emerald-primary) !important;
-    border-color: var(--emerald-primary) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
+.bi-gift-fill {
+    color: #f43f5e !important;
 }
 
-    .icon-select-btn.active-icon i {
-        color: #ffffff !important;
-    }
+.bi-bag-check-fill {
+    color: #f97316 !important;
+}
+
+.bi-heart-pulse-fill {
+    color: #be123c !important;
+}
+
+.bi-trophy-fill {
+    color: #d4af37 !important;
+}
+
+.bi-controller {
+    color: #e11d48 !important;
+}
+
+.bi-shield-lock-fill {
+    color: #f59e0b !important;
+}
 
 /* ====================================================== */
-/* 📦 5. EMPTY STATE & SPECIAL COMPONENTS                 */
+/* 📦 6. EMPTY STATE COMPONENTS                          */
 /* ====================================================== */
 .empty-glass-card {
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
     transition: transform 0.3s ease;
 }
 
 .empty-icon-circle {
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .empty-glass-card:hover .empty-icon-circle {
-    transform: scale(1.08) rotate(5deg);
+    transform: scale(1.12) rotate(8deg);
 }
 
 /* ====================================================== */
-/* 🌓 6. DARK / LIGHT MODE AUTOMATIC ADAPTATIONS          */
+/* ☀️ 7. LIGHT MODE REFINEMENTS                          */
 /* ====================================================== */
-/* Light Mode Adaptations */
 [data-bs-theme="light"] .stat-card,
 [data-bs-theme="light"] .empty-state-card,
 [data-bs-theme="light"] .goal-card,
 [data-bs-theme="light"] .goal-item-card,
 [data-bs-theme="light"] .quote-card {
     background-color: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid rgba(159, 18, 57, 0.15) !important;
+    color: #1c0a0e !important;
+    box-shadow: 0 10px 25px -5px rgba(159, 18, 57, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+}
+
+    [data-bs-theme="light"] .stat-card:hover,
+    [data-bs-theme="light"] .goal-card:hover,
+    [data-bs-theme="light"] .goal-item-card:hover {
+        box-shadow: 0 20px 30px -10px rgba(159, 18, 57, 0.12) !important;
+    }
+
+[data-bs-theme="light"] .custom-progress {
+    background-color: #fff1f2;
+    border: 1px solid #ffe4e6;
 }
 
 [data-bs-theme="light"] .icon-grid-container {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
+    background: #fff5f5 !important;
+    border: 1px solid #fecdd3 !important;
 }
 
 [data-bs-theme="light"] .icon-select-btn {
     background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    color: #475569 !important;
+    border: 1px solid #fca5a5 !important;
+    color: #881337 !important;
 }
 
     [data-bs-theme="light"] .icon-select-btn:hover {
-        background: #f1f5f9 !important;
-        border-color: var(--emerald-primary) !important;
+        background: #fff1f2 !important;
+        border-color: #d4af37 !important;
+        color: #9f1239 !important;
+        box-shadow: 0 4px 12px rgba(159, 18, 57, 0.1);
     }
 
-/* Dark Mode Adaptations */
+/* ====================================================== */
+/* 🌙 8. DARK MODE LUXURY (CRIMSON & OBSIDIAN GOLD)       */
+/* ====================================================== */
 [data-bs-theme="dark"] .stat-card,
 [data-bs-theme="dark"] .empty-state-card,
 [data-bs-theme="dark"] .goal-card,
 [data-bs-theme="dark"] .goal-item-card,
 [data-bs-theme="dark"] .quote-card {
-    background-color: #1e293b !important;
-    border: 1px solid #334155 !important;
+    background: linear-gradient(145deg, #1f090d 0%, #0d0305 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.22) !important;
+    color: #fff1f2 !important;
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.8);
 }
 
+    [data-bs-theme="dark"] .stat-card:hover,
+    [data-bs-theme="dark"] .goal-card:hover,
+    [data-bs-theme="dark"] .goal-item-card:hover {
+        box-shadow: 0 22px 40px -10px rgba(0, 0, 0, 0.9), 0 0 22px rgba(212, 175, 55, 0.25) !important;
+        border-color: rgba(212, 175, 55, 0.5) !important;
+    }
+
+    [data-bs-theme="dark"] .stat-card div[class*="bg-white"],
+    [data-bs-theme="dark"] .stat-card div[class*="bg-light"],
+    [data-bs-theme="dark"] .goal-card div[class*="bg-white"],
+    [data-bs-theme="dark"] .goal-card div[class*="bg-light"],
+    [data-bs-theme="dark"] .goal-item-card div[class*="bg-white"],
+    [data-bs-theme="dark"] .goal-item-card div[class*="bg-light"] {
+        background-color: rgba(31, 9, 13, 0.85) !important;
+        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    }
+
+[data-bs-theme="dark"] .text-muted,
+[data-bs-theme="dark"] .text-secondary,
+[data-bs-theme="dark"] small,
+[data-bs-theme="dark"] .small,
+[data-bs-theme="dark"] label,
+[data-bs-theme="dark"] span:not(.badge):not(.text-emerald):not(.text-success) {
+    color: #fecdd3 !important;
+    font-weight: 500;
+}
+
+[data-bs-theme="dark"] .goal-card .badge,
+[data-bs-theme="dark"] .goal-item-card .badge {
+    background-color: rgba(31, 9, 13, 0.9) !important;
+    color: #fbbf24 !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+}
+
+[data-bs-theme="dark"] .goal-card .btn,
+[data-bs-theme="dark"] .goal-item-card .btn {
+    background-color: rgba(43, 12, 18, 0.9) !important;
+    color: #fef08a !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+}
+
+    [data-bs-theme="dark"] .goal-card .btn:hover {
+        background-color: rgba(159, 18, 57, 0.8) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
+    }
+
 [data-bs-theme="dark"] .icon-grid-container {
-    background: #0f172a !important;
-    border: 1px solid #334155 !important;
+    background: #0d0305 !important;
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
 }
 
 [data-bs-theme="dark"] .icon-select-btn {
     background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #cbd5e1 !important;
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    color: #fecdd3 !important;
 }
 
     [data-bs-theme="dark"] .icon-select-btn:hover {
-        background: rgba(255, 255, 255, 0.08) !important;
-        border-color: var(--emerald-primary) !important;
+        background: rgba(159, 18, 57, 0.3) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
     }
 
 [data-bs-theme="dark"] .custom-progress {
-    background-color: rgba(51, 65, 85, 0.6);
+    background-color: rgba(20, 5, 8, 0.9);
+    border: 1px solid rgba(212, 175, 55, 0.15);
 }
+
+/* ====================================================== */
+/* 💎 9. UNIFIED ROYAL STAT BOXES (DARK MODE)             */
+/* ====================================================== */
+[data-bs-theme="dark"] #prevCard .goal-stats,
+[data-bs-theme="dark"] #prevCard .preview-stat-bg,
+[data-bs-theme="dark"] #prevCard div[class*="bg-white"],
+[data-bs-theme="dark"] #prevCard div[class*="bg-light"],
+[data-bs-theme="dark"] .goal-card div[class*="bg-white"],
+[data-bs-theme="dark"] .goal-card div[class*="bg-light"] {
+    background: linear-gradient(135deg, rgba(159, 18, 57, 0.22) 0%, rgba(20, 5, 8, 0.9) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    border-radius: 16px !important;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.08), 0 4px 18px rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Qutuların Üst Başlıqları */
+[data-bs-theme="dark"] #prevCard .preview-stat-label,
+[data-bs-theme="dark"] #prevCard .text-muted,
+[data-bs-theme="dark"] #prevCard small,
+[data-bs-theme="dark"] #prevCard .small,
+[data-bs-theme="dark"] #prevCard label,
+[data-bs-theme="dark"] .goal-card .preview-stat-label,
+[data-bs-theme="dark"] .goal-card .text-muted {
+    color: #fbbf24 !important; /* Parlaq Qızılı */
+    font-weight: 700 !important;
+    letter-spacing: 0.6px !important;
+    text-transform: uppercase;
+}
+
+/* Rəqəmlər və Əsas Mətnlər - Bütün Kartlarda Ortadakı Kimi Parlaq Qızılı (#fbbf24) */
+[data-bs-theme="dark"] #prevCard #prevName,
+[data-bs-theme="dark"] #prevCard #prevTarget,
+[data-bs-theme="dark"] #prevCard .preview-stat-value,
+[data-bs-theme="dark"] #prevCard h1, [data-bs-theme="dark"] #prevCard h2, [data-bs-theme="dark"] #prevCard h3, [data-bs-theme="dark"] #prevCard h4, [data-bs-theme="dark"] #prevCard h5,
+[data-bs-theme="dark"] #prevCard div[class*="col"] span,
+[data-bs-theme="dark"] .goal-card h1, [data-bs-theme="dark"] .goal-card h2, [data-bs-theme="dark"] .goal-card h3, [data-bs-theme="dark"] .goal-card h4, [data-bs-theme="dark"] .goal-card h5,
+[data-bs-theme="dark"] .stat-card h1, [data-bs-theme="dark"] .stat-card h2, [data-bs-theme="dark"] .stat-card h3, [data-bs-theme="dark"] .stat-card h4, [data-bs-theme="dark"] .stat-card h5 {
+    color: #fbbf24 !important;
+    font-weight: 800 !important;
+}
+
+/* Valyuta Mətnləri (TRY, AZN və s.) */
+[data-bs-theme="dark"] #prevCard span.text-muted,
+[data-bs-theme="dark"] #prevCard .small.text-muted,
+[data-bs-theme="dark"] .goal-card span.text-muted {
+    color: #f59e0b !important;
+    font-weight: 600 !important;
+}
+
+/* İkonlar */
+[data-bs-theme="dark"] #prevCard i,
+[data-bs-theme="dark"] .goal-card i {
+    color: #d4af37 !important;
+}
+
+/* ====================================================== */
+/* 🟢 DARK MODE OVERRIDES (AĞ KARTLARIN QAPANMASI)       */
+/* ====================================================== */
+[data-bs-theme="dark"] .bg-white,
+[data-bs-theme="dark"] .bg-light,
+[data-bs-theme="dark"] [class*="bg-white"],
+[data-bs-theme="dark"] [class*="bg-light"],
+[data-bs-theme="dark"] .card .rounded,
+[data-bs-theme="dark"] .card div[class*="p-"] {
+    background: linear-gradient(135deg, rgba(159, 18, 57, 0.2) 0%, rgba(13, 3, 5, 0.95) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05) !important;
+}
+
+    [data-bs-theme="dark"] .bg-white .text-muted,
+    [data-bs-theme="dark"] .bg-light .text-muted,
+    [data-bs-theme="dark"] [class*="bg-white"] .text-muted,
+    [data-bs-theme="dark"] [class*="bg-light"] .text-muted,
+    [data-bs-theme="dark"] [class*="bg-white"] small,
+    [data-bs-theme="dark"] [class*="bg-light"] small,
+    [data-bs-theme="dark"] [class*="bg-white"] span,
+    [data-bs-theme="dark"] [class*="bg-light"] span {
+        color: #f59e0b !important;
+        font-weight: 700 !important;
+    }
+
+    [data-bs-theme="dark"] .bg-white h1, [data-bs-theme="dark"] .bg-light h1,
+    [data-bs-theme="dark"] .bg-white h2, [data-bs-theme="dark"] .bg-light h2,
+    [data-bs-theme="dark"] .bg-white h3, [data-bs-theme="dark"] .bg-light h3,
+    [data-bs-theme="dark"] .bg-white h4, [data-bs-theme="dark"] .bg-light h4,
+    [data-bs-theme="dark"] .bg-white h5, [data-bs-theme="dark"] .bg-light h5,
+    [data-bs-theme="dark"] .bg-white .fw-bold, [data-bs-theme="dark"] .bg-light .fw-bold,
+    [data-bs-theme="dark"] [class*="bg-white"] strong, [data-bs-theme="dark"] [class*="bg-light"] strong {
+        color: #fbbf24 !important;
+        font-weight: 800 !important;
+    }
+
+    [data-bs-theme="dark"] .bg-white .small,
+    [data-bs-theme="dark"] .bg-light .small {
+        color: #fecdd3 !important;
+    }
+
+    [data-bs-theme="dark"] .bg-white i,
+    [data-bs-theme="dark"] .bg-light i {
+        color: #d4af37 !important;
+    }
+
+/* ====================================================== */
+/* ☀️ 11. LIGHT MODE - UNIFIED ROYAL STAT BOXES          */
+/* ====================================================== */
+[data-bs-theme="light"] .bg-white,
+[data-bs-theme="light"] .bg-light,
+[data-bs-theme="light"] [class*="bg-white"],
+[data-bs-theme="light"] [class*="bg-light"],
+[data-bs-theme="light"] #prevCard .goal-stats,
+[data-bs-theme="light"] #prevCard .preview-stat-bg,
+[data-bs-theme="light"] .goal-card div[class*="bg-white"],
+[data-bs-theme="light"] .goal-card div[class*="bg-light"] {
+    background: linear-gradient(135deg, rgba(159, 18, 57, 0.08) 0%, rgba(212, 175, 55, 0.04) 100%) !important;
+    border: 1px solid rgba(159, 18, 57, 0.25) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 14px rgba(159, 18, 57, 0.06) !important;
+}
+
+    [data-bs-theme="light"] .bg-white .text-muted,
+    [data-bs-theme="light"] .bg-light .text-muted,
+    [data-bs-theme="light"] [class*="bg-white"] .text-muted,
+    [data-bs-theme="light"] [class*="bg-light"] .text-muted,
+    [data-bs-theme="light"] #prevCard .preview-stat-label,
+    [data-bs-theme="light"] #prevCard small,
+    [data-bs-theme="light"] #prevCard label,
+    [data-bs-theme="light"] .goal-card .preview-stat-label,
+    [data-bs-theme="light"] .goal-card .text-muted {
+        color: #9f1239 !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase;
+    }
+
+    [data-bs-theme="light"] .bg-white h1, [data-bs-theme="light"] .bg-light h1,
+    [data-bs-theme="light"] .bg-white h2, [data-bs-theme="light"] .bg-light h2,
+    [data-bs-theme="light"] .bg-white h3, [data-bs-theme="light"] .bg-light h3,
+    [data-bs-theme="light"] .bg-white h4, [data-bs-theme="light"] .bg-light h4,
+    [data-bs-theme="light"] .bg-white h5, [data-bs-theme="light"] .bg-light h5,
+    [data-bs-theme="light"] .bg-white .fw-bold, [data-bs-theme="light"] .bg-light .fw-bold,
+    [data-bs-theme="light"] [class*="bg-white"] strong, [data-bs-theme="light"] [class*="bg-light"] strong,
+    [data-bs-theme="light"] #prevCard #prevName,
+    [data-bs-theme="light"] #prevCard #prevTarget,
+    [data-bs-theme="light"] #prevCard .preview-stat-value {
+        color: #881337 !important;
+        font-weight: 800 !important;
+    }
+
+    [data-bs-theme="light"] .bg-white .small,
+    [data-bs-theme="light"] .bg-light .small,
+    [data-bs-theme="light"] .bg-white i,
+    [data-bs-theme="light"] .bg-light i,
+    [data-bs-theme="light"] #prevCard i {
+        color: #b45309 !important;
+        font-weight: 600 !important;
+    }
+
+/* ====================================================== */
+/* 🔘 UNIFIED BUTTON STYLES (DÜZƏLİŞ ET & HƏDƏFİ SİL)     */
+/* ====================================================== */
+
+/* Düzəliş Et Düyməsi (Hədəfi Sil ilə eyni üslubda) */
+.btn-edit,
+#btnEdit,
+.btn-outline-edit {
+    background: rgba(31, 9, 13, 0.5) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: #fbbf24 !important; /* Ortadakı parlaq qızılı rəng */
+    border-radius: 14px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+    .btn-edit:hover,
+    #btnEdit:hover,
+    .btn-outline-edit:hover {
+        background: rgba(159, 18, 57, 0.25) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25) !important;
+        transform: translateY(-2px);
+    }
+
+/* Hədəfi Sil Düyməsi */
+.btn-delete,
+#btnDelete,
+.btn-outline-danger {
+    background: rgba(31, 9, 13, 0.5) !important;
+    border: 1px solid rgba(225, 29, 72, 0.4) !important;
+    color: #f43f5e !important;
+    border-radius: 14px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+    .btn-delete:hover,
+    #btnDelete:hover,
+    .btn-outline-danger:hover {
+        background: rgba(159, 18, 57, 0.3) !important;
+        border-color: #f43f5e !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3) !important;
+        transform: translateY(-2px);
+    }
+/* ====================================================== */
+/* 🔘 UNIFIED BUTTON STYLES (GÜCLƏNDİRİLMİŞ)             */
+/* ====================================================== */
+
+/* Düzəliş Et Düyməsi (bütün ehtimal olunan klaslar üçün) */
+.btn-edit,
+#btnEdit,
+.btn-outline-edit,
+button[class*="edit"],
+.btn-emerald {
+    background: rgba(31, 9, 13, 0.5) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: #fbbf24 !important; /* Parlaq qızılı */
+    border-radius: 14px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+    .btn-edit:hover,
+    #btnEdit:hover,
+    .btn-outline-edit:hover,
+    button[class*="edit"]:hover,
+    .btn-emerald:hover {
+        background: rgba(159, 18, 57, 0.25) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25) !important;
+        transform: translateY(-2px);
+    }
+
+/* Hədəfi Sil Düyməsi */
+.btn-delete,
+#btnDelete,
+.btn-outline-danger,
+.btn-danger,
+button[class*="delete"] {
+    background: rgba(31, 9, 13, 0.5) !important;
+    border: 1px solid rgba(225, 29, 72, 0.4) !important;
+    color: #f43f5e !important;
+    border-radius: 14px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+    .btn-delete:hover,
+    #btnDelete:hover,
+    .btn-outline-danger:hover,
+    .btn-danger:hover,
+    button[class*="delete"]:hover {
+        background: rgba(159, 18, 57, 0.3) !important;
+        border-color: #f43f5e !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3) !important;
+        transform: translateY(-2px);
+    }
+/* ====================================================== */
+/* 🔘 DAİRƏVİ UZUNSOV DÜYMƏ ÜSLUBLARI (FULL-WIDTH PILL)   */
+/* ====================================================== */
+
+/* Düzəliş Et Düyməsi */
+.btn-edit,
+#btnEdit,
+.btn-outline-edit,
+.btn-emerald,
+button[class*="edit"] {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, rgba(31, 9, 13, 0.7) 0%, rgba(13, 3, 5, 0.85) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: #fbbf24 !important;
+    border-radius: 50px !important; /* Dairəvi uzunsov forma */
+    padding: 14px 24px !important;
+    font-weight: 600 !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+    .btn-edit:hover,
+    #btnEdit:hover,
+    .btn-outline-edit:hover,
+    .btn-emerald:hover,
+    button[class*="edit"]:hover {
+        background: rgba(159, 18, 57, 0.25) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25) !important;
+        transform: translateY(-2px);
+    }
+
+/* Hədəfi Sil Düyməsi */
+.btn-delete,
+#btnDelete,
+.btn-outline-danger,
+.btn-danger,
+button[class*="delete"] {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, rgba(31, 9, 13, 0.7) 0%, rgba(13, 3, 5, 0.85) 100%) !important;
+    border: 1px solid rgba(244, 63, 94, 0.35) !important;
+    color: #f43f5e !important;
+    border-radius: 50px !important; /* Dairəvi uzunsov forma */
+    padding: 14px 24px !important;
+    font-weight: 600 !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+    .btn-delete:hover,
+    #btnDelete:hover,
+    .btn-outline-danger:hover,
+    .btn-danger:hover,
+    button[class*="delete"]:hover {
+        background: rgba(159, 18, 57, 0.3) !important;
+        border-color: #f43f5e !important;
+        color: #ffffff !important;
+        box-shadow: 0 6px 20px rgba(244, 63, 94, 0.3) !important;
+        transform: translateY(-2px);
+    }
+/* ====================================================== */
+/* ☀️ LIGHT MODE - UNIFIED STAT CARDS (BÜTÜN QUTULAR EYNİ) */
+/* ====================================================== */
+
+/* Ortadakı və Bütün Stat Qutularının Arxa Fonu */
+[data-bs-theme="light"] .goal-card div[class*="col"] > div,
+[data-bs-theme="light"] #prevCard div[class*="col"] > div,
+[data-bs-theme="light"] .goal-stats > div,
+[data-bs-theme="light"] .preview-stat-bg {
+    background: linear-gradient(135deg, rgba(159, 18, 57, 0.08) 0%, rgba(212, 175, 55, 0.04) 100%) !important;
+    border: 1px solid rgba(159, 18, 57, 0.2) !important;
+}
+
+/* Ortadakı Mətnlərin (Qızılı Yerinə Qıraqdakı Kimi Tünd Qırmızı Olması) */
+[data-bs-theme="light"] .goal-card div[class*="col"] h1,
+[data-bs-theme="light"] .goal-card div[class*="col"] h2,
+[data-bs-theme="light"] .goal-card div[class*="col"] h3,
+[data-bs-theme="light"] .goal-card div[class*="col"] h4,
+[data-bs-theme="light"] .goal-card div[class*="col"] h5,
+[data-bs-theme="light"] .goal-card div[class*="col"] span,
+[data-bs-theme="light"] .goal-card div[class*="col"] .text-emerald,
+[data-bs-theme="light"] .goal-card div[class*="col"] .text-warning,
+[data-bs-theme="light"] #prevCard div[class*="col"] .preview-stat-value,
+[data-bs-theme="light"] #prevCard div[class*="col"] .text-emerald {
+    color: #881337 !important;
+    -webkit-text-fill-color: #881337 !important;
+    background: none !important;
+    font-weight: 800 !important;
+}
+
+/* Başlıq Mətnləri (HƏDƏF MƏBLƏĞ, TOPLANAN MƏBLƏĞ, QALAN MƏBLƏĞ) */
+[data-bs-theme="light"] .goal-card div[class*="col"] small,
+[data-bs-theme="light"] .goal-card div[class*="col"] .text-muted,
+[data-bs-theme="light"] #prevCard div[class*="col"] .preview-stat-label {
+    color: #9f1239 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+}
+/* ====================================================== */
+/* ☀️ LIGHT MODE - ORTADAKINI VƏ BÜTÜN KARTLARI EYNİLƏŞDİRMƏK */
+/* ====================================================== */
+
+/* Bütün 3 stat qutusunun fonu və çərçivəsi */
+[data-bs-theme="light"] .goal-card .row > div > div,
+[data-bs-theme="light"] .goal-card div[class*="col"] > div,
+[data-bs-theme="light"] #prevCard div[class*="col"] > div {
+    background: linear-gradient(135deg, rgba(159, 18, 57, 0.08) 0%, rgba(212, 175, 55, 0.04) 100%) !important;
+    border: 1px solid rgba(159, 18, 57, 0.2) !important;
+}
+
+/* Ortadakı qutu daxilindəki BÜTÜN mətnləri, rəqəmləri və valyutaları tünd qırmızı edir */
+[data-bs-theme="light"] .goal-card div[class*="col"] *,
+[data-bs-theme="light"] .goal-card .row > div *,
+[data-bs-theme="light"] #prevCard div[class*="col"] * {
+    background: none !important;
+    background-image: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: #881337 !important;
+    color: #881337 !important;
+    font-weight: 800 !important;
+}
+
+/* Üst başlıq yazıları üçün (HƏDƏF MƏBLƏĞ, TOPLANAN MƏBLƏĞ, QALAN MƏBLƏĞ) */
+[data-bs-theme="light"] .goal-card div[class*="col"] small,
+[data-bs-theme="light"] .goal-card div[class*="col"] .text-muted,
+[data-bs-theme="light"] .goal-card div[class*="col"] label,
+[data-bs-theme="light"] #prevCard div[class*="col"] small,
+[data-bs-theme="light"] #prevCard div[class*="col"] .preview-stat-label {
+    -webkit-text-fill-color: #9f1239 !important;
+    color: #9f1239 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* ====================================================== */
+/* 📅 12. LUXURY KALENDAR VƏ BROWSER/BOOTSTRAP OVERRIDES  */
+/* ====================================================== */
+
+/* Bütün Form Input Fokus Halında Sürüşən Yaşıl Göy Haşiyəni Qızılı Parıltı İlə Əvəzləmək */
+.form-control:focus,
+.form-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: rgba(212, 175, 55, 0.6) !important;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.35) !important;
+    outline: none !important;
+}
+
+/* Browser-in standart success (yaşıl) düymə və siniflərini mövzuya uyğunlaşdırmaq */
+.btn-success,
+.bg-success {
+    background: var(--emerald-gradient) !important;
+    border-color: rgba(212, 175, 55, 0.4) !important;
+    color: #ffffff !important;
+}
+
+    .btn-success:hover,
+    .btn-success:focus,
+    .btn-success:active {
+        background: linear-gradient(135deg, #9f1239 0%, #be123c 100%) !important;
+        border-color: #fbbf24 !important;
+        box-shadow: 0 8px 24px var(--emerald-glow) !important;
+    }
+
+.text-success {
+    color: #fbbf24 !important;
+}
+
+/* HTML Native Date Input Kalendar İkonu (Qızılı filter ilə) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.75) sepia(1) saturate(5) hue-rotate(330deg);
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+        transform: scale(1.15);
+        filter: invert(0.85) sepia(1) saturate(10) hue-rotate(340deg);
+    }
+
+/* Flatpickr & Standart Kalendar Vidcet Üslubları (Lüks Tünd & İşıqlı Rejim) */
+.flatpickr-calendar {
+    background: linear-gradient(145deg, #1f090d 0%, #0d0305 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.15) !important;
+    border-radius: 20px !important;
+    color: #fff1f2 !important;
+    padding: 8px !important;
+}
+
+.flatpickr-months .flatpickr-month,
+.flatpickr-current-month,
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+span.flatpickr-weekday {
+    color: #fbbf24 !important;
+    fill: #fbbf24 !important;
+    font-weight: 700 !important;
+}
+.flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-months .flatpickr-next-month svg {
+    fill: #d4af37 !important;
+}
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    fill: #fbbf24 !important;
+}
+.flatpickr-day {
+    color: #fecdd3 !important;
+    border-radius: 12px !important;
+    transition: all 0.2s ease !important;
+}
+    .flatpickr-day:hover,
+    .flatpickr-day:focus {
+        background: rgba(159, 18, 57, 0.35) !important;
+        border-color: rgba(212, 175, 55, 0.4) !important;
+        color: #fbbf24 !important;
+    }
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+        background: var(--emerald-gradient) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 14px var(--emerald-glow) !important;
+    }
+    .flatpickr-day.today {
+        border: 1px solid #d4af37 !important;
+        color: #fbbf24 !important;
+    }
+/* İşıqlı rejim üçün Kalendar Tənzimləməsi */
+[data-bs-theme="light"] .flatpickr-calendar {
+    background: #ffffff !important;
+    border: 1px solid rgba(159, 18, 57, 0.25) !important;
+    box-shadow: 0 10px 30px rgba(159, 18, 57, 0.12) !important;
+    color: #1c0a0e !important;
+}
+[data-bs-theme="light"] .flatpickr-months .flatpickr-month,
+[data-bs-theme="light"] .flatpickr-current-month,
+[data-bs-theme="light"] span.flatpickr-weekday {
+    color: #881337 !important;
+    fill: #881337 !important;
+}
+[data-bs-theme="light"] .flatpickr-day {
+    color: #1c0a0e !important;
+}
+
+    [data-bs-theme="light"] .flatpickr-day:hover {
+        background: #fff1f2 !important;
+        color: #9f1239 !important;

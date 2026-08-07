@@ -1,54 +1,92 @@
-﻿using budget_planner.Models;
-using budget_planner.Services;
-using budget_planner.ViewModels.Reports;
-using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Http;
+using budget_planner.Models;
+using budget_planner.Services;
+using budget_planner.ViewModels.Reports;
+using budget_planner.Extensions;
 namespace budget_planner.Controllers
 {
     public class ReportController : Controller
     {
         private readonly IReportService _reportService;
         private readonly UserManager<ApplicationUser> _userManager;
-
         public ReportController(IReportService reportService, UserManager<ApplicationUser> userManager)
         {
             _reportService = reportService;
             _userManager = userManager;
         }
-
-        public async Task<IActionResult> Index(ReportFilterVM filter)
+        [HttpGet]
+        public async Task<IActionResult> Index(
+            [FromQuery] DateTime? startDate,
+            [FromQuery] DateTime? endDate,
+            [FromQuery] string displayCurrency = "AZN")
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            // YENİLİK: Başqa heç nəyə toxunmadan, Session-da olan GuestUserId-ni də yoxlayırıq:
-            string userId = user?.Id
-                            ?? HttpContext.Session.GetString("GuestUserId")
-                            ?? GetOrCreateGuestId();
-
-            var vm = await _reportService.GetReportDataAsync(userId, filter);
-
-            // DEBUG: Bazadan məlumat gəlib-gəlmədiyini Visual Studio 'Output' panelində görmək üçün:
-            System.Diagnostics.Debug.WriteLine("=== DEBUG MƏLUMATLAR ===");
-            System.Diagnostics.Debug.WriteLine($"İstifadəçi ID: {userId}");
-            System.Diagnostics.Debug.WriteLine($"Aylıq Gəlir: {vm.Kpi.MonthlyIncome}");
-            System.Diagnostics.Debug.WriteLine($"Aylıq Xərc: {vm.Kpi.MonthlyExpense}");
-
-            return View(vm);
-        }
-
-        private string GetOrCreateGuestId()
-        {
-            // Qonaq istifadəçi üçün brauzer Sessiya ID-si götürülür
-            string guestId = HttpContext.Session.GetString("GuestUserId");
-            if (string.IsNullOrEmpty(guestId))
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
             {
-                guestId = "guest_" + System.Guid.NewGuid().ToString();
-                HttpContext.Session.SetString("GuestUserId", guestId);
+                var filter = new ReportFilterVM
+                {
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    DisplayCurrency = string.IsNullOrWhiteSpace(displayCurrency)
+                        ? "AZN"
+                        : displayCurrency
+                };
+                var guestTransactions = HttpContext.Session
+                    .GetObject<List<Transaction>>("Guest_Transactions")
+                    ?? new List<Transaction>();
+                var report = await _reportService.GetGuestReportDataAsync(
+                    guestTransactions,
+                    filter);
+                return View(report);
             }
-            return guestId;
+            var defaultFilter = new ReportFilterVM
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                DisplayCurrency = string.IsNullOrWhiteSpace(displayCurrency) ? "AZN" : displayCurrency
+            };
+            var reportData = await _reportService.GetReportDataAsync(userId, defaultFilter);
+            return View(reportData ?? new ReportVM());
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetReportData(
+            [FromQuery] DateTime? startDate,
+            [FromQuery] DateTime? endDate,
+            [FromQuery] string displayCurrency = "AZN")
+        {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+            {
+                var filter = new ReportFilterVM
+                {
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    DisplayCurrency = string.IsNullOrWhiteSpace(displayCurrency)
+                        ? "AZN"
+                        : displayCurrency
+                };
+                var guestTransactions = HttpContext.Session
+                    .GetObject<List<Transaction>>("Guest_Transactions")
+                    ?? new List<Transaction>();
+                var report = await _reportService.GetGuestReportDataAsync(
+                    guestTransactions,
+                    filter);
+                return Json(report);
+            }
+            var defaultFilter = new ReportFilterVM
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                DisplayCurrency = string.IsNullOrWhiteSpace(displayCurrency) ? "AZN" : displayCurrency
+            };
+            var reportData = await _reportService.GetReportDataAsync(userId, defaultFilter);
+            return Json(reportData);
         }
     }
 }

@@ -1,0 +1,128 @@
+﻿@model budget_planner.ViewModels.TransactionUpdateVM
+@{
+    ViewData["Title"] = "Əməliyyata Düzəliş Et";
+}
+@section Styles {
+    <!-- Flatpickr Kalendar CSS (Material Blue Mövzusu) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="card-title m-0 fw-bold">
+                        <i class="fa-solid fa-pen-to-square me-2"></i>Əməliyyata Düzəliş Et
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <!-- Təsvir / Açıqlama -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">Təsvir</label>
+                            <input asp-for="Description" class="form-control" placeholder="Məs: Market xərci" required />
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                        <!-- Məbləğ və Valyuta -->
+                        <div class="row">
+                            <div class="col-md-7 mb-3">
+                                <label asp-for="Amount" class="form-label fw-bold">Məbləğ</label>
+                                <input asp-for="Amount" type="number" step="0.01" class="form-control" placeholder="0.00" required />
+                                <span asp-validation-for="Amount" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-5 mb-3">
+                                <label asp-for="Currency" class="form-label fw-bold">Valyuta</label>
+                                <select asp-for="Currency" class="form-select">
+                                    <option value="AZN">AZN - Manat</option>
+                                    <option value="USD">USD - Dollar ($)</option>
+                                    <option value="EUR">EUR - Avro (€)</option>
+                                    <option value="TRY">TRY - Lirə (₺)</option>
+                                    <option value="RUB">RUB - Rubl (₽)</option>
+                                    <option value="GBP">GBP - Funt (£)</option>
+                                    <option value="GEL">GEL - Lari (₾)</option>
+                                    <option value="AED">AED - Dirhəm</option>
+                                    <option value="CHF">CHF - Frank</option>
+                                    <option value="CAD">CAD - Kanada $</option>
+                                    <option value="CNY">CNY - Yuan (¥)</option>
+                                </select>
+                                <span asp-validation-for="Currency" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <!-- Əməliyyat Növü (Gəlir / Xərc) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Əməliyyat Növü</label>
+                            <div class="d-flex gap-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="IsIncome" value="false" id="typeExpense">
+                                    <label class="form-check-label text-danger fw-bold" for="typeExpense">
+                                        <i class="fa-solid fa-circle-minus me-1"></i> Xərc
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="IsIncome" value="true" id="typeIncome">
+                                    <label class="form-check-label text-success fw-bold" for="typeIncome">
+                                        <i class="fa-solid fa-circle-plus me-1"></i> Gəlir
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Azərbaycan Dilində Modern Kalendar -->
+                        <div class="mb-4">
+                            <label asp-for="Date" class="form-label fw-bold">Tarix və Saat</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-calendar-days text-primary"></i></span>
+                                <input asp-for="Date" type="text" id="azDatePicker" class="form-control bg-white" asp-format="{0:yyyy-MM-dd HH:mm}" placeholder="Tarix və saatı seçin..." readonly />
+                            </div>
+                            <span asp-validation-for="Date" class="text-danger small"></span>
+                        </div>
+                        <!-- Düymələr -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fa-solid fa-arrow-left me-1"></i> Ləğv et
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk me-1"></i> Yadda saxla
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <!-- 1. Ən əsas jQuery (MÜTLƏQ İLK SIRADA YÜKLƏNMƏLİDİR) -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- 2. jQuery Validation (İkinci sırada) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <!-- 3. jQuery Unobtrusive Validation (Üçüncü sırada) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <!-- 4. Flatpickr Kalendar JS və Azərbaycan dili dəstəyi -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/az.js"></script>
+    <!-- 5. URL-dən parametr oxumaq üçün skript (Məbləğ və Fiskal ID) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const amount = urlParams.get('amount');
+            const fiscalId = urlParams.get('fiscalId');
+            if (amount && amount !== "null" && amount !== "") {
+                const amountInp = document.querySelector('[name="Amount"]');
+                if (amountInp && !amountInp.value) {
+                    amountInp.value = parseFloat(amount);
+                }
+            }
+            if (fiscalId && fiscalId !== "null" && fiscalId !== "") {
+                const descInp = document.querySelector('[name="Description"]');
+                if (descInp && !descInp.value) {
+                    descInp.value = "Fiskal ID: " + fiscalId;
+                }
+            }
+        });
+    </script>
+    <!-- 6. Sizin JS Faylınız -->
+    <script src="~/assets/js/editTransaction.js" asp-append-version="true"></script>
+}

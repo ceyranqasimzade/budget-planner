@@ -1,9 +1,7 @@
 ﻿@model IEnumerable<budget_planner.Models.UpcomingPayment>
-
 @{
     ViewData["Title"] = "Qarşıdan Gələn Ödənişlər";
 }
-
 <div class="container-fluid py-4">
     <!-- Başlıq və Yeni Ödəniş Düyməsi -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -15,7 +13,6 @@
             <i class="fa-solid fa-plus me-2"></i>Yeni Ödəniş Əlavə Et
         </button>
     </div>
-
     <!-- Bildiriş Mesajları (TempData) -->
     @if (TempData["SuccessMessage"] != null)
     {
@@ -31,7 +28,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
-
     <!-- Ödənişlər Cədvəli Kartı -->
     <div class="card border-0 shadow-sm" style="border-radius: 12px;">
         <div class="card-body p-4">
@@ -52,12 +48,10 @@
                             @foreach (var item in Model)
                             {
                                 var daysLeft = (item.DueDate.Date - DateTime.Now.Date).Days;
-
                                 string dateColor = item.IsPaid ? "text-muted" : (daysLeft < 0 ? "text-danger" : (daysLeft <= 3 ? "text-warning" : ""));
                                 string daysText = item.IsPaid ? "Ödənilib" : (daysLeft < 0 ? $"{Math.Abs(daysLeft)} gün gecikib" : (daysLeft == 0 ? "Bu gün!" : $"{daysLeft} gün qalıb"));
                                 string titleClass = item.IsPaid ? "text-decoration-line-through text-muted" : "";
                                 string amountClass = item.IsPaid ? "text-muted" : "text-danger";
-
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center gap-3">
@@ -106,7 +100,6 @@
                                                 <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#payModal-@item.Id" title="Ödənildi olaraq qeyd et">
                                                     <i class="fa-solid fa-check"></i>
                                                 </button>
-
                                                 <!-- Ödənişi Təsdiqləmə Modalı -->
                                                 <div class="modal fade text-start" id="payModal-@item.Id" tabindex="-1" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -120,14 +113,10 @@
                                                                 <div class="modal-body p-3">
                                                                     <p class="small mb-3">Bu ödəniş hansı hesabınızdan çıxılsın?</p>
 
-                                                                    <!-- YENİLƏNMİŞ ÖDƏNİŞ ÜSULU SEÇİMİ -->
                                                                     <select name="paymentMethod" class="form-select form-select-sm mb-2" required>
                                                                         <option value="" selected disabled>Ödəniş üsulunu seçin...</option>
-
-                                                                        <!-- Nağd Seçimi -->
                                                                         <option value="cash" class="fw-bold text-success">💵 Nağd (Cash)</option>
 
-                                                                        <!-- Kartlar -->
                                                                         @if (ViewBag.Cards != null)
                                                                         {
                                                                             <optgroup label="Kartlar">
@@ -138,7 +127,6 @@
                                                                             </optgroup>
                                                                         }
                                                                     </select>
-
                                                                 </div>
                                                                 <div class="modal-footer border-0 p-2">
                                                                     <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Ləğv et</button>
@@ -149,15 +137,19 @@
                                                     </div>
                                                 </div>
                                             }
-
-                                            <!-- SİLMƏ FORM-U (POST SORĞUSU İLƏ) -->
-                                            <form asp-controller="UpcomingPayment" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                            <form asp-controller="UpcomingPayment"
+                                                  asp-action="Delete"
+                                                  asp-route-id="@item.Id"
+                                                  method="post"
+                                                  class="d-inline delete-transaction-form">
                                                 @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bu ödənişi silməyə əminsiniz?');">
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        title="Sil">
                                                     <i class="bi bi-trash"></i> Sil
                                                 </button>
-                                            </form>
 
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -179,7 +171,6 @@
         </div>
     </div>
 </div>
-
 <!-- ================= YENİ ÖDƏNİŞ MODAL ================= -->
 <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -218,6 +209,16 @@
                         </div>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Təkrarlanma</label>
+                        <select name="RecurrenceType" class="form-select">
+                            <option value="None" selected>Təkrarlanmır</option>
+                            <option value="Daily">Hər gün</option>
+                            <option value="Weekly">Hər həftə</option>
+                            <option value="Monthly">Hər ay</option>
+                            <option value="Yearly">Hər il</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Son Ödəmə Tarixi</label>
                         <input type="text" name="DueDate" class="form-control datepicker" required />
                     </div>
@@ -230,16 +231,11 @@
         </div>
     </div>
 </div>
-
-<!-- ================= KALENDAR ÜÇÜN MÜTLƏQ YÜKLƏNMƏLİ OLAN FAYLLAR ================= -->
 @section Scripts {
-    <!-- Flatpickr CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-    <!-- Flatpickr JS və Azərbaycan dili faylı -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/az.js"></script>
-
-    <!-- Kodu yazdığınız .js faylının çağırılması -->
-    <script src="~/assets/js/dashboard.js"></script>
+    <script src="~/assets/js/deleteTransaction.js" asp-append-version="true"></script>
+    <script src="~/assets/js/dashboard.js" asp-append-version="true"></script>
 }

@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="~/assets/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/assets/css/components.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- 🟢 AI Chat CSS -->
+    <link rel="stylesheet" href="~/assets/css/ai-chat.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 </head>
 <body>
@@ -35,8 +37,8 @@
         <!-- ================= SIDEBAR ================= -->
         <aside class="sidebar">
             <a asp-controller="Home" asp-action="Index" class="sidebar-logo">
-               <i class="bi bi-wallet2"></i>
-               <span>Büdcəm</span>
+                <i class="bi bi-wallet2"></i>
+                <span>Büdcəm</span>
             </a>
             <nav class="sidebar-nav">
                 <ul class="nav flex-column">
@@ -75,20 +77,9 @@
         <!-- ================= MAIN WRAPPER ================= -->
         <div class="main-wrapper">
             <!-- ================= NAVBAR ================= -->
-            <header class="navbar">
-                <!-- Search -->
-                <form asp-controller="Transaction" asp-action="Index" method="get"
-                      class="search-form">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="search"
-                           name="search"
-                           class="form-control"
-                           placeholder="Əməliyyat axtar..."
-                           autocomplete="off"
-                           autocapitalize="off" />
-                </form>
+            <header class="navbar px-4">
                 <!-- Right Side -->
-                <div class="navbar-actions d-flex align-items-center gap-3">
+                <div class="navbar-actions d-flex align-items-center gap-3 ms-auto">
                     <!-- Theme -->
                     <button id="theme-toggle"
                             class="btn btn-link text-body p-0 border-0 shadow-none fs-5"
@@ -101,6 +92,10 @@
                     {
                         var currentUser = await UserManager.GetUserAsync(User);
                         var displayName = currentUser?.FullName ?? User.Identity?.Name ?? "İstifadəçi";
+                        var avatarUrl = !string.IsNullOrEmpty(currentUser?.ProfilePicturePath)
+                        ? currentUser.ProfilePicturePath
+                        : $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(displayName)}&background=0B4635&color=fff";
+
                         <div class="dropdown">
                             <a class="user-profile dropdown-toggle text-decoration-none d-flex align-items-center gap-2"
                                href="#"
@@ -109,11 +104,11 @@
                                data-bs-toggle="dropdown"
                                aria-expanded="false"
                                style="cursor: pointer;">
-                                <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(displayName)&background=0B4635&color=fff"
+                                <img src="@avatarUrl"
                                      alt="Profil"
                                      class="avatar rounded-circle"
-                                     style="width: 38px; height: 38px;" />
-                                <div class="user-info d-none d-sm-block">
+                                     style="width: 38px; height: 38px; object-fit: cover;" />
+                                <div class="user-info d-none d-sm-block text-start">
                                     <span class="user-name d-block font-weight-bold" style="font-size: 0.9rem;">
                                         @displayName
                                     </span>
@@ -152,9 +147,30 @@
                 </div>
             </header>
             <!-- ================= MAIN CONTENT ================= -->
-<main class="main-content">
-    @RenderBody()
-</main>
+            <main class="main-content">
+                <!-- 🟢 QƏŞƏNG VƏ SƏLİQƏLİ BİLDİRİŞ BLOKLARI (BURA ƏLAVƏ EDİLDİ) -->
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm border-0 d-flex align-items-center" role="alert" style="border-radius: 12px;">
+                        <i class="bi bi-exclamation-octagon-fill fs-4 me-3 text-danger"></i>
+                        <div>
+                            <strong>Xəta!</strong> @TempData["Error"]
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm border-0 d-flex align-items-center" role="alert" style="border-radius: 12px;">
+                        <i class="bi bi-check-circle-fill fs-4 me-3 text-success"></i>
+                        <div>
+                            <strong>Uğurlu!</strong> @TempData["SuccessMessage"]
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @RenderBody()
+            </main>
             <!-- ================= FOOTER ================= -->
             <footer class="footer">
                 <small>
@@ -163,11 +179,41 @@
             </footer>
         </div>
     </div>
+    <!-- ================= 🟢 AI CHAT WIDGET ================= -->
+    <button id="aiChatToggleBtn" class="ai-chat-toggle-btn" onclick="toggleAiChat()">
+        <i class="fa-solid fa-robot"></i>
+        <span>AI Məsləhətçi</span>
+    </button>
+    <div id="aiChatContainer" class="ai-chat-container d-none">
+        <div class="ai-chat-header">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-robot text-teal"></i>
+                <strong style="color: #fff;">Büdcəm AI</strong>
+            </div>
+            <button class="ai-chat-close-btn" onclick="toggleAiChat()">&times;</button>
+        </div>
+
+        <div id="aiChatMessages" class="ai-chat-messages">
+            <div class="ai-msg bot">
+                Salam! Mən sizin şəxsi maliyyə köməkçinizəm. Büdcəniz, xərcləriniz və ya yığımlarınızla bağlı nə sualınız var?
+            </div>
+        </div>
+
+        <div class="ai-chat-footer">
+            <input type="text" id="aiUserInput" placeholder="Sualınızı daxil edin..." onkeypress="handleAiKeyPress(event)" autocomplete="off" />
+            <button onclick="sendAiMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+    <!-- 1. Əsas köməkçi kitabxana (jQuery) ən yuxarıda -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 2. UI və Digər Kitabxanalar -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- 3. Flatpickr və onun dil (lokal) faylı (ardıcıllıq qorunmaqla) -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/az.js"></script>
+    <script src="~/assets/js/billTransaction.js" asp-append-version="true"></script>
     <script>
         if (typeof flatpickr !== 'undefined' && flatpickr.l10ns && flatpickr.l10ns.az) {
             flatpickr.localize(flatpickr.l10ns.az);
@@ -177,6 +223,8 @@
         window.isUserAuthenticated = @SignInManager.IsSignedIn(User).ToString().ToLower();
     </script>
     <script src="~/assets/js/theme.js" asp-append-version="true"></script>
+    <!-- 🟢 AI Chat JS -->
+    <script src="~/assets/js/ai-chat.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
