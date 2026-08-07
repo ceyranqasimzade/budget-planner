@@ -151,3 +151,78 @@
             transform: translateY(-1px);
             box-shadow: 0 6px 15px rgba(212, 175, 55, 0.35);
         }
+/* ==========================================================================
+   RESPONSİV DİZAYN (MEDIA QUERIES) - AI CHAT WIDGET
+   ========================================================================== */
+
+/* 📱 SMARTFONLAR VƏ MOBİL EKRANLAR (Max-width: 576px) */
+@media (max-width: 576px) {
+    /* Açılış düyməsinin mobil ekran üçün optimallaşdırılması */
+    .ai-chat-toggle-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    /* Çat konteynerinin ekrana tam oturması (Kənarlardan eyni məsafə ilə) */
+    .ai-chat-container {
+        bottom: 65px;
+        right: 12px;
+        left: 12px;
+        width: auto !important;
+        max-width: none !important;
+        height: 75vh;
+        max-height: 520px;
+        border-radius: 14px;
+    }
+
+    .ai-chat-header {
+        padding: 10px 14px;
+    }
+
+    .ai-chat-messages {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    /* Mobil ekranda mesaj baloncuklarının eni genişləndirilir */
+    .ai-msg {
+        max-width: 88%;
+        font-size: 13px;
+        padding: 9px 12px;
+    }
+
+    /* Daxiletmə sahəsi və düymənin toxunma (touch) rahatlığı */
+    .ai-chat-footer {
+        padding: 10px;
+        gap: 6px;
+    }
+
+        .ai-chat-footer input {
+            padding: 10px 12px;
+            font-size: 14px; /* Mobil brauzerlərdə avtomatik zoom-un qarşısını almaq üçün */
+        }
+
+        .ai-chat-footer button {
+            padding: 10px 14px;
+            font-size: 13px;
+        }
+}
+
+/* 📱 ÇOX KİÇİK EKRANLAR (Max-width: 380px) */
+@media (max-width: 380px) {
+    .ai-chat-container {
+        bottom: 58px;
+        right: 8px;
+        left: 8px;
+        height: 80vh;
+    }
+
+    .ai-chat-toggle-btn {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}

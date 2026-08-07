@@ -156,3 +156,47 @@
     border-top: 1px solid var(--border-color);
     background-color: var(--bg-surface);
 }
+@media (max-width: 768px) {
+
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        width: 280px;
+        height: 100%;
+        transition: left .3s ease;
+        z-index: 1050;
+    }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+    .app-container,
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+}
+.menu-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 2000;
+        font-size: 28px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+}

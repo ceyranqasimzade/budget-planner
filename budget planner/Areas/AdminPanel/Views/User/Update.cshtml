@@ -1,0 +1,46 @@
+﻿@using budget_planner.Areas.ViewModel
+@model CreateVM
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="card-title font-weight-bold" style="color: #0A192F;">İstifadəçi Məlumatlarını Yenilə</h4>
+                <p class="card-description text-muted">
+                    Mövcud istifadəçinin məlumatlarına dəyişiklik edin
+                </p>
+                <form class="forms-sample" method="post">
+                    <!-- ID-ni hidden olaraq ötürürük ki, POST metodunda istifadəçi itməsin -->
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="form-group mb-3">
+                        <label asp-for="FullName">Ad və Soyad</label>
+                        <input class="form-control" placeholder="Ad və Soyad" asp-for="FullName">
+                        <span style="color:red" asp-validation-for="FullName"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="UserName">İstifadəçi Adı</label>
+                        <input class="form-control" placeholder="İstifadəçi Adı" asp-for="UserName">
+                        <span style="color:red" asp-validation-for="UserName"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Email">E-poçt Ünvanı</label>
+                        <input class="form-control" placeholder="E-poçt Ünvanı" asp-for="Email">
+                        <span style="color:red" asp-validation-for="Email"></span>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <label class="form-check-label text-muted">
+                            <input type="checkbox" class="form-check-input" asp-for="IsActive">
+                            Hesab Aktivdir?
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary me-2" style="background-color: #0A192F; border-color: #0A192F;">Yenilə</button>
+                    <a asp-controller="User" asp-action="Index" class="btn btn-light">Ləğv et</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

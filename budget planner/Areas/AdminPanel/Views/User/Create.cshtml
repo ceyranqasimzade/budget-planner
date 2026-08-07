@@ -1,0 +1,75 @@
+﻿@using Microsoft.AspNetCore.Http.HttpResults
+@using budget_planner.Areas.ViewModel
+@model CreateVM
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="card-title font-weight-bold" style="color: #0A192F;">Yeni İstifadəçi Yarat</h4>
+                <p class="card-description text-muted">
+                    Sistemə yeni istifadəçi əlavə etmək üçün məlumatları daxil edin
+                </p>
+                <form class="forms-sample" method="post">
+                    <div class="form-group mb-3">
+                        <label asp-for="FullName">Ad və Soyad</label>
+                        <input class="form-control" placeholder="Ad və Soyad" asp-for="FullName">
+                        <span style="color:red" asp-validation-for="FullName"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="UserName">İstifadəçi Adı</label>
+                        <input class="form-control" placeholder="İstifadəçi Adı" asp-for="UserName">
+                        <span style="color:red" asp-validation-for="UserName"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Email">E-poçt Ünvanı</label>
+                        <input class="form-control" placeholder="E-poçt Ünvanı" asp-for="Email">
+                        <span style="color:red" asp-validation-for="Email"></span>
+                    </div>
+
+                    <button type="submit" class="btn create-btn me-2">
+                        <i class="mdi mdi-account-plus me-1"></i>
+                        Yarat
+                    </button>
+
+                    <a asp-controller="User" asp-action="Index" class="btn cancel-btn">
+                        Ləğv et
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .create-btn {
+        background: #2563eb;
+        border: none;
+        color: white;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        transition: .3s ease;
+    }
+
+        .create-btn:hover {
+            background: #1d4ed8;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .cancel-btn {
+        background: #f1f5f9;
+        color: #334155;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: .3s ease;
+    }
+
+        .cancel-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+</style>

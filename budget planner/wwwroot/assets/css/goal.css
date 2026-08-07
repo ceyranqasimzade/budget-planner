@@ -986,3 +986,216 @@ span.flatpickr-weekday {
     [data-bs-theme="light"] .flatpickr-day:hover {
         background: #fff1f2 !important;
         color: #9f1239 !important;
+    }
+/* ====================================================== */
+/* 📅 12. LUXURY KALENDAR VƏ BROWSER OVERRIDES (Davamı)   */
+/* ====================================================== */
+
+.flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-months .flatpickr-next-month svg {
+    fill: #d4af37 !important;
+    transition: transform 0.2s ease, fill 0.2s ease;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    fill: #fbbf24 !important;
+    transform: scale(1.2);
+}
+
+/* Günlərin Üslubu (Tünd Rejim) */
+.flatpickr-day {
+    color: #fff1f2 !important;
+    border-radius: 10px !important;
+    transition: all 0.2s ease !important;
+}
+
+    .flatpickr-day:hover,
+    .flatpickr-day:focus {
+        background: rgba(159, 18, 57, 0.4) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
+    }
+
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+        background: var(--emerald-gradient) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px var(--emerald-glow) !important;
+    }
+
+    .flatpickr-day.today {
+        border-color: #d4af37 !important;
+        font-weight: 700 !important;
+    }
+
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay {
+        color: rgba(254, 205, 211, 0.3) !important;
+    }
+
+/* ☀️ Flatpickr İşıqlı Rejim (Light Mode) Uyğunlaşdırması */
+[data-bs-theme="light"] .flatpickr-calendar {
+    background: #ffffff !important;
+    border: 1px solid rgba(159, 18, 57, 0.25) !important;
+    box-shadow: 0 10px 25px rgba(159, 18, 57, 0.15) !important;
+    color: #1c0a0e !important;
+}
+
+[data-bs-theme="light"] .flatpickr-months .flatpickr-month,
+[data-bs-theme="light"] .flatpickr-current-month,
+[data-bs-theme="light"] span.flatpickr-weekday {
+    color: #9f1239 !important;
+}
+
+[data-bs-theme="light"] .flatpickr-day {
+    color: #1c0a0e !important;
+}
+
+    [data-bs-theme="light"] .flatpickr-day:hover {
+        background: #fff1f2 !important;
+        border-color: #9f1239 !important;
+        color: #9f1239 !important;
+    }
+/* ====================================================== */
+/* 🏢 CRIMSON & GOLD KORPORATİV ELEMENTLƏR VƏ CƏDVƏLLƏR    */
+/* ====================================================== */
+
+/* 1. KORPORATİV CƏDVƏL (ENTERPRISE TABLE) */
+.table-corporate {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .table-corporate {
+    background: #0d0305 !important;
+}
+
+[data-bs-theme="light"] .table-corporate {
+    background: #ffffff !important;
+}
+
+.table-corporate thead th {
+    background: linear-gradient(135deg, rgba(159, 18, 57, 0.25) 0%, rgba(31, 9, 13, 0.6) 100%) !important;
+    color: #fbbf24 !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.6px !important;
+    padding: 14px 18px !important;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+}
+
+.table-corporate tbody td {
+    padding: 14px 18px !important;
+    border-bottom: 1px solid rgba(159, 18, 57, 0.12) !important;
+    font-size: 0.875rem !important;
+}
+
+[data-bs-theme="dark"] .table-corporate tbody td {
+    color: #fff1f2 !important;
+}
+
+[data-bs-theme="light"] .table-corporate tbody td {
+    color: #1c0a0e !important;
+}
+
+.table-corporate tbody tr:hover {
+    background-color: rgba(159, 18, 57, 0.1) !important;
+}
+
+/* 2. KORPORATİV INPUT VƏ FORM ELEMENLƏRİ */
+.form-corp-control {
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s ease !important;
+}
+
+[data-bs-theme="dark"] .form-corp-control {
+    background-color: rgba(13, 3, 5, 0.8) !important;
+    color: #fff1f2 !important;
+}
+
+[data-bs-theme="light"] .form-corp-control {
+    background-color: #ffffff !important;
+    color: #1c0a0e !important;
+}
+
+.form-corp-control:focus {
+    border-color: #fbbf24 !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.35) !important;
+    outline: none !important;
+}
+
+/* 3. KORPORATİV STATUS BİRKALARI (BADGES) */
+.badge-corp {
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge-corp-active {
+    background: rgba(212, 175, 55, 0.15) !important;
+    color: #fbbf24 !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+}
+
+.badge-corp-danger {
+    background: rgba(159, 18, 57, 0.2) !important;
+    color: #f43f5e !important;
+    border: 1px solid rgba(244, 63, 94, 0.35) !important;
+}
+
+.badge-corp-muted {
+    background: rgba(254, 205, 211, 0.1) !important;
+    color: #fecdd3 !important;
+    border: 1px solid rgba(254, 205, 211, 0.2) !important;
+}
+
+/* 4. CİDDİ VƏ SƏLİQƏLİ ƏMƏLİYYAT DÜYMƏLƏRİ */
+.btn-corp-primary {
+    background: var(--emerald-gradient) !important;
+    border: 1px solid #d4af37 !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 9px 18px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.25s ease !important;
+}
+
+    .btn-corp-primary:hover {
+        background: linear-gradient(135deg, #9f1239 0%, #be123c 100%) !important;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3) !important;
+    }
+
+.btn-corp-secondary {
+    background: transparent !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: #fbbf24 !important;
+    border-radius: 8px !important;
+    padding: 9px 18px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.25s ease !important;
+}
+
+    .btn-corp-secondary:hover {
+        background: rgba(159, 18, 57, 0.2) !important;
+        border-color: #fbbf24 !important;
+        color: #ffffff !important;
+    }

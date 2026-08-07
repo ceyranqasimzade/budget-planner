@@ -476,3 +476,29 @@ html[data-bs-theme="dark"] .upcoming-payment-card,
     color: #e74a3b;
     font-size: 1.1rem;
 }
+/* ================= MOBİL CİHAZLAR ÜÇÜN RESPONSİVE (max-width: 768px) ================= */
+@media (max-width: 768px) {
+    /* Başlığı və sağ tərəf düymələrini alt-alta salır */
+    .dashboard-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem;
+    }
+
+    /* Stat kartları daxilindəki konteyneri alt-alta düzür */
+    .stats-container {
+        flex-direction: column !important;
+    }
+
+    /* Grid düzülüşlərini tək sütuna endirir */
+    .dashboard-grid,
+    .bank-cards-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Qrafik və ya cədvəl bloklarını tam enə gətirir */
+    .chart-card,
+    .chart-container {
+        width: 100% !important;
+    }
+}

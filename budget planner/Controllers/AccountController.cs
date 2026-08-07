@@ -11,11 +11,13 @@ namespace budget_planner.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailService;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _roleManager = roleManager;
         }
         // ==========================================
         // QEYDİYYAT (REGISTER)
@@ -40,6 +42,7 @@ namespace budget_planner.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "Member");
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
             }
@@ -49,6 +52,7 @@ namespace budget_planner.Controllers
             }
             return View(model);
         }
+      
         // ==========================================
         // GİRİŞ (LOGIN)
         // ==========================================
@@ -149,7 +153,7 @@ namespace budget_planner.Controllers
             return View(model);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken] // Məsləhətdir ki, bura da əlavə olunsun
+        [ValidateAntiForgeryToken] 
         public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -206,5 +210,11 @@ namespace budget_planner.Controllers
             }
             return RedirectToAction("Index", "Settings");
         }
+        //public async Task<IActionResult> CreatesRoles()
+        //{
+        //    await _roleManager.CreateAsync(new IdentityRole("Member"));
+        //    await _roleManager.CreateAsync(new IdentityRole("Admin"));
+        //    return Content("rollar yaradildi");
+        //}
     }
 }

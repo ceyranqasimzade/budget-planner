@@ -462,3 +462,69 @@ body.dark-mode,
     body.dark-mode .receipt-drop-zone #dropZoneDefault span {
         color: #a3a3a3 !important;
     }
+/* ==========================================================================
+   9. MOBİL UYĞUNLUQ VƏ RESPONSİVE DİZAYN (max-width: 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* 1. CƏDVƏL (TABLE) DÜZƏLİŞİ */
+    /* Cədvəlin ekrandan kənara çıxmaması üçün horizontal scrolling yaradır */
+    #transactionTable,
+    .table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Desktop üçün təyin olunan dar faizli sütun ölçülərini mobildə sıfırlayır */
+    .col-select, .col-date, .col-desc, .col-cat,
+    .col-amount, .col-status, .col-action {
+        width: auto !important;
+    }
+
+    /* Cədvəl xanalarının padding-ini kiçildir */
+    #transactionTable tbody td,
+    .table tbody td,
+    #transactionTable thead th,
+    .table thead th {
+        padding: 10px 12px !important;
+        font-size: 0.85rem;
+    }
+
+    /* 2. İNPUTLAR VƏ SELEKTLƏR */
+    /* Filtrlər və axtarış inputları mobil ekranda tam eni tutmalıdır */
+    .form-control,
+    .form-select,
+    .rows-select,
+    .chart-currency-compact {
+        width: 100% !important;
+        min-width: 100% !important;
+        margin-bottom: 0.5rem;
+    }
+
+    /* 3. DÜYMƏLƏR (BUTTONS) */
+    /* Barmaqla rahat kliklənmək üçün düymələri full-width edir */
+    .btn-primary,
+    .btn-purple,
+    .btn-add-transaction,
+    #btnUploadReceipt {
+        width: 100% !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    /* 4. QƏBZ YÜKLƏMƏ VƏ BİLDİRİŞ ZONASI */
+    .receipt-drop-zone {
+        min-height: 110px !important;
+        padding: 1rem !important;
+    }
+
+    .alert-custom {
+        flex-direction: column;
+        align-items: flex-start !important;
+        padding: 12px !important;
+    }
+}

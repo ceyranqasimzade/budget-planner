@@ -101,31 +101,54 @@ namespace budget_planner.DAL
             // ==========================
             // DECIMAL PRECISION
             // ==========================
+
+            modelBuilder.Entity<ApplicationUser>()
+                .Property(x => x.CashBalance)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .Property(x => x.TotalBalance)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<UpcomingPayment>()
+                .Property(x => x.Amount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<UpcomingPayment>()
+                .Property(x => x.Amount)
+                .HasPrecision(18, 2);
+
             modelBuilder.Entity<Transaction>()
                 .Property(x => x.Amount)
                 .HasPrecision(18, 2);
+
             modelBuilder.Entity<Card>()
                 .Property(x => x.Balance)
                 .HasPrecision(18, 2);
+
             modelBuilder.Entity<Goal>()
                 .Property(x => x.TargetAmount)
                 .HasPrecision(18, 2);
+
             modelBuilder.Entity<Goal>()
                 .Property(x => x.CurrentAmount)
                 .HasPrecision(18, 2);
-            // YENİ ƏLAVƏ EDİLDİ
+
             modelBuilder.Entity<Subscription>()
                 .Property(x => x.Amount)
                 .HasPrecision(18, 2);
+
             modelBuilder.Entity<BudgetRule>()
                 .Property(x => x.NeedsPercentage)
                 .HasPrecision(5, 2);
+
             modelBuilder.Entity<BudgetRule>()
                 .Property(x => x.WantsPercentage)
                 .HasPrecision(5, 2);
+
             modelBuilder.Entity<BudgetRule>()
                 .Property(x => x.SavingsPercentage)
                 .HasPrecision(5, 2);
+
             modelBuilder.Entity<ExchangeRate>()
                 .Property(x => x.Rate)
                 .HasPrecision(18, 6);

@@ -26,6 +26,11 @@ namespace budget_planner.Models
         // 🖼️ Profil Şəkli (SettingsController və SettingsVM üçün çatışmayan xassə)
         public string? ProfilePicturePath { get; set; }
 
+        // Soft-delete, active flag and creation date used by admin pages
+        public bool IsDeleted { get; set; } = false;
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+
         // Naviqasiya xassələri
         public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
         public virtual ICollection<Category> Categories { get; set; } = new List<Category>();

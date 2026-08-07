@@ -12,6 +12,10 @@ using budget_planner.Models;
 using budget_planner.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls(
+    "http://0.0.0.0:5177",
+    "https://0.0.0.0:7199"
+);
 
 // =========================================================================
 // 1. DATABASE & IDENTITY SERVICES
@@ -27,11 +31,14 @@ builder.Services
     .AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
         // Şifrə tələbləri
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireNonAlphanumeric = true;
+        options.User.RequireUniqueEmail = true;
         options.Password.RequiredLength = 8;
+        options.Lockout.MaxFailedAccessAttempts = 3;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(15);
     })
     .AddEntityFrameworkStores<BudgetDbContext>()
     .AddDefaultTokenProviders();
@@ -139,7 +146,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -152,8 +159,13 @@ app.UseSession();
 
 // Route Təyini
 app.MapControllerRoute(
+     name: "areas",
+     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+     );
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
+       
 app.Run();

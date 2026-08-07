@@ -181,3 +181,53 @@ input::-webkit-credentials-auto-fill-button {
     margin-bottom: 12px;
     text-align: left;
 }
+/* ==========================================================================
+   RESPONSİV DİZAYN (MEDIA QUERIES) - LOGIN VƏ REGISTER
+   ========================================================================== */
+
+/* 💻 PLANŞETLƏR VƏ KIÇİK EKRANLAR (Max-width: 768px) */
+@media (max-width: 768px) {
+    .login-background {
+        padding-top: 100px; /* Mobildə pəncərənin aşağı düşməməsi üçün 220px azaldılır */
+        background-attachment: scroll; /* Mobil brauzerlərdə arxa plan donmalarının (lag) qarşısını alır */
+    }
+}
+
+/* 📱 SMARTFONLAR VƏ MOBİL EKRANLAR (Max-width: 576px) */
+@media (max-width: 576px) {
+    .login-background {
+        padding-top: 40px;
+        padding-bottom: 30px;
+        padding-left: 15px;
+        padding-right: 15px;
+        align-items: center; /* Ekran kiçildikdə qutunu şaquli tam mərkəzə çəkir */
+    }
+
+    .login-box {
+        padding: 24px 20px; /* Daxili boşluqlar mobil ekrana uyğunlaşdırılır */
+        border-radius: 14px;
+    }
+
+        .login-box h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        /* iOS Safari-də input-a klikləyəndə ekranın avtomatik yaxınlaşmasının (zoom) qarşısını alır */
+        .login-box input[type="text"],
+        .login-box input[type="password"],
+        .login-box input[type="email"] {
+            padding: 10px 12px;
+            font-size: 16px;
+        }
+
+    .form-options {
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+
+    .btn-submit {
+        padding: 12px;
+        font-size: 14px;
+    }
+}

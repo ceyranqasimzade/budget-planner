@@ -359,3 +359,69 @@ body.dark-mode .flatpickr-day {
     body.dark-mode .flatpickr-day.nextMonthDay {
         color: #64748b !important;
     }
+/* ==========================================================================
+   6. RESPONSİV DİZAYN (TELEFON, PLANŞET VƏ PLANŞET PK UĞUNLAŞMASI)
+   ========================================================================== */
+
+/* 📱 PLANŞETLƏR (Tablet: Max-width 992px) */
+@media (max-width: 992px) {
+    .report-card {
+        padding: 16px;
+        margin-bottom: 15px;
+    }
+
+    .kpi-value {
+        font-size: 1.35rem;
+    }
+
+    .chart-container {
+        height: 200px; /* Planşet üçün qrafik hündürlüyü */
+    }
+}
+
+/* 📱 TELEFONLAR / MOBİL EKANLAR (Smartphones: Max-width 576px) */
+@media (max-width: 576px) {
+    .report-card {
+        padding: 14px;
+        border-radius: 10px;
+    }
+
+    .kpi-title {
+        font-size: 0.7rem;
+    }
+
+    .kpi-value {
+        font-size: 1.2rem;
+    }
+
+    .chart-container {
+        height: 170px; /* Kiçik ekranlarda qrafikin rahat görünməsi üçün */
+    }
+
+    .health-gauge-box {
+        height: 85px;
+    }
+
+    .health-score-text .score {
+        font-size: 1.25rem;
+    }
+
+    /* İnputların barmaqla toxunmaya (touch) rahat olması üçün */
+    .report-card .form-control,
+    .report-card .form-select {
+        height: 44px;
+        font-size: 0.85rem;
+    }
+
+    /* Təqvimin ekrandan kənara çıxmaması üçün */
+    .flatpickr-calendar {
+        width: 100% !important;
+        max-width: 300px !important;
+        margin: 0 auto;
+    }
+
+    .flatpickr-day {
+        height: 36px;
+        line-height: 36px;
+    }
+}

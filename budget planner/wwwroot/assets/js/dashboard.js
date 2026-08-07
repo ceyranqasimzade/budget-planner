@@ -401,3 +401,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+const btn = document.querySelector(".menu-toggle");
+
+if (btn) {
+    btn.addEventListener("click", function () {
+        document.querySelector(".sidebar").classList.toggle("active");
+    });
+}

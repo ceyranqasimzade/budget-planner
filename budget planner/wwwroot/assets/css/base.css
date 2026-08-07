@@ -73,3 +73,61 @@ ul {
     padding: 0;
     margin: 0;
 }
+/* ==========================================================================
+   RESPONSİV DİZAYN (MEDIA QUERIES) - QLOBAL LAYOUT VƏ NAVİQASİYA
+   ========================================================================== */
+
+/* 💻 PLANŞETLƏR VƏ MOBİL CİHAZLAR (Max-width: 992px) */
+@media (max-width: 992px) {
+    :root {
+        --navbar-height: 60px; /* Kiçik ekranlarda navbar hündürlüyü azaldılır */
+    }
+
+    /* Sidebardan asılı olan əsas kontent sahəsinin sol məsafəsi sıfırlanır */
+    .main-wrapper,
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 15px !important;
+    }
+
+    /* Sidebar ekrandan kənara çıxarılır (Off-canvas menyu rejimi) */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px; /* Ekrandan gizlədilir */
+        width: 260px !important;
+        height: 100vh;
+        z-index: 1050;
+        transition: left var(--transition);
+    }
+
+        /* JavaScript ilə menyu açıldıqda (.active və ya .show class-ı ilə) */
+        .sidebar.active,
+        .sidebar.show {
+            left: 0 !important;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+        }
+
+    /* Navbar optimallaşdırılması */
+    .navbar {
+        height: var(--navbar-height);
+        padding: 0 1rem;
+    }
+}
+
+/* 📱 SMARTFONLAR VƏ KIÇİK MOBİL EKRANLAR (Max-width: 576px) */
+@media (max-width: 576px) {
+    :root {
+        --navbar-height: 55px;
+    }
+
+    body {
+        font-size: 14px; /* Mobil brauzerlərdə daha rahat oxunma */
+    }
+
+    .main-wrapper,
+    .main-content {
+        padding: 10px !important;
+    }
+}

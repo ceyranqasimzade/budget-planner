@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Büdcəm - Admin Panel</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="~/adminpanel/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="~/adminpanel/vendors/base/vendor.bundle.base.css">
+    <!-- inject:css -->
+    <link rel="stylesheet" href="~/adminpanel/css/style.css">
+    <link rel="shortcut icon" href="~/adminpanel/images/favicon.png" />
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- YUXARI NAVBAR -->
+        <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div class="navbar-brand-wrapper d-flex justify-content-center">
+                <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center w-100">
+                    <a class="navbar-brand brand-logo font-weight-bold d-flex align-items-center" href="#" style="font-size: 1.35rem; color: #0A192F; text-decoration: none;">
+                        <i class="mdi mdi-wallet me-2 text-primary"></i>
+                        <span>Büdcəm</span>
+                    </a>
+                    <a class="navbar-brand brand-logo-mini" href="#" style="font-size: 1.4rem; color: #0A192F; text-decoration: none;">
+                        <i class="mdi mdi-wallet text-primary"></i>
+                    </a>
+                    <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                        <span class="mdi mdi-sort-variant"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+               
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="mdi mdi-menu"></span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- ƏSAS SƏHİFƏ HİSSƏSİ -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- SIDEBAR -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                            <i class="mdi mdi-view-dashboard menu-icon"></i>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="User" asp-action="Index">
+                            <i class="mdi mdi-account-multiple menu-icon"></i>
+                            <span class="menu-title">İstifadəçilər</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- KONTENT PƏNCƏRƏSİ -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    @RenderBody()
+                </div>
+                <footer class="footer">
+                    <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © Büdcəm Admin</span>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- plugins:js -->
+    <script src="~/adminpanel/vendors/base/vendor.bundle.base.js"></script>
+    <script src="~/adminpanel/js/off-canvas.js"></script>
+    <script src="~/adminpanel/js/hoverable-collapse.js"></script>
+    <script src="~/adminpanel/js/template.js?v=2"></script>
+</body>
+
+</html>
